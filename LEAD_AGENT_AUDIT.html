@@ -1,0 +1,755 @@
+<title>Lead Agent Readiness Audit</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F7F6F3;
+    --surface:#FFFFFF;
+    --sunk:#EFEDE8;
+    --ink:#141922;
+    --ink-2:#3A4150;
+    --muted:#6B7280;
+    --rule:#DDD9D1;
+    --rule-strong:#C4BFB4;
+    --accent:#2E4C6D;
+    --crit:#B3402E;
+    --warn:#B07D22;
+    --ok:#3D6B4E;
+    --info:#4A5F7A;
+    --crit-bg:#F6E7E3;
+    --warn-bg:#F7EEDC;
+    --ok-bg:#E4EDE6;
+    --info-bg:#E7EBF0;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    --display:"Newsreader",Georgia,serif;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --paper:#11141A;
+      --surface:#171B23;
+      --sunk:#1E232C;
+      --ink:#E8E6E1;
+      --ink-2:#B9BEC9;
+      --muted:#8A93A3;
+      --rule:#2A303B;
+      --rule-strong:#3B434F;
+      --accent:#8FB2D6;
+      --crit:#E08874;
+      --warn:#DCB068;
+      --ok:#84B396;
+      --info:#9DB2CC;
+      --crit-bg:#2E1D19;
+      --warn-bg:#2C2417;
+      --ok-bg:#1B2921;
+      --info-bg:#1B222C;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#11141A;
+    --surface:#171B23;
+    --sunk:#1E232C;
+    --ink:#E8E6E1;
+    --ink-2:#B9BEC9;
+    --muted:#8A93A3;
+    --rule:#2A303B;
+    --rule-strong:#3B434F;
+    --accent:#8FB2D6;
+    --crit:#E08874;
+    --warn:#DCB068;
+    --ok:#84B396;
+    --info:#9DB2CC;
+    --crit-bg:#2E1D19;
+    --warn-bg:#2C2417;
+    --ok-bg:#1B2921;
+    --info-bg:#1B222C;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.62;
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px 96px}
+  .col{max-width:74ch}
+
+  /* ---------- masthead ---------- */
+  header.mast{
+    border-bottom:2px solid var(--ink);
+    padding:44px 0 20px;
+    margin-bottom:34px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:clamp(34px,5.2vw,54px);
+    line-height:1.08;
+    letter-spacing:-.015em;
+    margin:0 0 16px;
+    text-wrap:balance;
+  }
+  .standfirst{
+    font-family:var(--display);
+    font-size:19px;
+    line-height:1.5;
+    color:var(--ink-2);
+    max-width:62ch;
+    margin:0 0 22px;
+  }
+  .meta-row{
+    display:flex;flex-wrap:wrap;gap:10px 26px;
+    font-family:var(--mono);font-size:11.5px;color:var(--muted);
+    letter-spacing:.03em;
+  }
+  .meta-row b{color:var(--ink-2);font-weight:500}
+
+  /* ---------- verdict ---------- */
+  .verdict{
+    display:grid;
+    grid-template-columns:minmax(0,220px) minmax(0,1fr);
+    gap:30px;
+    align-items:center;
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-left:4px solid var(--warn);
+    padding:26px 28px;
+    margin:0 0 14px;
+  }
+  .score{font-family:var(--display);font-size:74px;line-height:.9;font-weight:500;letter-spacing:-.03em}
+  .score span{font-size:26px;color:var(--muted)}
+  .score-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+  .verdict p{margin:0 0 10px}
+  .verdict p:last-child{margin-bottom:0}
+
+  .bar{height:7px;background:var(--sunk);display:flex;margin:14px 0 6px;border:1px solid var(--rule)}
+  .bar i{display:block;height:100%}
+  .bar-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.04em}
+  .bar-key i{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px}
+
+  /* ---------- sections ---------- */
+  section{margin:52px 0 0;scroll-margin-top:20px}
+  h2{
+    font-family:var(--display);
+    font-size:29px;font-weight:500;letter-spacing:-.012em;
+    margin:0 0 6px;padding-bottom:9px;
+    border-bottom:1px solid var(--rule-strong);
+    display:flex;align-items:baseline;gap:13px;text-wrap:balance;
+  }
+  h2 .num{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    letter-spacing:.1em;flex:none;
+  }
+  h3{
+    font-family:var(--sans);font-size:14px;font-weight:600;
+    letter-spacing:.02em;margin:30px 0 8px;color:var(--ink);
+  }
+  h4{font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:24px 0 8px}
+  p{margin:0 0 13px}
+  .lede{color:var(--ink-2);font-size:15.5px;margin-bottom:20px}
+  ul,ol{margin:0 0 14px;padding-left:20px}
+  li{margin-bottom:7px}
+  strong{font-weight:600}
+  code,.mono{font-family:var(--mono);font-size:12.5px;background:var(--sunk);padding:1px 5px;border-radius:2px;word-break:break-word}
+  a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---------- evidence tags ---------- */
+  .tag{
+    font-family:var(--mono);font-size:9.5px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;
+    padding:2px 6px;border-radius:2px;white-space:nowrap;
+    vertical-align:1px;
+  }
+  .t-v{background:var(--ok-bg);color:var(--ok)}
+  .t-i{background:var(--warn-bg);color:var(--warn)}
+  .t-u{background:var(--sunk);color:var(--muted)}
+
+  /* ---------- finding blocks ---------- */
+  .find{
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-left:3px solid var(--rule-strong);
+    padding:17px 20px;margin:0 0 12px;
+  }
+  .find.crit{border-left-color:var(--crit)}
+  .find.warn{border-left-color:var(--warn)}
+  .find.ok{border-left-color:var(--ok)}
+  .find-head{
+    display:flex;flex-wrap:wrap;gap:9px;align-items:baseline;margin-bottom:7px;
+  }
+  .find-head .rank{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:600}
+  .find-head .ttl{font-weight:600;font-size:14.5px;flex:1;min-width:200px}
+  .sev{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;padding:2px 7px;border-radius:2px}
+  .s-crit{background:var(--crit-bg);color:var(--crit)}
+  .s-high{background:var(--warn-bg);color:var(--warn)}
+  .s-med{background:var(--info-bg);color:var(--info)}
+  .s-low{background:var(--sunk);color:var(--muted)}
+  .find p{margin:0 0 8px;font-size:14px}
+  .find p:last-child{margin-bottom:0}
+  .find .where{font-family:var(--mono);font-size:11.5px;color:var(--muted);display:block;margin-top:8px;line-height:1.5}
+
+  /* ---------- tables ---------- */
+  .tw{overflow-x:auto;margin:0 0 16px;border:1px solid var(--rule);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:13.2px;min-width:660px}
+  th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:top}
+  thead th{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);background:var(--sunk);font-weight:600;white-space:nowrap;
+    position:sticky;top:0;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .gap-c{color:var(--crit);font-weight:600}
+  .gap-h{color:var(--warn);font-weight:600}
+  .gap-m{color:var(--info);font-weight:600}
+  .gap-l{color:var(--muted);font-weight:600}
+  .gap-n{color:var(--ok);font-weight:600}
+
+  /* ---------- trace ---------- */
+  .trace{
+    font-family:var(--mono);font-size:12px;line-height:1.85;
+    background:var(--surface);border:1px solid var(--rule);
+    padding:16px 18px;overflow-x:auto;margin:0 0 16px;
+  }
+  .trace .die{color:var(--crit);font-weight:600}
+  .trace .hold{color:var(--warn);font-weight:600}
+  .trace .pass{color:var(--ok);font-weight:600}
+  .trace .dim{color:var(--muted)}
+
+  /* ---------- pipeline diagram ---------- */
+  .pipe{margin:0 0 20px;overflow-x:auto}
+  .pipe svg{display:block;min-width:700px}
+
+  /* ---------- callout ---------- */
+  .call{
+    background:var(--sunk);border:1px solid var(--rule);
+    padding:16px 19px;margin:0 0 16px;font-size:14px;
+  }
+  .call.keep{border-left:3px solid var(--ok)}
+  .call p:last-child{margin-bottom:0}
+
+  details{border:1px solid var(--rule);background:var(--surface);padding:0;margin:0 0 10px}
+  summary{
+    cursor:pointer;padding:11px 16px;font-weight:600;font-size:13.5px;
+    list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--mono);color:var(--muted);font-size:15px}
+  details[open] summary::after{content:"–"}
+  details[open] summary{border-bottom:1px solid var(--rule)}
+  .det-body{padding:14px 16px}
+  .det-body > :last-child{margin-bottom:0}
+
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:16px}
+
+  footer{margin-top:64px;padding-top:18px;border-top:2px solid var(--ink);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.03em}
+
+  @media (max-width:720px){
+    .verdict{grid-template-columns:1fr;gap:16px}
+    .wrap{padding:0 18px 64px}
+    h2{font-size:24px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Engineering Audit · Read-only · No code changed</p>
+  <h1>Lead Agent Readiness Audit</h1>
+  <p class="standfirst">An end-to-end trace of the ICP&nbsp;→&nbsp;discovery&nbsp;→&nbsp;evidence&nbsp;→&nbsp;validation&nbsp;→&nbsp;qualification&nbsp;→&nbsp;ranking pipeline, measured against how Clay, Apollo and ZoomInfo actually do company discovery.</p>
+  <div class="meta-row">
+    <span><b>Scope</b> 155 backend modules · 88 test files · frontend · docs</span>
+    <span><b>Tests</b> 1555 passed / 0 failed (5m32s)</span>
+    <span><b>Date</b> 2 Sep 2026</span>
+  </div>
+</header>
+
+<!-- ============ VERDICT ============ -->
+<section id="verdict" style="margin-top:0">
+  <div class="verdict">
+    <div>
+      <div class="score">72<span>/100</span></div>
+      <div class="score-label">Engine built · Not wired</div>
+    </div>
+    <div>
+      <p><strong>You have roughly 72% of a real lead agent — but it is currently returning ~0% of its value, because every paid provider credential in <code>backend/.env</code> is commented out.</strong></p>
+      <p>The reasoning machinery here is genuinely better than average: a deterministic hard-rule engine that an LLM structurally cannot override, an evidence-provenance model with real conflict handling, and a compound-ICP corroboration path that survives Explorium's OR-only search semantics. That is the hard part, and it is done.</p>
+      <p>What is missing is not intelligence — it is <em>plumbing and inputs</em>. As committed, discovery runs on two hardcoded fake companies and qualification runs on a mock that answers <code>GOOD_FIT</code> every time.</p>
+    </div>
+  </div>
+
+  <div class="bar" role="img" aria-label="Readiness split: 46% working, 26% built but unwired, 28% missing">
+    <i style="width:46%;background:var(--ok)"></i>
+    <i style="width:26%;background:var(--warn)"></i>
+    <i style="width:28%;background:var(--crit)"></i>
+  </div>
+  <div class="bar-key">
+    <span><i style="background:var(--ok)"></i>46% working &amp; verified</span>
+    <span><i style="background:var(--warn)"></i>26% built but unwired / disabled</span>
+    <span><i style="background:var(--crit)"></i>28% genuinely missing</span>
+  </div>
+
+  <h4>How to read the evidence tags</h4>
+  <p style="font-size:14px"><span class="tag t-v">Verified</span> traced to specific code, tests, or config in this repo. <span class="tag t-i">Inferred</span> a reasoned consequence of verified code, not directly observed at runtime. <span class="tag t-u">Unknown</span> could not be determined without spending live provider credits.</p>
+  <p style="font-size:14px;color:var(--muted)">No live discovery was run and no code was modified. Runtime behaviour against real Explorium/Gemini responses is <span class="tag t-u">Unknown</span> throughout — credentials are disabled and prior phase logs record exhausted credits.</p>
+</section>
+
+<!-- ============ TOP 10 ============ -->
+<section id="top10">
+  <h2><span class="num">01</span> Top 10 problems by impact</h2>
+  <p class="lede">Ranked by how many genuinely good companies each one costs you, not by how hard it is to fix.</p>
+
+  <div class="find crit">
+    <div class="find-head"><span class="rank">01</span><span class="ttl">Every real provider is switched off in the committed environment</span><span class="sev s-crit">Critical</span></div>
+    <p><code>EXPLORIUM_API_KEY</code>, <code>OPENAI_API_KEY</code> and <code>GEMINI_API_KEY</code> are all commented out; <code>UNIPILE_DSN</code> and <code>UNIPILE_ACCOUNT_ID</code> are empty; <code>HERMES_API_TOKEN</code> is blank. Registration is credential-gated, so the system silently falls back to <code>MockCompanyDataProvider</code> — “Example Test Co” and “Sample Widgets Inc” — and to a mock LLM that returns <code>GOOD_FIT</code> unconditionally.</p>
+    <p>This is the single reason a run today produces nothing useful. It is also why the fallback design is dangerous: there is no loud failure, just quietly fake output that looks like a working pipeline.</p>
+    <span class="where">backend/.env:26,35,57,63 · providers/default_registry.py:95,118,130 · services/llm_providers/default_registry.py:64–70 · providers/mocks.py:76–77 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find crit">
+    <div class="find-head"><span class="rank">02</span><span class="ttl">Any ICP with a custom rule can never reach PASS</span><span class="sev s-crit">Critical</span></div>
+    <p><code>validate_against_icp</code> builds its Candidate with <code>custom_rule_results={}</code> hardcoded, and nothing anywhere in the codebase ever populates that dict. The rule engine turns each unresolved custom rule into <code>HOLD</code>, and because <em>any</em> HOLD forces an overall HOLD, a single custom rule caps the entire batch at HOLD forever.</p>
+    <p>The <code>&#123;&#125;</code> is annotated as intentional (“no evidence-backed way to establish these yet”) — but the ICP builder still lets users add custom rules, so the UI offers a field that silently destroys the run.</p>
+    <span class="where">services/hard_icp_validation.py:878 · services/hard_rule_engine.py:288–299,376–381 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find crit">
+    <div class="find-head"><span class="rank">03</span><span class="ttl">Setting <code>allowed_titles</code> holds every company at the company stage</span><span class="sev s-crit">Critical</span></div>
+    <p>Company-stage validation is called with <code>person_id=None</code>, so <code>candidate.title</code> is <code>None</code> and the <code>allowed_titles</code> rule returns <code>HOLD / TITLE_UNKNOWN</code> — which forces overall HOLD before any person has been looked for. A title requirement is a normal thing to put in an ICP, and it poisons company qualification.</p>
+    <p>The order compounds it: person discovery runs <em>after</em> this gate, and a HOLD company still consumes enrichment and people-discovery calls without ever being able to reach ACCEPTED at that point.</p>
+    <span class="where">services/batch_orchestration.py:841 · services/hard_rule_engine.py:232–238,341–348 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find crit">
+    <div class="find-head"><span class="rank">04</span><span class="ttl"><code>company_type</code> is a hard rule that evidence can almost never satisfy</span><span class="sev s-crit">Critical</span></div>
+    <p>All discovery evidence is written at <code>ConfidenceLevel.UNKNOWN</code>. An UNKNOWN record only becomes usable through the <code>SUPPORTED_STRUCTURED</code> allowlist, which covers exactly three fields — <code>industry</code>, <code>country</code>, <code>employee_range</code> — from exactly one provider. <code>company_type</code> is excluded by design, yet it is both a critical field and a hard rule.</p>
+    <p>So an ICP saying “D2C brands” HOLDs on <code>COMPANY_TYPE_UNKNOWN</code> unless two independent providers happen to agree — and in a single-provider deployment, two providers never agree. This is the same class of failure that <code>employee_range</code> already hit and had to be explicitly fixed in Phase 11.</p>
+    <span class="where">services/evidence_engine.py:108,138,176–189 · services/evidence_import.py:195–444 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find warn">
+    <div class="find-head"><span class="rank">05</span><span class="ttl">Compound ICPs are searched as OR, then repaired downstream</span><span class="sev s-high">High</span></div>
+    <p>Explorium ANDs filters within one request, so the code deliberately splits “Healthcare” and “SaaS” into separate branches and merges the results — union, not intersection. The provider's own test asserts this on the wire: <code>"SaaS" not in json.dumps(structured_filters)</code>.</p>
+    <p>The intersection is then reconstructed after the fact by cross-branch corroboration in validation. That reconstruction is genuinely clever and it works — but it means credits are spent on a diluted pool where most candidates match only one side, and recall depends on a company happening to surface in the right branches.</p>
+    <span class="where">providers/explorium.py:1160–1234 · tests/test_explorium_provider.py:788 · services/hard_icp_validation.py:470+ <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find warn">
+    <div class="find-head"><span class="rank">06</span><span class="ttl">Title matching is exact-string only</span><span class="sev s-high">High</span></div>
+    <p>Titles are compared with <code>clean_text(v).lower() == candidate</code> — whitespace and case normalisation, nothing more. “VP Marketing” hard-FAILs a person titled “Vice President, Marketing”. There is no synonym table, no seniority ladder, no substring fallback.</p>
+    <p>The asymmetry is telling: <em>industry</em> got an entire bridging apparatus to soften exact matching, and exclusions use bidirectional substring matching via <code>_text_matches</code>. Titles got neither. Worse, attaching a person whose title cannot be matched actively <em>downgrades</em> a company that would have passed as company-only.</p>
+    <span class="where">services/hard_rule_engine.py:51–56,232–249 · services/batch_orchestration.py:901–907 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find warn">
+    <div class="find-head"><span class="rank">07</span><span class="ttl">No revenue, business-model, tech-stack, intent or exclusion filter reaches discovery</span><span class="sev s-high">High</span></div>
+    <p>Only five filter keys are ever constructed: <code>country_code</code>, <code>company_size</code>, <code>linkedin_category</code>, <code>naics_category</code>, <code>website_keywords</code>. The filter catalog exposes <code>revenue</code>, <code>technology</code>, <code>funding</code> and <code>hiring</code> to the user, but those have no backing field and are projected into soft preferences — recorded, never sent anywhere.</p>
+    <p>Exclusions are the sharpest instance: <code>hard.exclusions</code> is never included in <code>build_company_discovery_query</code>, so Explorium is never told what to leave out. You pay to retrieve companies you have already declared unwanted, then filter them locally.</p>
+    <span class="where">providers/explorium.py:622–626,1160–1234 · services/company_discovery.py:29–43 · services/filter_projection.py:463–467 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find warn">
+    <div class="find-head"><span class="rank">08</span><span class="ttl">Half the quality score measures data-richness, not ICP fit</span><span class="sev s-high">High</span></div>
+    <p>In the normal batch path, ICP-fit signals carry ~0.50 of the company-quality score and provenance/completeness signals carry the other ~0.50: <code>discovery_provenance</code> 0.20 (keyword-found scores 45 vs structured 90), <code>evidence_strength</code> 0.20, <code>evidence_completeness</code> 0.10 — the last being literally <code>100 × min(rows,10)/10</code>, a row count.</p>
+    <p>Inside that, <code>corroboration_score</code> requires ≥2 distinct providers per field, so in a single-provider deployment it is structurally <strong>0.0 for every company</strong>. <code>company_quality_score</code> is tie-break key #2 in ranking, so a perfectly-matched, keyword-discovered company sorts below a weaker structured one whenever final scores tie. It cannot change tier — but it buries within tier, which matters if anything consumes a top-N slice.</p>
+    <span class="where">services/company_quality.py:67–227,263–272 · services/lead_scoring.py:190–194 · services/lead_ranking.py:70,165–172 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find warn">
+    <div class="find-head"><span class="rank">09</span><span class="ttl">The “AI Prompt” tab contains no AI</span><span class="sev s-med">Medium</span></div>
+    <p><code>nlExtraction.ts</code> says it outright in its own header: “Client-side heuristic NL → filter extraction. <strong>Not an LLM.</strong>” It is roughly 40 regexes that recognise seven industries (<code>d2c, direct-to-consumer, fmcg, healthcare, ott, microdrama, saas</code>) and 14 geographies. Everything else degrades to an unmatched string or a generic <code>contains</code> filter, and every output is hardcoded <code>confidence: "low"</code>.</p>
+    <p>Meanwhile the <em>real</em> LLM interpretation happens invisibly server-side afterwards and additively expands the user's hard rules. So the ICP a user reviewed and approved is not the ICP that gets searched, and the expansion is never surfaced.</p>
+    <span class="where">frontend/src/lib/filters/nlExtraction.ts:1–2,116–124,432–457 · services/batch_orchestration.py:196–226,261–262 <span class="tag t-v">Verified</span></span>
+  </div>
+
+  <div class="find warn">
+    <div class="find-head"><span class="rank">10</span><span class="ttl">No spend guard, no retry, and partial branch failures discard paid results</span><span class="sev s-med">Medium</span></div>
+    <p><code>ProviderResponse.cost</code> exists but no real provider ever populates it. There is no budget check or spend counter anywhere; credit exhaustion is detected reactively by substring-matching <code>"credit"</code> in a 403 body. With un-divided per-branch page sizes, one batch can request up to ~500 records/round × 5 rounds.</p>
+    <p>There is also no retry or backoff — a 429 is handled identically to a 500 — and if branch 3 of 5 fails, <code>execute</code> returns immediately and throws away records branches 1–2 already paid for.</p>
+    <span class="where">providers/explorium.py:944–954,1299–1303 · providers/contracts.py:117 · core/config.py:90 <span class="tag t-v">Verified</span> · volume estimate <span class="tag t-i">Inferred</span></span>
+  </div>
+</section>
+
+<!-- ============ THE BIG QUESTION ============ -->
+<section id="why-manual">
+  <h2><span class="num">02</span> Why a human finds 20 good companies and the system returns 50–100 useless ones</h2>
+  <p class="lede">This is the question that matters, so here is the honest split. It is not one component. It is a chain where each stage is individually defensible and the composition is lossy — and the largest single term is simply that the providers are off.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Problem class</th><th class="num">Share</th><th>What actually happens</th><th class="num">Evidence</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Data / provider</strong></td><td class="num gap-c">~40%</td><td>All real providers disabled → 2 mock companies. Even when enabled, one company database with 5 filter keys, no revenue/intent/tech-stack, no waterfall to a second source.</td><td class="num"><span class="tag t-v">Verified</span></td></tr>
+        <tr><td><strong>Validation</strong></td><td class="num gap-c">~25%</td><td>Structural HOLD traps: custom rules always HOLD, <code>allowed_titles</code> HOLDs at company stage, <code>company_type</code> has no eligible evidence path. Each alone can zero out a run.</td><td class="num"><span class="tag t-v">Verified</span></td></tr>
+        <tr><td><strong>Discovery coverage</strong></td><td class="num gap-h">~20%</td><td>Compound ICP searched as OR, so the pool is diluted by design; unmatched terms fall to <code>website_keywords</code> substring matching the module's own docstring measured at <strong>0/10 precision</strong> for “Healthcare”.</td><td class="num"><span class="tag t-v">Verified</span></td></tr>
+        <tr><td><strong>Normalization</strong></td><td class="num gap-m">~8%</td><td>Free-text ICP is parsed by ~40 regexes knowing 7 industries. Anything outside that vocabulary silently becomes a low-confidence <code>contains</code> filter or is dropped.</td><td class="num"><span class="tag t-v">Verified</span></td></tr>
+        <tr><td><strong>Ranking</strong></td><td class="num gap-m">~5%</td><td>Buries good-fit companies <em>within</em> a tier via provenance and row-count penalties; cannot reject them. Real, but the smallest term.</td><td class="num"><span class="tag t-v">Verified</span></td></tr>
+        <tr><td><strong>Qualification</strong></td><td class="num gap-n">~2%</td><td>Least to blame. The gate is correctly enforced and the prompt explicitly targets the “is vs merely mentions” failure. Its problem is that it currently runs on a mock.</td><td class="num"><span class="tag t-v">Verified</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="call">
+    <p><strong>The structural difference from a human researcher.</strong> A human searching “Healthcare SaaS” evaluates the <em>intersection</em> directly: they read a company's homepage and decide whether it is software sold to healthcare providers. This system cannot ask its provider for that intersection at all — Explorium ANDs filters within a request, so asking for both in one call would return near-nothing, and the codebase correctly splits into OR branches instead.</p>
+    <p>Everything downstream is then compensation for a question that was never askable. The bridging, cross-branch corroboration and free-text logic in <code>hard_icp_validation.py</code> are genuinely good engineering — but they are reconstructing an intersection from a union, which is strictly lossier than asking for it, and it costs credits to retrieve the companies that get discarded.</p>
+  </div>
+</section>
+
+<!-- ============ FAILURE TRACE ============ -->
+<section id="trace">
+  <h2><span class="num">03</span> Where ten good companies die</h2>
+  <p class="lede">Ten realistic candidates for a <code>Healthcare&nbsp;+&nbsp;SaaS, US, 50–500 employees</code> ICP, traced through the real code path. Categories: <strong>A</strong> never discovered · <strong>B</strong> evidence insufficient · <strong>C</strong> wrongly rejected/HOLD · <strong>D</strong> correctly rejected · <strong>E</strong> ranked too low · <strong>F</strong> person-discovery failure · <strong>G</strong> display issue.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Candidate profile</th><th>Dies at</th><th class="num">Cat</th><th>Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td>Clinical-workflow SaaS, 120 staff, strong fit</td><td>Discovery</td><td class="num gap-c">A</td><td>Explorium disabled → never retrieved at all. With it on: resolves only via the Healthcare branch, then depends on cross-branch corroboration firing.</td></tr>
+        <tr><td>Patient-engagement platform, 80 staff</td><td>Validation</td><td class="num gap-c">C</td><td>ICP includes <code>company_type: SaaS</code> → <code>COMPANY_TYPE_UNKNOWN</code> → HOLD. No evidence path exists to resolve it.</td></tr>
+        <tr><td>EHR integration vendor, 300 staff</td><td>Validation</td><td class="num gap-c">C</td><td>ICP includes a custom rule (“must sell to providers, not payers”) → permanent <code>CUSTOM_RULE_UNRESOLVED</code> HOLD.</td></tr>
+        <tr><td>Telehealth software, 60 staff</td><td>Validation</td><td class="num gap-c">C</td><td>ICP sets <code>allowed_titles</code> → company-stage validation runs with <code>person_id=None</code> → <code>TITLE_UNKNOWN</code> HOLD before people are ever searched.</td></tr>
+        <tr><td>Medical-billing SaaS, employee count absent</td><td>Evidence</td><td class="num gap-h">B</td><td>No <code>employee_count</code> and no parseable <code>employee_range</code> bucket → <code>EMPLOYEE_COUNT_UNKNOWN</code> → HOLD.</td></tr>
+        <tr><td>Health-analytics SaaS found by keyword only</td><td>Ranking</td><td class="num gap-m">E</td><td>Passes, but takes −9 on provenance and −7 on row count; sorts below a weaker structured match on the tie-break key.</td></tr>
+        <tr><td>Hospital IT consultancy</td><td>Qualification</td><td class="num gap-n">D</td><td><strong>Correctly</strong> rejected — the prompt explicitly targets agencies/consultancies that merely mention the industry. Working as intended.</td></tr>
+        <tr><td>Strong fit, but ICP said “Nordics”</td><td>Validation</td><td class="num gap-h">C</td><td>Region names are deliberately absent from the alias table → <code>GEOGRAPHY_UNRESOLVED</code> → HOLD rather than a guess. Defensible, but it silently zeroes regional ICPs.</td></tr>
+        <tr><td>Qualified company, decision-maker is “Vice President, Product”</td><td>People</td><td class="num gap-h">F</td><td>ICP lists “VP Product” → exact-match FAIL. Attaching this person is worse than finding nobody.</td></tr>
+        <tr><td>Qualified company that ends in HOLD</td><td>Frontend</td><td class="num gap-m">G</td><td><code>FitBadge</code> collapses HOLD, REJECTED and DUPLICATE all into “Weak fit” — a recoverable HOLD looks identical to a hard rejection.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size:14px"><strong>The pattern:</strong> only one of ten dies for a good reason. Four die at validation from structural traps that have nothing to do with whether the company fits, and those four are the ones a human would have found first.</p>
+
+  <div class="trace">
+<span class="dim"># Actual code path for a genuinely good company, ICP = Healthcare + SaaS + allowed_titles</span>
+ICP form        <span class="dim">→</span> ~40 regexes, 7 known industries      <span class="hold">lossy</span>
+normalize       <span class="dim">→</span> deterministic, no loss                <span class="pass">ok</span>
+LLM expand      <span class="dim">→</span> combination_industry_terms added      <span class="pass">ok</span>  <span class="dim">(mock today)</span>
+discovery       <span class="dim">→</span> OR branches, union not intersection   <span class="hold">diluted</span>
+                <span class="dim">→</span> provider disabled                     <span class="die">DIES — cat A</span>
+<span class="dim">           ─ if Explorium were enabled ─</span>
+evidence        <span class="dim">→</span> UNKNOWN confidence, 3 trusted fields  <span class="hold">partial</span>
+validation      <span class="dim">→</span> industry  PASS via cross-branch        <span class="pass">ok</span>
+                <span class="dim">→</span> geography PASS                        <span class="pass">ok</span>
+                <span class="dim">→</span> employees PASS via bucket overlap     <span class="pass">ok</span>
+                <span class="dim">→</span> allowed_titles  person_id=None        <span class="die">HOLD — cat C</span>
+overall         <span class="dim">→</span> any HOLD forces overall HOLD          <span class="die">NEVER REACHES PASS</span>
+qualification   <span class="dim">→</span> gated out, LLM never called           <span class="dim">(correct behaviour)</span>
+outcome         <span class="dim">→</span> HELD, shown to user as "Weak fit"     <span class="die">cat G</span>
+  </div>
+</section>
+
+<!-- ============ COMPETITORS ============ -->
+<section id="competitors">
+  <h2><span class="num">04</span> How Clay, Apollo and ZoomInfo actually do this</h2>
+  <p class="lede">Only capabilities confirmed in current official documentation are stated below. Pricing, coverage claims and match rates are vendor marketing and are excluded.</p>
+
+  <div class="grid2">
+    <div class="find">
+      <div class="find-head"><span class="ttl">Apollo — filter semantics</span></div>
+      <p>Documents <strong>AND logic across filters, OR logic within a filter</strong>: adding a filter narrows, adding a value inside one broadens. 65+ filters spanning firmographics, technographics (1,500+ technologies), buying intent, job postings and funding. Organization Search exposes revenue range, funding amount/date, HQ location <em>and excluded locations</em>.</p>
+      <p><strong>This is precisely the semantic our Explorium layer cannot express</strong> — and the reason compound ICPs must be reconstructed downstream here.</p>
+    </div>
+    <div class="find">
+      <div class="find-head"><span class="ttl">Clay — waterfall + agentic research</span></div>
+      <p>Waterfall enrichment queries providers <strong>sequentially, cheapest first, stopping at the first valid result</strong> across 50+ databases — the explicit fallback architecture this codebase lacks. Claygent is an agentic web researcher that browses pages to answer questions “no database has a field for”, returning structured, cited output and ICP scores with rationale.</p>
+      <p>Notably, Clay's own guidance stresses <em>cited</em> output over “confident guesses” — the same anti-fabrication stance this codebase already enforces.</p>
+    </div>
+    <div class="find">
+      <div class="find-head"><span class="ttl">ZoomInfo — signals as first-class</span></div>
+      <p>Copilot builds buying groups from corporate websites, case studies and first-party CRM data. Account-level intent tracks topic-cluster research; documented signal types include job postings, funding rounds in the last 90 days, earnings-call and investor transcripts, partnerships and M&amp;A.</p>
+      <p>Intent/signal data has no equivalent anywhere in this codebase.</p>
+    </div>
+    <div class="find ok">
+      <div class="find-head"><span class="ttl">Where you are genuinely ahead</span></div>
+      <p>None of the three documents a <strong>deterministic hard-rule gate that an LLM structurally cannot override</strong>, nor a per-field evidence-provenance model with explicit CONFLICT status and a HOLD state that is never terminal. Apollo and ZoomInfo return scored lists; auditability of <em>why</em> a company qualified is your differentiator.</p>
+    </div>
+  </div>
+
+  <h3>Capability gap table</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Capability</th><th>Our system</th><th>Clay / Apollo / ZoomInfo</th><th>Gap</th><th class="num">Priority</th></tr></thead>
+      <tbody>
+        <tr><td>NL ICP interpretation</td><td>~40 client regexes, 7 industries; real LLM expansion hidden server-side</td><td>LLM-native prompts; Claygent agents</td><td>UI advertises AI it does not use</td><td class="num gap-h">HIGH</td></tr>
+        <tr><td>Filter semantics</td><td>OR-only across branches; intersection rebuilt downstream</td><td>AND across filters, OR within (Apollo, documented)</td><td>Cannot express the core ICP question</td><td class="num gap-c">CRITICAL</td></tr>
+        <tr><td>Firmographics</td><td>5 keys: country, size, 2 taxonomies, keywords</td><td>65+ incl. revenue, funding, job postings</td><td>No revenue, funding or exclusion filter</td><td class="num gap-h">HIGH</td></tr>
+        <tr><td>Multi-source sourcing</td><td>Explorium + Hermes, both disabled; no merge</td><td>50+ providers (Clay)</td><td>Effectively single-source</td><td class="num gap-c">CRITICAL</td></tr>
+        <tr><td>Waterfall / fallback</td><td>None — flat loop, one call each, no compensation</td><td>Sequential, cheapest-first, stop-on-hit (Clay)</td><td>Poor coverage → fewer leads, silently</td><td class="num gap-c">CRITICAL</td></tr>
+        <tr><td>AI web research</td><td>Hermes exists, disabled, permanently untrusted by design</td><td>Claygent browses live pages, cited output</td><td>No live web verification of fit</td><td class="num gap-h">HIGH</td></tr>
+        <tr><td>Intent / signals</td><td>None</td><td>Topic intent, funding, hiring, M&amp;A</td><td>Absent entirely</td><td class="num gap-m">MEDIUM</td></tr>
+        <tr><td>Company qualification</td><td>Deterministic gate + evidence-cited LLM</td><td>LLM scoring with rationale</td><td><strong>We are ahead</strong></td><td class="num gap-n">NOT NEEDED</td></tr>
+        <tr><td>Evidence / confidence</td><td>Per-field provenance, CONFLICT, non-terminal HOLD</td><td>Coverage-oriented, less auditable</td><td><strong>We are ahead</strong></td><td class="num gap-n">NOT NEEDED</td></tr>
+        <tr><td>Deduplication</td><td>Cross-branch union-merge + identity resolution</td><td>Table-level dedup</td><td>Comparable</td><td class="num gap-l">LOW</td></tr>
+        <tr><td>People discovery</td><td>Unipile (disabled); exact title match; first person only</td><td>Large contact DBs, seniority filters</td><td>No seniority model, brittle titles</td><td class="num gap-h">HIGH</td></tr>
+        <tr><td>Niche models (D2C)</td><td><code>company_type</code> hard rule with no eligible evidence</td><td>Keyword + technographic + AI research</td><td>Structurally unsatisfiable today</td><td class="num gap-c">CRITICAL</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--muted)">Sources: <a href="https://knowledge.apollo.io/hc/en-us/articles/26173216970381-Troubleshoot-Search-Filters">Apollo — Troubleshoot Search Filters</a> · <a href="https://docs.apollo.io/reference/organization-search">Apollo — Organization Search API</a> · <a href="https://knowledge.apollo.io/hc/en-us/articles/8047704465933-Buying-Intent-Overview">Apollo — Buying Intent</a> · <a href="https://university.clay.com/docs/building-a-data-waterfall">Clay — Data Waterfalls</a> · <a href="https://www.clay.com/claygent">Clay — Claygent</a> · <a href="https://www.zoominfo.com/copilot">ZoomInfo Copilot</a> · <a href="https://pipeline.zoominfo.com/sales/intent-data-platform">ZoomInfo — Intent Data</a></p>
+</section>
+
+<!-- ============ WORKING / KEEP ============ -->
+<section id="working">
+  <h2><span class="num">05</span> What is genuinely working — and must not be changed</h2>
+
+  <div class="call keep">
+    <p><strong>Do not weaken the hard-rule gate to raise PASS counts.</strong> <code>_gated_result</code> returns a structural result for FAIL/HOLD <em>before</em> <code>provider.qualify()</code> is ever reached, so an LLM cannot talk a failed candidate into GOOD_FIT. That guarantee is the backbone of the system. Every fix below removes a <em>spurious</em> HOLD by giving a rule real evidence — never by lowering the bar.</p>
+  </div>
+
+  <ul>
+    <li><strong>Deterministic rule engine</strong> — pure, no randomness, no LLM, no soft-preference leakage. <span class="tag t-v">Verified</span></li>
+    <li><strong>Evidence provenance model</strong> — per-field status with genuine CONFLICT handling and a documented trusted-provider allowlist rather than blanket trust. <span class="tag t-v">Verified</span></li>
+    <li><strong>Anti-hallucination on citations</strong> — a single fabricated evidence id fails the whole qualification with <code>INVALID_EVIDENCE_IDS</code> instead of being silently dropped. <span class="tag t-v">Verified</span></li>
+    <li><strong>The “is vs merely mentions” prompt</strong> — explicitly instructs the model to distinguish a company that <em>is</em> the target type from an agency or consultancy that merely serves or mentions it. This is the exact discrimination the audit asked about, and it is already there. <span class="tag t-v">Verified</span></li>
+    <li><strong>Compound-ICP repair chain</strong> — bridging, cross-branch corroboration and the free-text bridge each require full term coverage before widening, and each was root-caused from a real observed false positive. <span class="tag t-v">Verified</span></li>
+    <li><strong>Company-first ordering</strong> — Phase 30 moved people discovery after validation and quality, so person-discovery credits are not spent on companies that will hard-fail. <span class="tag t-v">Verified</span></li>
+    <li><strong>Mock/real isolation</strong> — when Explorium is configured, mock enrichment is dropped entirely, precisely because fake values were creating CONFLICT and permanent HOLDs. <span class="tag t-v">Verified</span></li>
+    <li><strong>Test discipline</strong> — 1555 tests pass; regression tests encode prior live findings rather than restating the implementation. <span class="tag t-v">Verified</span></li>
+  </ul>
+
+  <div class="call">
+    <p><strong>One correction to a claim you may have seen elsewhere.</strong> The gate is <em>not</em> missing from the batch path. There is no guard around <code>create_lead_qualification</code> in <code>batch_orchestration.py:911</code>, which looks alarming in isolation — but <code>qualify_lead</code> enforces the gate internally at <code>services/llm_qualification.py:169–256</code>, returning <code>HARD_REJECTED</code> / <code>HARD_HOLD</code> before any provider call. The documentation in <code>.env.example</code> is accurate. <span class="tag t-v">Verified</span></p>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE ============ -->
+<section id="architecture">
+  <h2><span class="num">06</span> Target architecture — evolution, not rewrite</h2>
+  <p class="lede">Every stage below already exists. Nothing here proposes replacing Explorium or Hermes: the evidence shows coverage is constrained by <em>how they are queried and whether they are switched on</em>, not by fundamental provider inadequacy.</p>
+
+  <div class="pipe">
+  <svg viewBox="0 0 980 400" role="img" aria-label="Ten-stage pipeline showing current state and required change at each stage">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <g font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" color="currentColor">
+      <!-- rows -->
+      <g>
+        <rect x="8" y="14" width="176" height="46" fill="var(--sunk)" stroke="var(--rule-strong)"/>
+        <text x="20" y="34" font-weight="600" fill="var(--ink)">1 · ICP input</text>
+        <text x="20" y="50" fill="var(--muted)">form + NL tab</text>
+        <rect x="200" y="14" width="330" height="46" fill="var(--ok-bg)" stroke="var(--rule)"/>
+        <text x="212" y="34" fill="var(--ok)">HAVE deterministic normalization</text>
+        <text x="212" y="50" fill="var(--muted)">pure, alias-mapped, no loss</text>
+        <rect x="546" y="14" width="426" height="46" fill="var(--crit-bg)" stroke="var(--rule)"/>
+        <text x="558" y="34" fill="var(--crit)">CHANGE replace 40 regexes with a real LLM parse</text>
+        <text x="558" y="50" fill="var(--muted)">surface the expansion for user confirmation</text>
+      </g>
+      <line x1="96" y1="60" x2="96" y2="76" stroke="var(--rule-strong)" marker-end="url(#ar)"/>
+      <g transform="translate(0,68)">
+        <rect x="8" y="14" width="176" height="46" fill="var(--sunk)" stroke="var(--rule-strong)"/>
+        <text x="20" y="34" font-weight="600" fill="var(--ink)">2 · Discovery plan</text>
+        <text x="20" y="50" fill="var(--muted)">term expansion</text>
+        <rect x="200" y="14" width="330" height="46" fill="var(--ok-bg)" stroke="var(--rule)"/>
+        <text x="212" y="34" fill="var(--ok)">HAVE combination_industry_terms</text>
+        <text x="212" y="50" fill="var(--muted)">compound phrasing, capped, additive</text>
+        <rect x="546" y="14" width="426" height="46" fill="var(--warn-bg)" stroke="var(--rule)"/>
+        <text x="558" y="34" fill="var(--warn)">CHANGE emit exclusions + revenue as real filters</text>
+        <text x="558" y="50" fill="var(--muted)">stop dropping them into soft preferences</text>
+      </g>
+      <line x1="96" y1="128" x2="96" y2="144" stroke="var(--rule-strong)" marker-end="url(#ar)"/>
+      <g transform="translate(0,136)">
+        <rect x="8" y="14" width="176" height="46" fill="var(--sunk)" stroke="var(--rule-strong)"/>
+        <text x="20" y="34" font-weight="600" fill="var(--ink)">3 · Multi-source</text>
+        <text x="20" y="50" fill="var(--muted)">Explorium + Hermes</text>
+        <rect x="200" y="14" width="330" height="46" fill="var(--warn-bg)" stroke="var(--rule)"/>
+        <text x="212" y="34" fill="var(--warn)">HAVE both adapters, both disabled</text>
+        <text x="212" y="50" fill="var(--muted)">flat loop, no compensation</text>
+        <rect x="546" y="14" width="426" height="46" fill="var(--crit-bg)" stroke="var(--rule)"/>
+        <text x="558" y="34" fill="var(--crit)">CHANGE enable keys + add shortfall waterfall</text>
+        <text x="558" y="50" fill="var(--muted)">if source A is thin, escalate to B</text>
+      </g>
+      <line x1="96" y1="196" x2="96" y2="212" stroke="var(--rule-strong)" marker-end="url(#ar)"/>
+      <g transform="translate(0,204)">
+        <rect x="8" y="14" width="176" height="46" fill="var(--sunk)" stroke="var(--rule-strong)"/>
+        <text x="20" y="34" font-weight="600" fill="var(--ink)">4 · Dedup + evidence</text>
+        <text x="20" y="50" fill="var(--muted)">resolution, provenance</text>
+        <rect x="200" y="14" width="330" height="46" fill="var(--ok-bg)" stroke="var(--rule)"/>
+        <text x="212" y="34" fill="var(--ok)">HAVE union-merge, CONFLICT status</text>
+        <text x="212" y="50" fill="var(--muted)">strongest part of the system</text>
+        <rect x="546" y="14" width="426" height="46" fill="var(--warn-bg)" stroke="var(--rule)"/>
+        <text x="558" y="34" fill="var(--warn)">CHANGE add an evidence path for company_type</text>
+        <text x="558" y="50" fill="var(--muted)">the field a hard rule needs but can never get</text>
+      </g>
+      <line x1="96" y1="264" x2="96" y2="280" stroke="var(--rule-strong)" marker-end="url(#ar)"/>
+      <g transform="translate(0,272)">
+        <rect x="8" y="14" width="176" height="46" fill="var(--sunk)" stroke="var(--rule-strong)"/>
+        <text x="20" y="34" font-weight="600" fill="var(--ink)">5 · ICP verification</text>
+        <text x="20" y="50" fill="var(--muted)">rules + LLM</text>
+        <rect x="200" y="14" width="330" height="46" fill="var(--ok-bg)" stroke="var(--rule)"/>
+        <text x="212" y="34" fill="var(--ok)">HAVE gate LLM cannot override</text>
+        <text x="212" y="50" fill="var(--muted)">keep exactly as is</text>
+        <rect x="546" y="14" width="426" height="46" fill="var(--crit-bg)" stroke="var(--rule)"/>
+        <text x="558" y="34" fill="var(--crit)">CHANGE remove 3 structural HOLD traps</text>
+        <text x="558" y="50" fill="var(--muted)">custom rules · titles at company stage · type</text>
+      </g>
+      <line x1="96" y1="332" x2="96" y2="348" stroke="var(--rule-strong)" marker-end="url(#ar)"/>
+      <g transform="translate(0,340)">
+        <rect x="8" y="14" width="176" height="46" fill="var(--sunk)" stroke="var(--rule-strong)"/>
+        <text x="20" y="34" font-weight="600" fill="var(--ink)">6 · Score → people</text>
+        <text x="20" y="50" fill="var(--muted)">rank, then contacts</text>
+        <rect x="200" y="14" width="330" height="46" fill="var(--ok-bg)" stroke="var(--rule)"/>
+        <text x="212" y="34" fill="var(--ok)">HAVE company-first ordering</text>
+        <text x="212" y="50" fill="var(--muted)">deterministic total order</text>
+        <rect x="546" y="14" width="426" height="46" fill="var(--warn-bg)" stroke="var(--rule)"/>
+        <text x="558" y="34" fill="var(--warn)">CHANGE fit over data-richness; seniority-aware titles</text>
+        <text x="558" y="50" fill="var(--muted)">drop corroboration when single-source</text>
+      </g>
+    </g>
+  </svg>
+  </div>
+
+  <p style="font-size:14px">The shape is right. Stage 4 is genuinely strong. The interventions are concentrated at the two ends — <strong>getting real data in</strong> (stages 1–3) and <strong>letting good companies out</strong> (stage 5) — which is why this is a wiring and rule-evidence problem rather than an architectural one.</p>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section id="roadmap">
+  <h2><span class="num">07</span> Prioritised roadmap</h2>
+
+  <details open>
+    <summary><span>P0 · Turn the system on and unblock PASS</span><span class="sev s-crit" style="margin-left:auto">days</span></summary>
+    <div class="det-body">
+      <h4>Problem</h4>
+      <p>No real provider runs, and three structural traps prevent PASS even when they do. Today these compound: you cannot measure discovery quality because nothing reaches the stage that would reveal it.</p>
+      <h4>Why it matters</h4>
+      <p>This is the difference between 0 useful companies and a measurable baseline. Every other item on this list is unverifiable until this is done.</p>
+      <h4>Files</h4>
+      <p><code>backend/.env</code> · <code>services/hard_icp_validation.py:878</code> (custom rules) · <code>services/batch_orchestration.py:841</code> (title stage) · <code>services/evidence_engine.py:138</code> (<code>company_type</code> eligibility)</p>
+      <h4>Expected improvement</h4>
+      <p>From ~0 qualifying companies to a real PASS rate. <span class="tag t-i">Inferred</span> — the exact rate cannot be predicted without a live run.</p>
+      <h4>Risk</h4>
+      <p><strong>Meaningful.</strong> Widening <code>company_type</code> eligibility relaxes an evidence rule; scope it to the one provider and field, exactly as <code>employee_range</code> was handled in Phase 11. For titles, evaluate person-scoped rules only when a person exists — do <em>not</em> delete the rule. Rotate the credentials committed to <code>.env</code> before enabling them.</p>
+      <h4>How to test</h4>
+      <p>Run the existing suite (1555 baseline) — the anti-fabrication and HOLD-preservation tests are the guardrail. Add cases asserting a title-bearing ICP can PASS at company stage while a <em>mismatched</em> title still FAILs. Then one small live batch with a strict credit cap.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span>P1 · Spend guard before any volume testing</span><span class="sev s-crit" style="margin-left:auto">days</span></summary>
+    <div class="det-body">
+      <h4>Problem</h4>
+      <p>No cost accounting anywhere; a prior run already exhausted a real credit balance across 6 rounds before <code>max_discovery_rounds_per_batch</code> was introduced. Credit exhaustion is detected by substring-matching a 403 body.</p>
+      <h4>Why it matters</h4>
+      <p>P0 turns the taps on. Without this, the first realistic batch can burn the budget that funds the rest of the work.</p>
+      <h4>Files</h4>
+      <p><code>providers/contracts.py:117</code> (<code>cost</code> is defined but never populated) · <code>providers/explorium.py:944</code> · <code>core/config.py:90</code></p>
+      <h4>Expected improvement</h4>
+      <p>Bounded, observable spend per batch. <span class="tag t-v">Verified</span> that the field already exists to carry it.</p>
+      <h4>Risk</h4>
+      <p>Low — additive telemetry plus a pre-flight ceiling; no decision logic changes.</p>
+      <h4>How to test</h4>
+      <p>Assert records-requested is bounded per batch under a mocked provider; assert the run halts at the ceiling rather than after the money is gone.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span>P2 · Make titles survive real-world phrasing</span><span class="sev s-high" style="margin-left:auto">1–2 weeks</span></summary>
+    <div class="det-body">
+      <h4>Problem</h4>
+      <p>Exact-string title matching, and attaching an unmatched person actively downgrades a company that would otherwise pass.</p>
+      <h4>Why it matters</h4>
+      <p>Directly determines whether the people layer produces the contacts a manual researcher would find. Also the difference between “no lead” and “a lead with the wrong person attached”.</p>
+      <h4>Files</h4>
+      <p><code>services/hard_rule_engine.py:232–249</code> · <code>services/batch_orchestration.py:885,901–907</code> · <code>providers/unipile.py:188–197</code></p>
+      <h4>Expected improvement</h4>
+      <p>Substantially higher person-attach rate on already-qualified companies. <span class="tag t-i">Inferred</span></p>
+      <h4>Risk</h4>
+      <p>Moderate — title normalisation can over-match ("VP Marketing" vs "VP Marketing Operations"). Model it on the industry bridge: additive widening with recorded provenance, never fuzzy matching inside the rule engine itself.</p>
+      <h4>How to test</h4>
+      <p>A fixture table of real title variants with expected PASS/FAIL. Assert seniority selection beats <code>confirmed[0]</code> ordering.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span>P3 · Separate ICP fit from data-richness in scoring</span><span class="sev s-high" style="margin-left:auto">1 week</span></summary>
+    <div class="det-body">
+      <h4>Problem</h4>
+      <p>~50% of company quality is provenance and row count, and <code>corroboration_score</code> is structurally 0.0 in a single-provider deployment — a constant penalty applied to every company.</p>
+      <h4>Why it matters</h4>
+      <p>Determines whether the top of the list is actually the best-fitting companies. Users judge the product by the first ten rows.</p>
+      <h4>Files</h4>
+      <p><code>services/company_quality.py:67–227</code> · <code>services/lead_scoring.py:190–194</code> · <code>services/lead_ranking.py:165–172</code></p>
+      <h4>Expected improvement</h4>
+      <p>Better ordering within tier; no change to tier assignment, so no precision risk.</p>
+      <h4>Risk</h4>
+      <p>Low — ranking-only. Tier assignment never reads these values, so a scoring change cannot turn a HOLD into an ACCEPT.</p>
+      <h4>How to test</h4>
+      <p>The adversarial case that is currently untested: equal <code>final_score</code>, equal true fit, differing only in provenance and row count — assert the keyword-discovered company is not buried.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span>P4 · Real NL parsing + surfaced expansion</span><span class="sev s-high" style="margin-left:auto">2 weeks</span></summary>
+    <div class="det-body">
+      <h4>Problem</h4>
+      <p>The “AI Prompt” tab is regexes recognising seven industries, while a real LLM silently expands the user's hard rules server-side afterwards.</p>
+      <h4>Why it matters</h4>
+      <p>Any ICP outside the seven known industries is degraded before discovery begins — and users cannot see or correct the expansion that is actually searched.</p>
+      <h4>Files</h4>
+      <p><code>frontend/src/lib/filters/nlExtraction.ts</code> · <code>services/batch_orchestration.py:196–226</code> · <code>schemas/batch.py:165</code> (the strategy is already persisted and exposed read-only — the data is there to display)</p>
+      <h4>Expected improvement</h4>
+      <p>Correct interpretation of arbitrary ICP language, and user-visible confirmation of what will be searched.</p>
+      <h4>Risk</h4>
+      <p>Moderate — an LLM parse must remain <em>additive</em> and must never silently widen a hard rule. The existing <code>merge_strategy_into_hard_rules</code> discipline (additive-only, user terms first) is the right model to preserve.</p>
+      <h4>How to test</h4>
+      <p>A corpus of real ICP prompts with expected structured output; assert no user-typed term is ever removed or reordered away.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span>P5 · Shortfall waterfall between sources</span><span class="sev s-med" style="margin-left:auto">2–3 weeks</span></summary>
+    <div class="det-body">
+      <h4>Problem</h4>
+      <p>Discovery is a flat loop: each provider is called once with the same limit, and a provider returning nothing triggers no compensation. Hermes only submits on resume and is orphaned on any transient status-check error.</p>
+      <h4>Why it matters</h4>
+      <p>This is Clay's core documented advantage. It is also the honest answer to “what happens when one provider has poor coverage” — today, fewer leads and no signal.</p>
+      <h4>Files</h4>
+      <p><code>services/company_discovery.py:119–168</code> · <code>services/provider_routing.py</code> (reorders but never escalates) · <code>services/batch_orchestration.py:671–678</code> (job orphaning)</p>
+      <h4>Expected improvement</h4>
+      <p>Higher recall on ICPs where the primary source is thin, without inflating volume on ICPs where it is not.</p>
+      <h4>Risk</h4>
+      <p>Moderate — a waterfall multiplies cost if unbounded. Requires P1 to land first.</p>
+      <h4>How to test</h4>
+      <p>Simulate a zero-result primary and assert the secondary is consulted, sized to the shortfall; assert a transient status error retries rather than clearing the job id.</p>
+    </div>
+  </details>
+
+  <div class="call">
+    <p><strong>Sequencing note.</strong> P0 and P1 are inseparable — turning on providers without a spend guard is how the previous credit balance was lost. Everything from P2 down should be measured against a live baseline established by P0, not implemented speculatively.</p>
+  </div>
+</section>
+
+<!-- ============ NEXT ACTION ============ -->
+<section id="next">
+  <h2><span class="num">08</span> Exact next action</h2>
+  <div class="find crit">
+    <div class="find-head"><span class="ttl">One batch, one ICP, credentials rotated, spend capped</span></div>
+    <p><strong>1.</strong> Rotate the three API keys currently sitting in <code>backend/.env</code> — they are committed in plaintext and should be treated as exposed regardless of what fixes follow.</p>
+    <p><strong>2.</strong> Enable <code>EXPLORIUM_API_KEY</code> and one LLM key with <code>max_discovery_rounds_per_batch=1</code> and a small <code>limit</code>.</p>
+    <p><strong>3.</strong> Run <em>one</em> batch against a deliberately simple ICP — a single industry, one country, an employee range, <strong>no <code>company_type</code>, no <code>allowed_titles</code>, no custom rules</strong> — because those three are the known traps and including them guarantees an all-HOLD result that tells you nothing.</p>
+    <p><strong>4.</strong> Record the PASS / HOLD / FAIL split and the reason codes. That distribution is the only real measurement of discovery quality this system has ever had, and it decides whether P2–P5 are correctly prioritised.</p>
+    <p style="color:var(--muted);font-size:13.5px">Until that run exists, every quality number in this audit — including the 72% — is reasoning from code, not from observed behaviour.</p>
+  </div>
+</section>
+
+<footer>
+  Read-only audit · No files modified · 1555/1555 backend tests passing · Competitor claims sourced from current official documentation only
+</footer>
+
+</div>

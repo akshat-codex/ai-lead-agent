@@ -1,0 +1,92 @@
+[
+  {
+    "icp_name": "D2C Skincare AI-OFF baseline (Phase19)",
+    "live": true,
+    "hard_rules": {
+      "industry": [
+        "D2C skincare"
+      ],
+      "geography": [],
+      "min_employees": 1,
+      "max_employees": 10000
+    },
+    "target_count": 8,
+    "discovered_count": 0,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": "EXPLORIUM_CREDITS_EXHAUSTED",
+    "discovery_error_message": "Explorium account is out of credits for this request.",
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 0,
+      "FAIL": 0,
+      "null": 0
+    },
+    "outcome_counts": {},
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 0,
+      "REJECT": 0
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "people_discovery_reached_count": 0,
+    "eligible_for_people_discovery_count": 0,
+    "total_items": 0,
+    "top5_ranked": [],
+    "raw_items": [],
+    "raw_quality_rows": []
+  },
+  {
+    "icp_name": "Cosmetics (explicit resolvable term) AI-OFF (Phase19)",
+    "live": true,
+    "hard_rules": {
+      "industry": [
+        "Cosmetics"
+      ],
+      "geography": [],
+      "min_employees": 1,
+      "max_employees": 10000
+    },
+    "target_count": 8,
+    "discovered_count": 0,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": "EXPLORIUM_CREDITS_EXHAUSTED",
+    "discovery_error_message": "Explorium account is out of credits for this request.",
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 0,
+      "FAIL": 0,
+      "null": 0
+    },
+    "outcome_counts": {},
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 0,
+      "REJECT": 0
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "people_discovery_reached_count": 0,
+    "eligible_for_people_discovery_count": 0,
+    "total_items": 0,
+    "top5_ranked": [],
+    "raw_items": [],
+    "raw_quality_rows": []
+  }
+]

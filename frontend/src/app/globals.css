@@ -1,0 +1,33 @@
+/* Color/typography are owned entirely by the MUI theme (src/theme.ts) +
+   CssBaseline — this file only sets layout-level resets that MUI doesn't
+   already handle, so there is exactly one source of truth for palette. */
+
+html {
+  height: 100%;
+  color-scheme: light;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

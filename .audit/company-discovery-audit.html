@@ -1,0 +1,865 @@
+<title>Company Discovery Audit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --paper: #f5f4ef;
+  --paper-raised: #fdfcf9;
+  --ink: #171b22;
+  --ink-soft: #4b5160;
+  --ink-faint: #7c8293;
+  --line: #dcdad0;
+  --line-strong: #c3c0b2;
+  --accent: #3d5a80;
+  --accent-soft: #e4ebf3;
+  --accent-ink: #1f3350;
+  --pass: #2f7d5c;
+  --pass-soft: #e2f0e9;
+  --fail: #b8442f;
+  --fail-soft: #f7e7e2;
+  --hold: #a8752a;
+  --hold-soft: #f5ecd9;
+  --unclear: #6b6f7d;
+  --unclear-soft: #e9e8ec;
+  --code-bg: #12151b;
+  --code-ink: #d8dce6;
+  --shadow: 0 1px 2px rgba(23,27,34,0.06), 0 8px 24px -12px rgba(23,27,34,0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14171d;
+    --paper-raised: #1a1e26;
+    --ink: #e7e6e0;
+    --ink-soft: #b4b7c2;
+    --ink-faint: #7d8291;
+    --line: #2c313c;
+    --line-strong: #3a404d;
+    --accent: #7fa3d1;
+    --accent-soft: #202a38;
+    --accent-ink: #bcd4ef;
+    --pass: #5fbf93;
+    --pass-soft: #17281f;
+    --fail: #e08268;
+    --fail-soft: #2b1c17;
+    --hold: #dcae5c;
+    --hold-soft: #2c2415;
+    --unclear: #9a9ea9;
+    --unclear-soft: #23262d;
+    --code-bg: #0c0e12;
+    --code-ink: #cdd2de;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14171d;
+  --paper-raised: #1a1e26;
+  --ink: #e7e6e0;
+  --ink-soft: #b4b7c2;
+  --ink-faint: #7d8291;
+  --line: #2c313c;
+  --line-strong: #3a404d;
+  --accent: #7fa3d1;
+  --accent-soft: #202a38;
+  --accent-ink: #bcd4ef;
+  --pass: #5fbf93;
+  --pass-soft: #17281f;
+  --fail: #e08268;
+  --fail-soft: #2b1c17;
+  --hold: #dcae5c;
+  --hold-soft: #2c2415;
+  --unclear: #9a9ea9;
+  --unclear-soft: #23262d;
+  --code-bg: #0c0e12;
+  --code-ink: #cdd2de;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+::selection { background: var(--accent-soft); color: var(--accent-ink); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px 120px; }
+
+/* ---------- Masthead ---------- */
+.masthead {
+  border-bottom: 1px solid var(--line);
+  padding: 40px 28px 28px;
+  margin-bottom: 0;
+}
+.masthead-inner { max-width: 1180px; margin: 0 auto; }
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+h1.title {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: clamp(32px, 4.2vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  margin: 0 0 12px;
+}
+.subtitle {
+  color: var(--ink-soft);
+  font-size: 16.5px;
+  max-width: 62ch;
+  margin: 0 0 22px;
+}
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.meta-pill {
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 4px 9px;
+  color: var(--ink-soft);
+  background: var(--paper-raised);
+}
+.meta-pill b { color: var(--ink); font-weight: 600; }
+
+/* ---------- Nav ---------- */
+.tocbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.tocbar-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 10px 28px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tocbar-inner::-webkit-scrollbar { display: none; }
+.tocbar a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  white-space: nowrap;
+  color: var(--ink-faint);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+.tocbar a:hover, .tocbar a:focus-visible { background: var(--accent-soft); color: var(--accent-ink); outline: none; }
+
+/* ---------- Sections ---------- */
+section { padding: 52px 0 8px; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.sec-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--ink-faint);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+h2 {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 27px;
+  letter-spacing: -0.005em;
+  margin: 0;
+  text-wrap: balance;
+}
+h3 {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 19px;
+  margin: 32px 0 12px;
+}
+p { max-width: 74ch; color: var(--ink); margin: 0 0 14px; }
+p.lede { font-size: 16.5px; color: var(--ink-soft); max-width: 72ch; }
+ul, ol { max-width: 74ch; padding-left: 22px; margin: 0 0 16px; }
+li { margin-bottom: 6px; }
+strong { font-weight: 600; }
+a.inline { color: var(--accent-ink); text-decoration-color: var(--line-strong); }
+
+code, .mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.87em;
+}
+p code, li code, td code {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border-radius: 8px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.8px;
+  line-height: 1.65;
+  margin: 14px 0 20px;
+  box-shadow: var(--shadow);
+}
+pre .cite {
+  display: block;
+  color: #7d8291;
+  font-size: 11px;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- badges ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+  line-height: 1.6;
+}
+.tag-pass { background: var(--pass-soft); color: var(--pass); }
+.tag-fail { background: var(--fail-soft); color: var(--fail); }
+.tag-hold { background: var(--hold-soft); color: var(--hold); }
+.tag-unclear { background: var(--unclear-soft); color: var(--unclear); }
+
+/* ---------- callout ---------- */
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 18px 0 22px;
+  max-width: 74ch;
+}
+.callout p { margin: 0; color: var(--accent-ink); }
+.callout.warn { border-left-color: var(--fail); background: var(--fail-soft); }
+.callout.warn p { color: var(--fail); }
+.callout.warn strong { color: var(--fail); }
+.callout p:first-child.label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+
+/* ---------- pipeline ---------- */
+.pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 22px 0 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.pipeline .step {
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.pipeline .step b { display: block; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12.5px; margin-bottom: 2px; }
+.pipeline .arrow { color: var(--ink-faint); padding: 0 8px; font-size: 14px; }
+.pipeline.vertical { flex-direction: column; align-items: stretch; }
+.pipeline.vertical .arrow { padding: 2px 0 2px 18px; }
+.pipeline.vertical .step { width: 100%; }
+
+/* ---------- table ---------- */
+.tablewrap { overflow-x: auto; margin: 8px 0 26px; border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); }
+table { border-collapse: collapse; width: 100%; min-width: 760px; background: var(--paper-raised); font-size: 13.3px; }
+th {
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  background: var(--accent-soft);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-strong);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  color: var(--ink-soft);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: color-mix(in srgb, var(--accent-soft) 40%, transparent); }
+td.strong-cell { color: var(--ink); font-weight: 500; }
+td code { white-space: normal; }
+
+/* ---------- score grid ---------- */
+.scoregrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  margin: 20px 0 10px;
+}
+.scorecard {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+}
+.scorecard .label { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 8px; }
+.scorecard .val { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 26px; color: var(--ink); display: flex; align-items: baseline; gap: 3px; }
+.scorecard .val span.max { font-family: 'Inter', sans-serif; font-size: 14px; color: var(--ink-faint); font-weight: 500; }
+.scorecard .bar { height: 5px; border-radius: 3px; background: var(--line); margin-top: 10px; overflow: hidden; }
+.scorecard .bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+
+/* ---------- finding cards ---------- */
+.finding {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper-raised);
+  padding: 18px 20px;
+  margin: 0 0 16px;
+  box-shadow: var(--shadow);
+}
+.finding .fhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.finding h4 { font-family: 'Source Serif 4', serif; font-size: 16.5px; font-weight: 600; margin: 0; max-width: 58ch; }
+.finding .sev {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.sev-high { background: var(--fail-soft); color: var(--fail); }
+.sev-med { background: var(--hold-soft); color: var(--hold); }
+.sev-low { background: var(--unclear-soft); color: var(--unclear); }
+.finding .loc { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--accent); margin-bottom: 8px; }
+.finding p { margin-bottom: 8px; font-size: 14px; }
+.finding p:last-child { margin-bottom: 0; }
+
+/* ---------- numbered list ---------- */
+.ranked { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranked li {
+  display: flex;
+  gap: 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+}
+.ranked .n {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--accent);
+  flex-shrink: 0;
+  width: 28px;
+}
+.ranked .body h4 { margin: 0 0 6px; font-family: 'Source Serif 4', serif; font-size: 16px; font-weight: 600; }
+.ranked .body p { margin: 0; font-size: 13.8px; }
+
+/* ---------- verdict box ---------- */
+.verdict {
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--hold);
+  border-radius: 0 10px 10px 0;
+  padding: 22px 26px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+.verdict .q { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 17px; margin-bottom: 10px; color: var(--ink); }
+.verdict p { margin-bottom: 10px; }
+.verdict p:last-child { margin-bottom: 0; }
+
+footer {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 28px 60px;
+  color: var(--ink-faint);
+  font-size: 12.5px;
+  font-family: 'JetBrains Mono', monospace;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+  .masthead, .wrap, .tocbar-inner, footer { padding-left: 18px; padding-right: 18px; }
+  h1.title { font-size: 28px; }
+}
+</style>
+
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="eyebrow"><span class="dot"></span>DISCOVERY AUDIT · READ-ONLY · NO CODE CHANGES · NO LIVE PROVIDER CALLS</div>
+    <h1 class="title">Company Discovery, Traced End to End</h1>
+    <p class="subtitle">A baseline audit of Step 1 — Find/Discover Companies — in the Lead Agent pipeline: from ICP submission through Explorium taxonomy resolution, evidence capture, and hard-rule qualification, before any redesign work begins.</p>
+    <div class="meta-row">
+      <span class="meta-pill">Prepared for <b>ksrivastava@gravityer.com</b></span>
+      <span class="meta-pill"><b>2026-09-01</b></span>
+      <span class="meta-pill">Scope: <b>Company discovery only</b></span>
+      <span class="meta-pill">Method: <b>Static code trace, no live calls</b></span>
+    </div>
+  </div>
+</div>
+
+<nav class="tocbar"><div class="tocbar-inner">
+  <a href="#flow">A. Flow</a>
+  <a href="#map">B. File map</a>
+  <a href="#icp-table">C. ICP wiring</a>
+  <a href="#providers">Providers</a>
+  <a href="#explorium">Explorium</a>
+  <a href="#industry">Industry</a>
+  <a href="#employee">Employee size</a>
+  <a href="#evidence">Evidence</a>
+  <a href="#hardrules">Hard rules</a>
+  <a href="#pool">Candidate pool</a>
+  <a href="#falsepos">False positives</a>
+  <a href="#silentloss">Field loss</a>
+  <a href="#working">Working</a>
+  <a href="#broken">Broken / weak</a>
+  <a href="#tests">Test coverage</a>
+  <a href="#scores">Scores</a>
+  <a href="#top5">Top 5</a>
+  <a href="#next">Next</a>
+</div></nav>
+
+<div class="wrap">
+
+<section id="flow">
+  <div class="sec-head"><span class="sec-num">A</span><h2>Current end-to-end flow</h2></div>
+  <p class="lede">Two frontend discovery pipelines exist in the codebase side by side. Only one is actually wired into a page — the other is orphaned code that no route imports.</p>
+
+  <div class="callout warn">
+    <p class="label">Load-bearing finding</p>
+    <p><strong>DiscoveryRunTrigger.tsx / useCompanyDiscoveryPipeline.ts is dead code.</strong> Grep across the entire frontend confirms it's referenced only in a code comment inside <code>BatchDiscoveryTrigger.tsx</code> — no page imports or renders it. It was superseded by <code>useBatchDiscovery</code>, whose own docstring states the old hook "never ran hard ICP validation or evidence import and left every lead stuck at HOLD." All tracing below follows the live path.</p>
+  </div>
+
+  <h3>Live call chain</h3>
+  <div class="pipeline vertical">
+    <div class="step"><b>1 · Frontend page</b>frontend/src/app/leads/[icpId]/companies/page.tsx:15,28 — renders BatchDiscoveryTrigger, calls useBatchDiscovery(icpId)</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>2 · Hook</b>useBatchDiscovery.ts:113-152 start() → createBatch(icpId, target)</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>3 · API</b>POST /api/v1/batches → app/api/batch.py:50-51 creates BatchModel(discovery_limit=…)</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>4 · Orchestration</b>app/services/batch_orchestration.py — _seed_items_from_discovery:122-157 → _run_one_discovery_round:180-308</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>5 · Discovery query</b>app/services/company_discovery.py::run_company_discovery:55-164, build_company_discovery_query:29-42</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>6 · Provider</b>app/providers/base.py::ProviderAdapter.run:63-101 → app/providers/explorium.py::execute:621-810</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>7 · Candidates persisted</b>batch_orchestration.py:270-308 → DiscoveryCandidateModel + BatchItemModel(stage=DISCOVERED)</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>8 · Resolution → enrichment → evidence</b>company_resolution.py::resolve_candidate → evidence_import.py::collect_company_evidence</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>9 · Hard-rule qualification</b>hard_icp_validation.py::validate_against_icp → hard_rule_engine.py::evaluate_hard_rules:321-390</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>10 · Scoring, LLM qualification, dedup</b>lead_scoring.py, llm_qualification.py, lead_deduplication.py</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>11 · Ranking → frontend</b>lead_ranking.py::rank_leads → GET ranking → CompanyRankingList.tsx (all tiers, not PASS-only)</div>
+  </div>
+
+  <h3>Dead path, for reference only</h3>
+  <div class="pipeline">
+    <div class="step">DiscoveryRunTrigger.tsx:36</div><div class="arrow">→</div>
+    <div class="step">useCompanyDiscoveryPipeline.ts:65</div><div class="arrow">→</div>
+    <div class="step">POST /api/v1/discovery/runs</div><div class="arrow">→</div>
+    <div class="step">discovery.py::start_discovery_run:53-123</div><div class="arrow">→</div>
+    <div class="step" style="border-color:var(--fail);color:var(--fail)">scoring called with no evidence import → stuck at HOLD</div>
+  </div>
+</section>
+
+<section id="map">
+  <div class="sec-head"><span class="sec-num">B</span><h2>Exact file / function map</h2></div>
+  <div class="tablewrap"><table>
+    <tr><th>Stage</th><th>File</th><th>Function / class</th><th>Calls next</th></tr>
+    <tr><td class="strong-cell">Frontend trigger</td><td><code>frontend/src/app/leads/[icpId]/companies/page.tsx</code></td><td>CompaniesPage:15,28</td><td>useBatchDiscovery.start</td></tr>
+    <tr><td class="strong-cell">Discovery hook</td><td><code>frontend/src/lib/companies/useBatchDiscovery.ts</code></td><td>start():113-152</td><td>createBatch()</td></tr>
+    <tr><td class="strong-cell">Batch API</td><td><code>app/api/batch.py</code></td><td>create_batch:50-51</td><td>batch_orchestration seeding</td></tr>
+    <tr><td class="strong-cell">Orchestration</td><td><code>app/services/batch_orchestration.py</code></td><td>_seed_items_from_discovery:122-157, _run_one_discovery_round:180-308</td><td>run_company_discovery</td></tr>
+    <tr><td class="strong-cell">Query builder</td><td><code>app/services/company_discovery.py</code></td><td>build_company_discovery_query:29-42</td><td>ProviderAdapter.run</td></tr>
+    <tr><td class="strong-cell">Discovery orchestration</td><td><code>app/services/company_discovery.py</code></td><td>run_company_discovery:55-164</td><td>registry.find_by_capability(COMPANY_DISCOVERY)</td></tr>
+    <tr><td class="strong-cell">Provider base</td><td><code>app/providers/base.py</code></td><td>ProviderAdapter.run:63-101</td><td>self.execute()</td></tr>
+    <tr><td class="strong-cell">Explorium adapter</td><td><code>app/providers/explorium.py</code></td><td>ExploriumCompanyDiscoveryProvider.execute:621-810</td><td>ProviderResponse → CandidateCompany</td></tr>
+    <tr><td class="strong-cell">Company resolution</td><td><code>app/services/company_resolution.py</code></td><td>resolve_candidate:52-</td><td>enrich_company</td></tr>
+    <tr><td class="strong-cell">Evidence import</td><td><code>app/services/evidence_import.py</code></td><td>collect_company_evidence:41-227</td><td>EvidenceRecord persistence</td></tr>
+    <tr><td class="strong-cell">Evidence status</td><td><code>app/services/evidence_engine.py</code></td><td>compute_field_status:150-167</td><td>hard_icp_validation</td></tr>
+    <tr><td class="strong-cell">ICP validation</td><td><code>app/services/hard_icp_validation.py</code></td><td>validate_against_icp:63-152</td><td>hard_rule_engine.evaluate_hard_rules</td></tr>
+    <tr><td class="strong-cell">Hard rules</td><td><code>app/services/hard_rule_engine.py</code></td><td>evaluate_hard_rules:321-390</td><td>PASS / FAIL / HOLD result</td></tr>
+    <tr><td class="strong-cell">Ranking</td><td><code>app/services/lead_ranking.py</code></td><td>rank_leads</td><td>GET /ranking response</td></tr>
+    <tr><td class="strong-cell">Frontend render</td><td><code>frontend/src/components/companies/CompanyRankingList.tsx</code></td><td>—</td><td>—</td></tr>
+  </table></div>
+</section>
+
+<section id="icp-table">
+  <div class="sec-head"><span class="sec-num">C</span><h2>ICP field wiring table</h2></div>
+  <p>Canonical shape: <code>app/schemas/canonical_icp.py:51-70</code>. Normalization: <code>icp_normalization.py::normalize_icp:197-247</code>. Query construction: <code>company_discovery.py::build_company_discovery_query:29-42</code> — reads <strong>only</strong> <code>icp.hard_rules</code>; never touches <code>icp.soft_preferences</code>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>ICP field</th><th>Normalized?</th><th>Reaches query</th><th>Reaches provider</th><th>Role</th><th>If unsupported</th></tr>
+    <tr><td class="strong-cell">industry</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td>Filter → keyword fallback</td><td>Falls to substring keyword search, never dropped</td></tr>
+    <tr><td class="strong-cell">geography (recognized)</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td>Filter (country_code)</td><td>—</td></tr>
+    <tr><td class="strong-cell">geography (unrecognized, e.g. "EMEA")</td><td><span class="tag tag-hold">partial</span></td><td><span class="tag tag-pass">yes, as unrecognized</span></td><td><span class="tag tag-fail">no</span></td><td>Carried but unused</td><td><code>explorium.py</code> never reads <code>geography_unrecognized</code> — silently unused at discovery time</td></tr>
+    <tr><td class="strong-cell">employee range (min/max)</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td>Filter (bucket overlap)</td><td>If min&gt;max, no filter sent at all</td></tr>
+    <tr><td class="strong-cell">company_type</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-pass">yes</span></td><td>Keyword search only — no structured taxonomy</td><td>Always folded into keyword OR-list</td></tr>
+    <tr><td class="strong-cell">allowed_titles</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Person-level rule, out of scope by design</td><td>N/A — architecturally excluded</td></tr>
+    <tr><td class="strong-cell">exclusions</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Hard-rule-only, post-discovery</td><td>Evaluated later via literal substring/equality match</td></tr>
+    <tr><td class="strong-cell">custom_rules</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Hard-rule-only</td><td>Always HOLDs — no evidence source exists yet</td></tr>
+    <tr><td class="strong-cell">business_model_preferences (soft)</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Scoring-only, post-discovery</td><td>Never shapes discovery</td></tr>
+    <tr><td class="strong-cell">commercial_signals (soft)</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Scoring-only</td><td>Never shapes discovery</td></tr>
+    <tr><td class="strong-cell">growth_signals (soft)</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Scoring-only (<code>lead_scoring.py:92</code>, <code>qualification_context.py:38</code>)</td><td>Wired to scoring, but has <strong>no key in filter_catalog.py</strong> — unreachable from the filter-builder UI, settable only via direct ICP payload</td></tr>
+    <tr><td class="strong-cell">marketing_signals (soft)</td><td><span class="tag tag-pass">yes</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Scoring-only</td><td>Never shapes discovery</td></tr>
+    <tr><td class="strong-cell">funding / hiring / technology / revenue / website</td><td><span class="tag tag-hold">n/a</span></td><td><span class="tag tag-fail">no</span></td><td><span class="tag tag-fail">no</span></td><td>Catalog-visible only</td><td>Folded into free-text <code>other_preferences</code>, never a structured signal at any stage</td></tr>
+    <tr><td class="strong-cell">buying intent</td><td>—</td><td>—</td><td>—</td><td>—</td><td><strong>Field does not exist anywhere in this codebase</strong></td></tr>
+  </table></div>
+</section>
+
+<section id="providers">
+  <div class="sec-head"><span class="sec-num">3</span><h2>Discovery provider architecture</h2></div>
+  <p>Interface: <code>app/providers/base.py::ProviderAdapter</code> (abstract, <code>execute()</code> required). Capability enum: <code>app/providers/contracts.py::ProviderCapability</code>. Registration: <code>app/providers/default_registry.py::build_default_registry:82-138</code>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Provider</th><th>File</th><th>Capabilities declared</th><th>Active for company discovery?</th><th>Costs credits</th><th>Live-tested here</th></tr>
+    <tr><td class="strong-cell">Explorium</td><td><code>providers/explorium.py:279-292</code></td><td>COMPANY_DISCOVERY only</td><td><span class="tag tag-pass">yes — primary</span>, gated on <code>EXPLORIUM_API_KEY</code></td><td>Yes</td><td><span class="tag tag-unclear">not run</span></td></tr>
+    <tr><td class="strong-cell">Mock company provider</td><td><code>providers/mocks.py:55-62</code></td><td>COMPANY_DISCOVERY, COMPANY_ENRICHMENT</td><td><span class="tag tag-hold">fallback only</span> — capability stripped once Explorium is registered</td><td>No</td><td>Yes, in unit tests</td></tr>
+    <tr><td class="strong-cell">Apollo</td><td><code>providers/apollo.py:65-76</code></td><td>PERSON_ENRICHMENT only</td><td><span class="tag tag-fail">not involved</span></td><td>N/A here</td><td>N/A here</td></tr>
+    <tr><td class="strong-cell">Unipile</td><td><code>providers/unipile.py:83-95</code></td><td>PEOPLE_DISCOVERY, COMPANY_ENRICHMENT — no COMPANY_DISCOVERY</td><td><span class="tag tag-fail">not involved</span></td><td>N/A here</td><td>N/A here</td></tr>
+  </table></div>
+  <p>Registration logic explicitly <strong>replaces</strong>, not merges, the mock provider's discovery capability once Explorium is configured (<code>default_registry.py:110-113</code>) — so mock and real discovery data are never mixed in one run.</p>
+</section>
+
+<section id="explorium">
+  <div class="sec-head"><span class="sec-num">4</span><h2>Explorium flow, in order</h2></div>
+  <div class="pipeline vertical">
+    <div class="step"><b>Base filters</b>_build_base_filters:316-341 — country_code + company_size only, never industry</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>Industry branch planning</b>_plan_industry_branches:421-462 — per term, tries linkedin_category → naics_category → keyword</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>company_type merge</b>:683-700 — always appended to the keyword branch, no structured taxonomy exists for it</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>Branch construction</b>:666-711 — up to 3 separate POST /v2/businesses calls (structured / naics / keyword) — Explorium ANDs filters within one request, so branches can't be combined</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>Per-branch execution</b>_run_one_branch:478-619 — cursor-based pagination, 401/403/4xx/5xx error mapping</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>Record mapping</b>:564-592 — _BUSINESS_ATTRIBUTE_MAP, skips nameless records</div>
+    <div class="arrow">↓</div>
+    <div class="step"><b>Cross-branch merge / dedup</b>:759-796 — dedup by business_id</div>
+  </div>
+
+  <h3>Confirmed precedence order</h3>
+  <pre><span class="cite">explorium.py:435-446</span>for term in industries:
+    linkedin_match = self._lookup_linkedin_category(term)
+    if linkedin_match is not None:
+        ...
+        continue
+    naics_match = self._lookup_naics_category(term)
+    if naics_match is not None:
+        ...
+        continue
+    keyword_terms.append(term)</pre>
+  <p><strong>linkedin_category → naics_category → website_keywords</strong>, confirmed by both the branching logic above and the module docstring at <code>explorium.py:125-127</code>.</p>
+</section>
+
+<section id="industry">
+  <div class="sec-head"><span class="sec-num">5</span><h2>Industry taxonomy matching — the critical question</h2></div>
+  <p class="lede">Can the system return companies that merely <em>mention</em> an ICP industry rather than <em>belong</em> to it? <strong>Yes, at the third tier — and the code says so itself.</strong></p>
+
+  <h3>Tier 1 &amp; 2 — exact match only</h3>
+  <pre><span class="cite">explorium.py:386, _lookup_category</span>if isinstance(label, str) and isinstance(value, str) and clean_text(label).casefold() == cleaned:
+    matched = value
+    break</pre>
+  <p>Full-string, case/whitespace-normalized equality against the autocomplete label — never a "closest suggestion." No fuzzy or semantic broadening exists here. Confirmed by a dedicated test, <code>test_naics_never_fuzzy_matches_a_near_miss_label</code>.</p>
+
+  <h3>Tier 3 — keyword fallback, self-documented as low precision</h3>
+  <pre><span class="cite">explorium.py:38-51, module docstring</span>website_keywords alone is low-precision: it matches any word appearing
+anywhere on a company's website, so a recruiting agency whose site merely
+mentions "Healthcare" surfaces as readily as a real healthcare company
+(confirmed live: a website_keywords=[Healthcare] sample returned 0/10
+genuinely healthcare companies).</pre>
+  <pre><span class="cite">explorium.py:699</span>keyword["website_keywords"] = {"values": all_keyword_terms, "operator": "or"}</pre>
+  <div class="callout warn">
+    <p class="label">Confirmed, not inferred</p>
+    <p>The engineering team that wrote this adapter already live-tested the failure mode and left the result in the docstring: a healthcare keyword search returned <strong>0 of 10</strong> genuinely healthcare companies. This is a known, accepted precision gap for any industry term that misses both structured taxonomies.</p>
+  </div>
+
+  <h3>Downstream mitigation — but not elimination</h3>
+  <p>The hard-rule industry check (<code>hard_rule_engine.py::_evaluate_choice_field:222-250</code>) uses strict exact-string equality, not substring matching — so a keyword-discovered company whose evidence <code>industry</code> field doesn't exactly match an allowed term will FAIL or HOLD downstream. This limits — but does not prevent — wasted discovery slots and candidate-pool pollution from the keyword tier, since the company still consumed a discovery slot and a full evidence/qualification pass.</p>
+</section>
+
+<section id="employee">
+  <div class="sec-head"><span class="sec-num">6</span><h2>Employee size, end to end</h2></div>
+  <div class="pipeline">
+    <div class="step">ICP min/max</div><div class="arrow">→</div>
+    <div class="step">EmployeeRange, no transform</div><div class="arrow">→</div>
+    <div class="step">query.min/max_employees</div><div class="arrow">→</div>
+    <div class="step">_build_employee_size_filter:220-276</div><div class="arrow">→</div>
+    <div class="step">Explorium company_size buckets</div><div class="arrow">→</div>
+    <div class="step">employee_range string</div><div class="arrow">→</div>
+    <div class="step">evidence (count vs range, separate)</div><div class="arrow">→</div>
+    <div class="step">hard-rule overlap re-check</div>
+  </div>
+  <pre><span class="cite">explorium.py:270-275 — overlap semantics, not containment</span>selected = [
+    label
+    for label, bucket_lo, bucket_hi in buckets
+    if (bucket_hi is None or bucket_hi >= lo) and (hi is None or bucket_lo <= hi)
+]</pre>
+  <ul>
+    <li><strong>Discovery-time, provider-side filter</strong> — <code>company_size</code> is sent as an Explorium API filter, not applied client-side after the fact.</li>
+    <li><strong>Overlap, not containment</strong> — deliberate design (documented at <code>explorium.py:70-83</code>) fixing a prior bug where a non-bucket-aligned range like 15–150 produced no filter at all and silently admitted IBM/Meta/Deloitte (10001+ employees).</li>
+    <li><strong>Consequence</strong>: a real 180-employee company can be admitted against a 15–150 ICP request, because 180 falls in the overlapping 51–200 bucket. This is explicitly acknowledged in code as intentional — "never silently drop the constraint entirely."</li>
+    <li><strong>Malformed range (min&gt;max)</strong> sends no filter at all — unconstrained discovery for that request.</li>
+    <li><strong><code>employee_count</code> and <code>employee_range</code> are kept fully distinct</strong> at every layer (<code>schemas/candidate.py:24-29</code>). Explorium supplies only the string range — this adapter has no mapping that produces a precise integer count.</li>
+    <li>Hard-rule stage prefers exact count when present, else re-applies the <strong>same overlap test</strong> used at discovery — for "consistency," per the code comment. Missing both → HOLD (<code>EMPLOYEE_COUNT_UNKNOWN</code>).</li>
+  </ul>
+  <p><strong>Is employee size a discovery filter, a qualification rule, or both?</strong> Both — and both stages independently apply overlap logic, so they can agree or disagree depending on what evidence is actually available for a given candidate.</p>
+</section>
+
+<section id="evidence">
+  <div class="sec-head"><span class="sec-num">7</span><h2>Evidence pipeline</h2></div>
+  <div class="pipeline">
+    <div class="step">Provider response</div><div class="arrow">→</div>
+    <div class="step">_BUSINESS_ATTRIBUTE_MAP:200-213</div><div class="arrow">→</div>
+    <div class="step">collect_company_evidence:41-227</div><div class="arrow">→</div>
+    <div class="step">EvidenceRecord (append-only)</div><div class="arrow">→</div>
+    <div class="step">compute_field_status:150-167</div><div class="arrow">→</div>
+    <div class="step">hard_icp_validation input</div>
+  </div>
+  <p>Confidence for every discovery-derived record is always <code>ConfidenceLevel.UNKNOWN</code> — never invented. Status derivation:</p>
+  <pre><span class="cite">evidence_engine.py:154-167</span>if len(distinct_values) > 1: return CONFLICT
+if len(records) >= 2: return SUPPORTED
+if records[0].confidence in (MEDIUM, HIGH): return SUPPORTED
+if field in TRUSTED_STRUCTURED_FIELDS and provider in TRUSTED_STRUCTURED_PROVIDERS:
+    return SUPPORTED_STRUCTURED
+return INSUFFICIENT</pre>
+  <p>Only <code>industry</code> and <code>country</code> are in <code>_TRUSTED_STRUCTURED_FIELDS</code>, and only <code>explorium-company-discovery-v1</code> is a trusted structured provider (<code>evidence_engine.py:108,116</code>). A single Explorium sighting of industry or country can therefore gate a hard rule on its own — but a single sighting of <code>employee_range</code>, <code>company_type</code>, or <code>domain</code> cannot, unless corroborated by a second source.</p>
+  <div class="callout warn">
+    <p class="label">Coverage gap, not data loss</p>
+    <p><code>company_type</code> and <code>business_model</code> are both declared critical evidence fields (<code>evidence_engine.py:66-85</code>), but Explorium supplies neither — <code>_BUSINESS_ATTRIBUTE_MAP</code> has no mapping for either. They stay <code>UNKNOWN</code> from discovery evidence alone, and the corresponding hard rules default to HOLD, pending a separate classification pipeline (<code>business_model_classifier.py</code>, out of this audit's scope).</p>
+  </div>
+</section>
+
+<section id="hardrules">
+  <div class="sec-head"><span class="sec-num">8</span><h2>Hard-rule qualification</h2></div>
+  <pre><span class="cite">hard_rule_engine.py:361-369</span>failed = tuple(r for r in rule_results if r.status == RuleStatus.FAIL)
+unresolved = tuple(r for r in rule_results if r.status == RuleStatus.HOLD)
+if failed: overall = FAIL
+elif unresolved: overall = HOLD
+else: overall = PASS</pre>
+  <p>FAIL always outranks HOLD; PASS requires zero FAILs <em>and</em> zero HOLDs. Missing-data behavior is uniform and conservative — unknown employee/geography/industry/title/company_type all resolve to HOLD, never a guessed PASS. A hard-rule field is only ever populated on a candidate when its evidence status is <code>SUPPORTED</code> or <code>SUPPORTED_STRUCTURED</code> (<code>hard_icp_validation.py:42,45-60</code>); anything else leaves the field <code>None</code>, which the engine then treats as missing.</p>
+  <p><strong>Are discovery filters and hard rules separate stages?</strong> Yes, and this is architecturally enforced — <code>company_discovery.py</code>'s own module docstring states it "knows nothing about qualification" and never imports the hard-rule engine (confirmed: no such import exists in either <code>company_discovery.py</code> or <code>explorium.py</code>). They can still disagree in outcome by design: discovery's bucket-overlap employee filter can admit a company whose exact count later fails the hard rule's stricter numeric check. The code frames this explicitly — the discovery filter's "only job is to keep discovery from returning wildly oversized/undersized companies... not to be the final authority on fit."</p>
+</section>
+
+<section id="pool">
+  <div class="sec-head"><span class="sec-num">9</span><h2>Candidate pool assembly</h2></div>
+  <ul>
+    <li><strong>Requested count</strong> — <code>batch.discovery_limit</code> (default 20, range 1–100), passed through to Explorium's adapter which further caps <code>page_size</code> at 100.</li>
+    <li><strong>Pagination</strong> — cursor-based, per-provider, per-branch; auto-continuation capped client-side at <strong>20 rounds</strong>, counting only ACCEPTED outcomes toward target, never padding with HELD/REJECTED items.</li>
+    <li><strong>Dedup keys</strong> — within one Explorium call: <code>business_id</code> across branches. Within one provider response: <code>external_id</code>. Across rounds: <code>(provider_id, external_id)</code>, checked before creating new batch items.</li>
+    <li><strong>FAIL / HOLD / REJECTED / DUPLICATE candidates all reach the frontend</strong> — <code>lead_ranking.py</code> returns every tier, not PASS-only, and <code>CompanyRankingList</code> renders them all. This is intentional, per the ranking module's own docstring.</li>
+    <li><strong>Could provider limits hide good companies?</strong> Plausibly — page size is split across up to 3 active branches per round, and a non-retryable Explorium error (auth/credits) halts all further rounds immediately. The orchestration layer explicitly documents this as accepted behavior: <em>"under-delivery is expected, never forced."</em></li>
+  </ul>
+</section>
+
+<section id="falsepos">
+  <div class="sec-head"><span class="sec-num">10</span><h2>False-positive analysis</h2></div>
+  <div class="tablewrap"><table>
+    <tr><th>Category</th><th>Finding</th></tr>
+    <tr><td class="strong-cell"><span class="tag tag-fail">A. Confirmed code problem</span></td><td>None found that is purely a bug — the keyword fallback's imprecision is a known, documented tradeoff, not an oversight.</td></tr>
+    <tr><td class="strong-cell"><span class="tag tag-hold">B. Provider limitation</span></td><td>Explorium's <code>website_keywords</code> filter matches on any word appearing anywhere on a site (vendor behavior, not adapter behavior) — self-documented 0/10 precision in a live test cited in the code.</td></tr>
+    <tr><td class="strong-cell"><span class="tag tag-hold">C. Architectural limitation</span></td><td>No semantic/fuzzy industry matching exists at any tier — the system is exact-match-or-substring-search, with nothing in between. Unrecognized geography terms are accepted into the ICP schema but silently unused at discovery time.</td></tr>
+    <tr><td class="strong-cell"><span class="tag tag-unclear">D. Needs live verification</span></td><td>Real-world false-positive rate for industries that only partially overlap linkedin_category/naics taxonomy labels. Actual frequency of bucket-overlap admissions in production ICP ranges. <strong>NOT LIVE VERIFIED</strong> in this audit, per scope constraints.</td></tr>
+  </table></div>
+</section>
+
+<section id="silentloss">
+  <div class="sec-head"><span class="sec-num">11</span><h2>Silent field-loss audit</h2></div>
+  <div class="tablewrap"><table>
+    <tr><th>Field</th><th>Status</th><th>Where lost / limited</th></tr>
+    <tr><td class="strong-cell">industry</td><td><span class="tag tag-pass">🟢 fully wired</span></td><td>—</td></tr>
+    <tr><td class="strong-cell">geography (recognized)</td><td><span class="tag tag-pass">🟢 fully wired</span></td><td>—</td></tr>
+    <tr><td class="strong-cell">geography (unrecognized)</td><td><span class="tag tag-hold">🟡 partially wired</span></td><td>Reaches query object, never reaches provider filter (<code>explorium.py</code> never reads it)</td></tr>
+    <tr><td class="strong-cell">employee range</td><td><span class="tag tag-pass">🟢 fully wired</span></td><td>Overlap semantics accepted as intentional tradeoff</td></tr>
+    <tr><td class="strong-cell">company_type</td><td><span class="tag tag-hold">🟡 partially wired</span></td><td>Discovery: keyword-only. Evidence: no Explorium source exists — perpetually HOLD from discovery alone</td></tr>
+    <tr><td class="strong-cell">allowed_titles</td><td><span class="tag tag-unclear">🟠 unsupported by design</span></td><td>Deliberately excluded — person-level concern, evaluated elsewhere</td></tr>
+    <tr><td class="strong-cell">exclusions / custom_rules</td><td><span class="tag tag-unclear">🟠 preserved for later</span></td><td>Never shapes discovery; evaluated post-hoc against evidence</td></tr>
+    <tr><td class="strong-cell">business_model / commercial / marketing signals</td><td><span class="tag tag-unclear">🟠 preserved for later</span></td><td>Scoring-only, never a discovery filter</td></tr>
+    <tr><td class="strong-cell">growth_signals</td><td><span class="tag tag-hold">🟡 partially wired</span></td><td>Reaches scoring correctly, but has no <code>filter_catalog.py</code> key — unreachable from the filter-builder UI</td></tr>
+    <tr><td class="strong-cell">funding / hiring / technology / revenue / website</td><td><span class="tag tag-fail">🔴 effectively lost</span></td><td>Folded into free-text <code>other_preferences</code> at <code>filter_projection.py:112-117</code> — never a structured signal anywhere downstream</td></tr>
+    <tr><td class="strong-cell">buying intent</td><td><span class="tag tag-fail">🔴 does not exist</span></td><td>No such field anywhere in the schema</td></tr>
+  </table></div>
+</section>
+
+<section id="working">
+  <div class="sec-head"><span class="sec-num">13</span><h2>Currently working</h2></div>
+  <ul>
+    <li><strong>The live batch pipeline is coherent end to end</strong> — discovery, resolution, evidence import, hard-rule validation, scoring, LLM qualification, dedup, and ranking all run in a documented, testable sequence with no missing links in the happy path.</li>
+    <li><strong>Discovery and qualification are genuinely decoupled</strong>, verified by absence of hard-rule imports in the discovery modules — not just a claim in a comment.</li>
+    <li><strong>Employee-bucket filtering is provider-side and non-trivial</strong> — it was clearly hardened after a real production bug (IBM/Meta-class companies leaking through on malformed ranges) and now has explicit regression tests guarding against silent filter loss.</li>
+    <li><strong>Evidence confidence is honest</strong> — nothing from discovery is ever marked HIGH/MEDIUM confidence; the system only trusts a single sighting for two specifically named, narrow, high-precision fields (industry, country) from one specifically named trusted provider.</li>
+    <li><strong>Cross-round, cross-branch, and cross-provider dedup all exist and are keyed correctly</strong> (business_id → external_id → provider_id+external_id).</li>
+    <li><strong>Test coverage on the core engines is genuinely thorough</strong> — <code>test_hard_rule_engine.py</code> (48 tests) and <code>test_explorium_provider.py</code> (63 tests) cover edge cases like bucket-boundary overlap, malformed strings, FAIL-beats-HOLD priority, and NAICS never-fuzzy-matching.</li>
+  </ul>
+</section>
+
+<section id="broken">
+  <div class="sec-head"><span class="sec-num">14</span><h2>Currently broken / weak</h2></div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Industry keyword fallback returns mention-based matches, not category membership</h4><span class="sev sev-high">High</span></div>
+    <div class="loc">providers/explorium.py:38-51, :699</div>
+    <p><strong>Evidence:</strong> the adapter's own docstring cites a live test where a healthcare keyword search returned 0/10 genuinely healthcare companies.</p>
+    <p><strong>Why it matters:</strong> any ICP industry term without an exact linkedin_category/NAICS label falls straight into this low-precision tier and consumes a discovery slot on a likely-irrelevant company.</p>
+    <p><strong>Type:</strong> provider limitation, partially mitigated by architecture (not a code bug).</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>A dead frontend discovery path still exists in the codebase</h4><span class="sev sev-med">Medium</span></div>
+    <div class="loc">frontend/src/components/companies/DiscoveryRunTrigger.tsx, useCompanyDiscoveryPipeline.ts</div>
+    <p><strong>Evidence:</strong> confirmed via grep — zero page imports; only a comment reference remains. Its replacement's docstring documents that the old path left every lead stuck at HOLD.</p>
+    <p><strong>Why it matters:</strong> low risk today since it's unreachable, but it's a maintenance trap — any future refactor that accidentally re-wires it silently reintroduces a known-broken pipeline.</p>
+    <p><strong>Type:</strong> code hygiene, not an active bug.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Employee-bucket overlap admits out-of-range companies by design</h4><span class="sev sev-med">Medium</span></div>
+    <div class="loc">providers/explorium.py:220-276, hard_rule_engine.py:123-154</div>
+    <p><strong>Evidence:</strong> overlap test quoted above; explicitly documented as intentional in both discovery and hard-rule code.</p>
+    <p><strong>Why it matters:</strong> a real 180-employee company can pass discovery and even pass the hard rule against a 15–150 ICP request if only a range (no exact count) is available — a defensible tradeoff, but one that directly affects lead quality and isn't obviously visible to an end user reading "20-150 employees."</p>
+    <p><strong>Type:</strong> architectural tradeoff, not a bug.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4><code>company_type</code> and <code>business_model</code> have no Explorium-side evidence source</h4><span class="sev sev-med">Medium</span></div>
+    <div class="loc">providers/explorium.py:200-213 (no mapping), evidence_import.py:41-227 (no read)</div>
+    <p><strong>Evidence:</strong> <code>_BUSINESS_ATTRIBUTE_MAP</code> has no entry for either field; no code path in evidence_import reads them from discovery attributes.</p>
+    <p><strong>Why it matters:</strong> both are declared "critical" evidence fields, yet any ICP with a company_type hard rule will HOLD every discovery-only candidate until a separate classifier runs.</p>
+    <p><strong>Type:</strong> provider limitation + evidence pipeline coverage gap.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Six ICP filter-catalog fields (funding, hiring, technology, revenue, website, and effectively growth_signals for UI purposes) never become structured signals anywhere</h4><span class="sev sev-low">Low–Medium</span></div>
+    <div class="loc">filter_projection.py:112-117</div>
+    <p><strong>Evidence:</strong> all route into a free-text <code>other_preferences</code> field with no downstream consumer beyond that label.</p>
+    <p><strong>Why it matters:</strong> a user who selects "Funding" as a filter reasonably expects it to influence discovery or scoring; currently it does neither.</p>
+    <p><strong>Type:</strong> confirmed code gap — the fields are catalog-visible but explicitly documented as "not yet backed by a dedicated pipeline stage."</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead">Unrecognized geography terms are silently unused at discovery time</div>
+    <div class="loc">explorium.py (no read of geography_unrecognized), company_discovery.py:36-37</div>
+    <p><strong>Evidence:</strong> the query object carries <code>geography_unrecognized</code>, but the Explorium adapter only ever reads <code>geography_codes</code>.</p>
+    <p><strong>Why it matters:</strong> a user typing "Nordics" or "EMEA" gets no discovery-time constraint at all for that term, with no visible signal that it was dropped.</p>
+    <p><strong>Type:</strong> confirmed code gap.</p>
+  </div>
+</section>
+
+<section id="tests">
+  <div class="sec-head"><span class="sec-num">15</span><h2>Test coverage</h2></div>
+  <div class="tablewrap"><table>
+    <tr><th>Test file</th><th>Count</th><th>Focus</th><th>Mocked / real</th></tr>
+    <tr><td class="strong-cell">test_company_discovery.py</td><td>18</td><td>Query mapping, geography split, multi-provider success/failure, in-provider dedup, determinism</td><td>Fully mocked</td></tr>
+    <tr><td class="strong-cell">test_explorium_provider.py</td><td>63</td><td>Field mapping fidelity, count vs range separation, error mapping, filter construction, taxonomy precedence, never-fuzzy NAICS, pagination, branch merge/dedup</td><td>Mocked via respx — no live HTTP</td></tr>
+    <tr><td class="strong-cell">test_icp_normalization.py</td><td>21</td><td>Field normalization, geography alias resolution, contradiction rejection, idempotency</td><td>Pure functions</td></tr>
+    <tr><td class="strong-cell">test_filter_catalog.py</td><td>8</td><td>Catalog completeness, unknown-key/operator rejection</td><td>Pure functions</td></tr>
+    <tr><td class="strong-cell">test_filter_projection.py</td><td>16</td><td>Filter-key-to-field mapping, other_preferences fallback</td><td>Pure functions</td></tr>
+    <tr><td class="strong-cell">test_hard_rule_engine.py</td><td>48</td><td>Employee/geography/industry/title/company_type PASS-FAIL-HOLD, FAIL-beats-HOLD priority, determinism</td><td>Pure functions</td></tr>
+    <tr><td class="strong-cell">test_hard_icp_validation.py</td><td>35</td><td>Evidence-gated qualification, conflicting evidence, trusted-provider single-sighting PASS</td><td>Pure functions</td></tr>
+    <tr><td class="strong-cell">test_discovery_api.py</td><td>10</td><td>API-level candidate creation, partial/total provider failure surfaced as 201</td><td>Mocked</td></tr>
+    <tr><td class="strong-cell">test_batch_orchestration.py</td><td>17</td><td>Live-path orchestration — not read in full during this pass</td><td><span class="tag tag-unclear">not verified this pass</span></td></tr>
+    <tr><td class="strong-cell">test_default_registry.py</td><td>18</td><td>Provider registration/gating logic</td><td>Pure / env-gated</td></tr>
+    <tr><td class="strong-cell">test_provider_routing.py / _api.py</td><td>14 / 10</td><td>Provider routing — not read in full during this pass</td><td><span class="tag tag-unclear">not verified this pass</span></td></tr>
+  </table></div>
+  <p><strong>No live provider HTTP calls exist in any test file</strong> — confirmed via grep for respx/httpx fixtures across the suite. <strong>Gaps:</strong> no test combines the real Explorium adapter with the full <code>run_company_discovery</code> orchestration layer in one pass; the keyword-fallback false-positive rate is inherently untestable without live data and is explicitly marked <strong>NOT LIVE VERIFIED</strong>; <code>geography_unrecognized</code>'s silent drop has no regression test; the <code>company_type</code> evidence gap has no test asserting it's expected behavior rather than an oversight.</p>
+</section>
+
+<section id="scores">
+  <div class="sec-head"><span class="sec-num">16</span><h2>Final system assessment</h2></div>
+  <div class="scoregrid">
+    <div class="scorecard"><div class="label">Company discovery (overall)</div><div class="val">6.5<span class="max">/10</span></div><div class="bar"><i style="width:65%"></i></div></div>
+    <div class="scorecard"><div class="label">ICP → provider translation</div><div class="val">6<span class="max">/10</span></div><div class="bar"><i style="width:60%"></i></div></div>
+    <div class="scorecard"><div class="label">Industry accuracy</div><div class="val">4.5<span class="max">/10</span></div><div class="bar"><i style="width:45%"></i></div></div>
+    <div class="scorecard"><div class="label">Employee filtering</div><div class="val">7<span class="max">/10</span></div><div class="bar"><i style="width:70%"></i></div></div>
+    <div class="scorecard"><div class="label">Evidence quality</div><div class="val">7.5<span class="max">/10</span></div><div class="bar"><i style="width:75%"></i></div></div>
+    <div class="scorecard"><div class="label">Qualification logic</div><div class="val">8<span class="max">/10</span></div><div class="bar"><i style="width:80%"></i></div></div>
+    <div class="scorecard"><div class="label">Scalability</div><div class="val">6<span class="max">/10</span></div><div class="bar"><i style="width:60%"></i></div></div>
+    <div class="scorecard"><div class="label">False-positive resistance</div><div class="val">5<span class="max">/10</span></div><div class="bar"><i style="width:50%"></i></div></div>
+    <div class="scorecard"><div class="label">Test coverage</div><div class="val">7.5<span class="max">/10</span></div><div class="bar"><i style="width:75%"></i></div></div>
+  </div>
+
+  <div class="verdict">
+    <p class="q">"Can this current discovery system reliably produce high-quality companies for arbitrary real-world ICPs?"</p>
+    <p><strong>For ICPs whose industry and geography terms exist as exact labels in Explorium's linkedin_category or NAICS taxonomies, yes</strong> — the structured path is exact-match, provider-side filtered, and backed by a genuinely conservative, well-tested hard-rule layer that defaults to HOLD rather than guessing.</p>
+    <p><strong>For arbitrary real-world ICPs — where industry phrasing is a user's own words, not a taxonomy label — no, not reliably.</strong> The system's own code documents a measured 0/10 precision result for the keyword-fallback tier that any unmatched term falls into. Nothing in the architecture currently distinguishes "no taxonomy match, treat this cautiously" from "no taxonomy match, search everywhere anyway" — it always does the latter.</p>
+    <p>The qualification layer is a real safety net, not decoration — it will HOLD or FAIL a poorly-matched company rather than pass it silently. But candidates that never should have entered discovery still consume a slot, an evidence pass, and (per the pipeline trace) an LLM qualification call before that net catches them, which is a cost and latency problem even when it's not a correctness problem.</p>
+  </div>
+</section>
+
+<section id="top5">
+  <div class="sec-head"><span class="sec-num">G</span><h2>Top 5 problems that must be solved</h2></div>
+  <ol class="ranked">
+    <li><span class="n">1</span><div class="body"><h4>Industry keyword fallback has no precision safeguard</h4><p>Any ICP term missing from both linkedin_category and NAICS falls into a self-documented low-precision substring search. This is the single highest-leverage fix for lead quality — everything downstream (evidence, hard rules, LLM qualification) is spending real cost cleaning up after it.</p></div></li>
+    <li><span class="n">2</span><div class="body"><h4>Six ICP fields are UI-visible but functionally inert</h4><p>Funding, hiring, technology, revenue, website, and (for filter-builder purposes) growth_signals give users the impression of control they don't actually have over discovery or scoring.</p></div></li>
+    <li><span class="n">3</span><div class="body"><h4>No structured evidence source for company_type or business_model</h4><p>Both are declared critical fields with zero Explorium mapping — every discovery-only candidate HOLDs on these until a separate classifier fills the gap, which the audit didn't trace.</p></div></li>
+    <li><span class="n">4</span><div class="body"><h4>Unrecognized geography terms silently vanish at discovery time</h4><p>No visible signal to the user that "Nordics" or "EMEA" contributed nothing to the actual provider filter.</p></div></li>
+    <li><span class="n">5</span><div class="body"><h4>Dead frontend pipeline remains in the codebase</h4><p>Low current risk, but a real regression trap for future refactors — worth deleting outright rather than leaving as an attractive nuisance.</p></div></li>
+  </ol>
+</section>
+
+<section id="next">
+  <div class="sec-head"><span class="sec-num">H</span><h2>What to audit or build next</h2></div>
+  <ul>
+    <li><strong>Live-verify the keyword-fallback false-positive rate</strong> against a representative sample of real ICPs — the 0/10 figure in the docstring is a single historical sample, not a current benchmark.</li>
+    <li><strong>Design a middle tier between exact taxonomy match and raw keyword search</strong> — e.g., a curated synonym/alias table for common industry phrasings, before reaching for full semantic matching.</li>
+    <li><strong>Decide the product story for the six inert filter-catalog fields</strong> — either wire them to a real pipeline stage or remove them from the filter builder so users aren't misled.</li>
+    <li><strong>Read <code>test_batch_orchestration.py</code>, <code>test_provider_routing.py</code>, and <code>batch_orchestration.py</code> in full</strong> — this audit traced the orchestration call chain but did not fully audit its own test suite in this pass.</li>
+    <li><strong>Trace <code>business_model_classifier.py</code> and <code>commercial_signal_extractor.py</code></strong> as the presumed fillers for the company_type/business_model evidence gap — out of this audit's stated scope but directly relevant to whether that HOLD is ever actually resolved.</li>
+    <li><strong>Surface geography_unrecognized to the user</strong> at ICP-creation time rather than silently dropping it during discovery.</li>
+  </ul>
+</section>
+
+</div>
+
+<footer>
+  Static code audit only. No files modified. No live Explorium/Apollo/Unipile calls made. No credits consumed. Findings sourced from direct file reads plus one Explore-agent trace, cross-verified against source for the highest-stakes claims (dead frontend path, growth_signals wiring, filter_catalog keys).
+</footer>

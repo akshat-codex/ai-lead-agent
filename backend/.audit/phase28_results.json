@@ -1,0 +1,47 @@
+{
+  "provider_id": "gemini-llm-v1",
+  "model_id": "gemini-3.6-flash",
+  "captured_http_status": 200,
+  "captured_usage_metadata": {
+    "promptTokenCount": 752,
+    "candidatesTokenCount": 102,
+    "totalTokenCount": 1434,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 752
+      }
+    ],
+    "thoughtsTokenCount": 580,
+    "serviceTier": "standard"
+  },
+  "captured_model_version": "gemini-3.6-flash",
+  "strategy_status": "SUCCESS",
+  "industry_terms": [
+    "Healthcare SaaS",
+    "Healthcare Software",
+    "Healthtech SaaS",
+    "Health Tech Software",
+    "Medical Software",
+    "Clinical Software"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 0.95,
+  "reasoning": "The ICP specifies Healthcare and SaaS together, representing a compound industry (software solutions for the healthcare sector). Proposed industry terms focus on combined healthtech and medical software phrasings.",
+  "error_message": null,
+  "final_merged_industries": [
+    "Healthcare",
+    "SaaS",
+    "Healthcare SaaS",
+    "Healthcare Software",
+    "Healthtech SaaS",
+    "Health Tech Software",
+    "Medical Software",
+    "Clinical Software"
+  ],
+  "final_merged_company_types": [],
+  "final_merged_exclusions": []
+}

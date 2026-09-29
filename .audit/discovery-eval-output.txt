@@ -1,0 +1,370 @@
+
+====================================================================================================
+SCENARIO: D2C/FMCG — India, 20-300 employees
+====================================================================================================
+
+--- ICP SUBMITTED (CanonicalICP.hard_rules) ---
+{
+  "industries": [
+    "D2C skincare"
+  ],
+  "geography": {
+    "countries": [
+      {
+        "raw": "India",
+        "code": "IN",
+        "label": "India"
+      }
+    ],
+    "unrecognized": []
+  },
+  "employee_range": {
+    "min": 20,
+    "max": 300
+  },
+  "allowed_titles": [],
+  "company_types": [],
+  "exclusions": [],
+  "custom_rules": []
+}
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call — OPENAI_API_KEY is unset in this env) ---
+{
+  "industry_terms": [
+    "Cosmetics, Beauty Supplies, and Perfume Stores",
+    "Consumer Goods",
+    "E-commerce"
+  ],
+  "company_type_terms": [
+    "D2C"
+  ],
+  "exclusion_terms": [
+    "agency",
+    "consultancy"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "growing companies"
+  ],
+  "confidence": 78,
+  "reasoning": "D2C skincare has no exact linkedin_category match; expanded into the closest real NAICS-style label plus adjacent structured terms."
+}
+
+DiscoveryStrategy.status = SUCCESS
+industry_terms (capped/deduped) = ('Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce')
+company_type_terms = ('D2C',)
+exclusion_terms = ('agency', 'consultancy')
+unsupported_intent = ('growing companies',)
+
+Merged industries reaching Explorium = ('D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce')
+Merged company_types reaching Explorium = ('D2C',)
+
+--- EXPLORIUM RESPONSE: success=True, 3 candidates returned ---
+
+--- PER-CANDIDATE RESULT ---
+
+  Company: Glow & Co Skincare
+    domain: glowandco.invalid
+    industry (as returned): Cosmetics, Beauty Supplies, and Perfume Stores
+    employee_range: 51-200
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'HOLD', 'COMPANY_TYPE_UNKNOWN'), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: RELEVANT
+
+  Company: Beauty Brand Growth Partners
+    domain: beautybrandgrowth.invalid
+    industry (as returned): Consumer Goods
+    employee_range: 11-50
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'HOLD', 'COMPANY_TYPE_UNKNOWN'), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: FALSE_POSITIVE
+
+  Company: Radiance Naturals
+    domain: radiancenaturals.invalid
+    industry (as returned): Cosmetics, Beauty Supplies, and Perfume Stores
+    employee_range: 201-500
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'HOLD', 'COMPANY_TYPE_UNKNOWN'), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: AMBIGUOUS
+
+--- SCENARIO SUMMARY: D2C/FMCG — India, 20-300 employees ---
+total candidates: 3
+hard-rule PASS: 0 | HOLD: 3 | FAIL: 0
+precision (relevant / total labeled) = 1/2 = 0.50
+false positives identified: 1
+
+====================================================================================================
+SCENARIO: Healthcare — United States, 50-1000 employees
+====================================================================================================
+
+--- ICP SUBMITTED (CanonicalICP.hard_rules) ---
+{
+  "industries": [
+    "Healthcare"
+  ],
+  "geography": {
+    "countries": [
+      {
+        "raw": "United States",
+        "code": "US",
+        "label": "United States"
+      }
+    ],
+    "unrecognized": []
+  },
+  "employee_range": {
+    "min": 50,
+    "max": 1000
+  },
+  "allowed_titles": [],
+  "company_types": [],
+  "exclusions": [],
+  "custom_rules": []
+}
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call — OPENAI_API_KEY is unset in this env) ---
+{
+  "industry_terms": [
+    "Hospitals and Health Care",
+    "Medical Practices",
+    "Health, Wellness and Fitness"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [
+    "staffing agency",
+    "recruiting"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 85,
+  "reasoning": "Healthcare has a direct linkedin_category match; expanded into closely adjacent real categories for recall."
+}
+
+DiscoveryStrategy.status = SUCCESS
+industry_terms (capped/deduped) = ('Hospitals and Health Care', 'Medical Practices', 'Health, Wellness and Fitness')
+company_type_terms = ()
+exclusion_terms = ('staffing agency', 'recruiting')
+unsupported_intent = ()
+
+Merged industries reaching Explorium = ('Healthcare', 'Hospitals and Health Care', 'Medical Practices', 'Health, Wellness and Fitness')
+Merged company_types reaching Explorium = ()
+
+--- EXPLORIUM RESPONSE: success=True, 3 candidates returned ---
+
+--- PER-CANDIDATE RESULT ---
+
+  Company: Midwest Regional Health Group
+    domain: midwestregionalhealth.invalid
+    industry (as returned): General Medical and Surgical Hospitals
+    employee_range: 201-500
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: FAIL
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'FAIL', 'INDUSTRY_MISMATCH'), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'NOT_APPLICABLE', None), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: RELEVANT
+
+  Company: Sunrise Wellness Staffing
+    domain: sunrisewellnessstaffing.invalid
+    industry (as returned): Health, Wellness & Fitness
+    employee_range: 51-200
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: FAIL
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'FAIL', 'INDUSTRY_MISMATCH'), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'NOT_APPLICABLE', None), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: FALSE_POSITIVE
+
+  Company: Pinecrest Medical Practice
+    domain: pinecrestmedical.invalid
+    industry (as returned): Medical Practice
+    employee_range: None
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: FAIL
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'FAIL', 'INDUSTRY_MISMATCH'), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'NOT_APPLICABLE', None), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: AMBIGUOUS
+
+--- SCENARIO SUMMARY: Healthcare — United States, 50-1000 employees ---
+total candidates: 3
+hard-rule PASS: 0 | HOLD: 0 | FAIL: 3
+precision (relevant / total labeled) = 1/2 = 0.50
+false positives identified: 1
+
+====================================================================================================
+SCENARIO: B2B SaaS — United States, 10-500 employees
+====================================================================================================
+
+--- ICP SUBMITTED (CanonicalICP.hard_rules) ---
+{
+  "industries": [
+    "B2B SaaS"
+  ],
+  "geography": {
+    "countries": [
+      {
+        "raw": "United States",
+        "code": "US",
+        "label": "United States"
+      }
+    ],
+    "unrecognized": []
+  },
+  "employee_range": {
+    "min": 10,
+    "max": 500
+  },
+  "allowed_titles": [],
+  "company_types": [],
+  "exclusions": [],
+  "custom_rules": []
+}
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call — OPENAI_API_KEY is unset in this env) ---
+{
+  "industry_terms": [
+    "Computer Software",
+    "Information Technology and Services",
+    "Internet"
+  ],
+  "company_type_terms": [
+    "SaaS"
+  ],
+  "exclusion_terms": [
+    "IT staffing",
+    "IT consulting"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "recently funded"
+  ],
+  "confidence": 88,
+  "reasoning": "B2B SaaS has no single exact taxonomy label; expanded into the standard adjacent software/technology categories."
+}
+
+DiscoveryStrategy.status = SUCCESS
+industry_terms (capped/deduped) = ('Computer Software', 'Information Technology and Services', 'Internet')
+company_type_terms = ('SaaS',)
+exclusion_terms = ('IT staffing', 'IT consulting')
+unsupported_intent = ('recently funded',)
+
+Merged industries reaching Explorium = ('B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet')
+Merged company_types reaching Explorium = ('SaaS',)
+
+--- EXPLORIUM RESPONSE: success=True, 3 candidates returned ---
+
+--- PER-CANDIDATE RESULT ---
+
+  Company: Ledgerly (workflow automation software)
+    domain: ledgerly.invalid
+    industry (as returned): Computer Software
+    employee_range: 51-200
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'HOLD', 'COMPANY_TYPE_UNKNOWN'), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: RELEVANT
+
+  Company: Apex IT Staffing Solutions
+    domain: apexitstaffing.invalid
+    industry (as returned): Information Technology and Services
+    employee_range: 201-500
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'HOLD', 'COMPANY_TYPE_UNKNOWN'), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: FALSE_POSITIVE
+
+  Company: Northbeam Analytics
+    domain: northbeamanalytics.invalid
+    industry (as returned): Computer Software
+    employee_range: 11-50
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'HOLD', 'COMPANY_TYPE_UNKNOWN'), ('exclusions', 'PASS', None)]
+    HAND-JUDGED RELEVANCE: RELEVANT
+
+--- SCENARIO SUMMARY: B2B SaaS — United States, 10-500 employees ---
+total candidates: 3
+hard-rule PASS: 0 | HOLD: 3 | FAIL: 0
+precision (relevant / total labeled) = 2/3 = 0.67
+false positives identified: 1
+
+====================================================================================================
+SCENARIO: Niche — Industrial drone inspection, US, 5-100 employees
+====================================================================================================
+
+--- ICP SUBMITTED (CanonicalICP.hard_rules) ---
+{
+  "industries": [
+    "industrial drone inspection services"
+  ],
+  "geography": {
+    "countries": [
+      {
+        "raw": "United States",
+        "code": "US",
+        "label": "United States"
+      }
+    ],
+    "unrecognized": []
+  },
+  "employee_range": {
+    "min": 5,
+    "max": 100
+  },
+  "allowed_titles": [],
+  "company_types": [],
+  "exclusions": [],
+  "custom_rules": []
+}
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call — OPENAI_API_KEY is unset in this env) ---
+{
+  "industry_terms": [
+    "Aviation & Aerospace",
+    "Industrial Automation",
+    "Utilities"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "drone inspection specifically \u2014 no taxonomy category exists for this specialization"
+  ],
+  "confidence": 45,
+  "reasoning": "No close taxonomy match exists for this specialization; proposed only broad, plausible parent categories, flagged low confidence."
+}
+
+DiscoveryStrategy.status = SUCCESS
+industry_terms (capped/deduped) = ('Aviation & Aerospace', 'Industrial Automation', 'Utilities')
+company_type_terms = ()
+exclusion_terms = ()
+unsupported_intent = ('drone inspection specifically — no taxonomy category exists for this specialization',)
+
+Merged industries reaching Explorium = ('industrial drone inspection services', 'Aviation & Aerospace', 'Industrial Automation', 'Utilities')
+Merged company_types reaching Explorium = ()
+
+--- EXPLORIUM RESPONSE: success=True, 2 candidates returned ---
+
+--- PER-CANDIDATE RESULT ---
+
+  Company: Continental Airlines Cargo Division
+    domain: continentalcargo.invalid
+    industry (as returned): Aviation & Aerospace
+    employee_range: 10001+
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'NOT_APPLICABLE', None), ('exclusions', 'NOT_APPLICABLE', None)]
+    HAND-JUDGED RELEVANCE: FALSE_POSITIVE
+
+  Company: SkyGrid Inspections
+    domain: skygridinspections.invalid
+    industry (as returned): Aviation & Aerospace
+    employee_range: 11-50
+    industry evidence status: SUPPORTED_STRUCTURED
+    hard-rule result: HOLD
+    rule breakdown: [('employee_range', 'HOLD', 'EMPLOYEE_COUNT_UNKNOWN'), ('geography', 'PASS', None), ('industry', 'PASS', None), ('allowed_titles', 'NOT_APPLICABLE', None), ('company_type', 'NOT_APPLICABLE', None), ('exclusions', 'NOT_APPLICABLE', None)]
+    HAND-JUDGED RELEVANCE: RELEVANT
+
+--- SCENARIO SUMMARY: Niche — Industrial drone inspection, US, 5-100 employees ---
+total candidates: 2
+hard-rule PASS: 0 | HOLD: 2 | FAIL: 0
+precision (relevant / total labeled) = 1/2 = 0.50
+false positives identified: 1

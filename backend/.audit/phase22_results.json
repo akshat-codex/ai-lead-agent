@@ -1,0 +1,16 @@
+{
+  "provider_id": "openai-llm-v1",
+  "model_id": "gpt-5-nano",
+  "strategy_status": "PROVIDER_UNAVAILABLE",
+  "industry_terms": [],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": null,
+  "reasoning": "",
+  "error_message": "OpenAI rate limit exceeded",
+  "captured_http_status": 429,
+  "captured_usage": null,
+  "captured_model_from_response": null
+}

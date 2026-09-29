@@ -1,0 +1,674 @@
+
+================================================================================================================
+SCENARIO: Broad industry — Technology, US, uncapped employee range
+================================================================================================================
+
+1. User originally asked: 'Find US technology companies'
+   ICP industries (user-typed): ('Technology',)
+   ICP company_types (user-typed): ()
+   ICP employee_range: 1-10000
+   ICP geography: ['United States']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Computer Software",
+    "Information Technology and Services",
+    "Internet"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 60,
+  "reasoning": "Technology is an extremely broad umbrella; expanded into common adjacent categories."
+}
+
+3. Term origins (user vs AI): {'technology': 'user', 'computer software': 'ai', 'information technology and services': 'ai', 'internet': 'ai'}
+   Merged industries reaching Explorium: ('Technology', 'Computer Software', 'Information Technology and Services', 'Internet')
+   Merged company_types reaching Explorium: ()
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "Technology",
+    "Computer Software",
+    "Information Technology and Services",
+    "Internet"
+  ],
+  "geography_codes": [
+    "US"
+  ],
+  "company_types": [],
+  "min_employees": 1,
+  "max_employees": 10000,
+  "limit": 20,
+  "term_origin": {
+    "technology": "user",
+    "computer software": "ai",
+    "information technology and services": "ai",
+    "internet": "ai"
+  }
+}
+
+8-9. Explorium response: 4 unique candidates (raw across branches: 4, cross-branch duplicates removed: 0), autocomplete_calls=5, search_calls=2
+
+10-14. PER-CANDIDATE RESULT:
+
+  Northbeam Analytics
+    domain=northbeamanalytics.invalid  industry=Computer Software  employee_range=11-50
+    tier=structured  terms=['Technology', 'Computer Software', 'Information Technology and Services', 'Internet']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=PASS  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT
+
+  Apex IT Staffing Solutions
+    domain=apexitstaffing.invalid  industry=Information Technology and Services  employee_range=201-500
+    tier=structured  terms=['Technology', 'Computer Software', 'Information Technology and Services', 'Internet']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=PASS  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=An IT staffing agency, not a technology product company.
+
+  Global Internet Registrars LLC
+    domain=globalregistrars.invalid  industry=Internet  employee_range=51-200
+    tier=structured  terms=['Technology', 'Computer Software', 'Information Technology and Services', 'Internet']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=PASS  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A domain registrar — 'Internet' is an extremely broad, low-precision structured category.
+
+  Tech Recruiting Partners
+    domain=techrecruiting.invalid  industry=Staffing and Recruiting  employee_range=11-50
+    tier=keyword  terms=['Technology']  sources=['industry']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=keyword_fallback  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A tech recruiting firm, found via raw 'Technology' keyword fallback.
+
+--- SCENARIO SUMMARY: Broad industry — Technology, US, uncapped employee range (4 candidates) ---
+
+================================================================================================================
+SCENARIO: Niche industry — marine biology consulting, US, 2-50 employees
+================================================================================================================
+
+1. User originally asked: 'small marine biology consulting firms in the US'
+   ICP industries (user-typed): ('marine biology consulting',)
+   ICP company_types (user-typed): ()
+   ICP employee_range: 2-50
+   ICP geography: ['United States']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Environmental Services",
+    "Research"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "marine biology specifically \u2014 no dedicated taxonomy category"
+  ],
+  "confidence": 35,
+  "reasoning": "No close taxonomy match; proposed only broad adjacent categories, low confidence flagged."
+}
+
+3. Term origins (user vs AI): {'marine biology consulting': 'user', 'environmental services': 'ai', 'research': 'ai'}
+   Merged industries reaching Explorium: ('marine biology consulting', 'Environmental Services', 'Research')
+   Merged company_types reaching Explorium: ()
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "marine biology consulting",
+    "Environmental Services",
+    "Research"
+  ],
+  "geography_codes": [
+    "US"
+  ],
+  "company_types": [],
+  "min_employees": 2,
+  "max_employees": 50,
+  "limit": 20,
+  "term_origin": {
+    "marine biology consulting": "user",
+    "environmental services": "ai",
+    "research": "ai"
+  }
+}
+
+8-9. Explorium response: 3 unique candidates (raw across branches: 3, cross-branch duplicates removed: 0), autocomplete_calls=4, search_calls=2
+
+10-14. PER-CANDIDATE RESULT:
+
+  Coastal Environmental Solutions
+    domain=coastalenviro.invalid  industry=Environmental Services  employee_range=11-50
+    tier=structured  terms=['marine biology consulting', 'Environmental Services', 'Research']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=PASS  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=AMBIGUOUS  reason=Environmental services broadly — plausibly adjacent but not confirmed marine-specific.
+
+  Midwest Agricultural Research Institute
+    domain=midwestagresearch.invalid  industry=Research  employee_range=201-500
+    tier=structured  terms=['marine biology consulting', 'Environmental Services', 'Research']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=Agricultural (not marine) research and 10x over the requested employee ceiling.
+
+  Ocean Ecology Consultants
+    domain=oceanecology.invalid  industry=Professional Services  employee_range=2-10
+    tier=keyword  terms=['marine biology consulting']  sources=['industry']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=keyword_fallback  needs_Phase12_verification=False
+    LABEL=RELEVANT  reason=Name strongly suggests marine ecology; correct size range — found ONLY via keyword fallback.
+
+--- SCENARIO SUMMARY: Niche industry — marine biology consulting, US, 2-50 employees (3 candidates) ---
+
+================================================================================================================
+SCENARIO: D2C/FMCG — India, 20-300 employees
+================================================================================================================
+
+1. User originally asked: 'D2C FMCG brands in India, 20-300 people'
+   ICP industries (user-typed): ('D2C FMCG',)
+   ICP company_types (user-typed): ()
+   ICP employee_range: 20-300
+   ICP geography: ['India']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Consumer Goods",
+    "Food & Beverages",
+    "Cosmetics, Beauty Supplies, and Perfume Stores"
+  ],
+  "company_type_terms": [
+    "D2C"
+  ],
+  "exclusion_terms": [
+    "agency",
+    "distributor"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 65,
+  "reasoning": "D2C FMCG spans multiple real taxonomy categories; expanded broadly."
+}
+
+3. Term origins (user vs AI): {'d2c fmcg': 'user', 'consumer goods': 'ai', 'food & beverages': 'ai', 'cosmetics, beauty supplies, and perfume stores': 'ai', 'd2c': 'ai'}
+   Merged industries reaching Explorium: ('D2C FMCG', 'Consumer Goods', 'Food & Beverages', 'Cosmetics, Beauty Supplies, and Perfume Stores')
+   Merged company_types reaching Explorium: ('D2C',)
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "D2C FMCG",
+    "Consumer Goods",
+    "Food & Beverages",
+    "Cosmetics, Beauty Supplies, and Perfume Stores"
+  ],
+  "geography_codes": [
+    "IN"
+  ],
+  "company_types": [
+    "D2C"
+  ],
+  "min_employees": 20,
+  "max_employees": 300,
+  "limit": 20,
+  "term_origin": {
+    "d2c fmcg": "user",
+    "consumer goods": "ai",
+    "food & beverages": "ai",
+    "cosmetics, beauty supplies, and perfume stores": "ai",
+    "d2c": "ai"
+  }
+}
+
+8-9. Explorium response: 4 unique candidates (raw across branches: 4, cross-branch duplicates removed: 0), autocomplete_calls=6, search_calls=3
+
+10-14. PER-CANDIDATE RESULT:
+
+  National FMCG Distribution Group
+    domain=nationalfmcg.invalid  industry=Consumer Goods  employee_range=1001-5000
+    tier=structured  terms=['D2C FMCG', 'Consumer Goods', 'Food & Beverages', 'Cosmetics, Beauty Supplies, and Perfume Stores']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A distributor, not a D2C brand itself; also 3x over the employee ceiling.
+
+  Riverbend Snack Co
+    domain=riverbendsnack.invalid  industry=Food & Beverages  employee_range=51-200
+    tier=structured  terms=['D2C FMCG', 'Consumer Goods', 'Food & Beverages', 'Cosmetics, Beauty Supplies, and Perfume Stores']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=HOLD  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT
+
+  Glow & Co Skincare
+    domain=glowandco.invalid  industry=Cosmetics, Beauty Supplies, and Perfume Stores  employee_range=51-200
+    tier=structured  terms=['D2C FMCG', 'Consumer Goods', 'Food & Beverages', 'Cosmetics, Beauty Supplies, and Perfume Stores']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=HOLD  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT  reason=Found via NAICS — correct, precise structured match.
+
+  D2C Growth Agency
+    domain=d2cgrowth.invalid  industry=Management Consulting  employee_range=11-50
+    tier=keyword  terms=['D2C FMCG', 'D2C']  sources=['industry', 'company_type']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=keyword_fallback  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A marketing agency serving D2C brands, matched via raw 'D2C FMCG' keyword fallback.
+
+--- SCENARIO SUMMARY: D2C/FMCG — India, 20-300 employees (4 candidates) ---
+
+================================================================================================================
+SCENARIO: Healthcare — US, 50-1000 employees
+================================================================================================================
+
+1. User originally asked: 'healthcare companies in the US with 50 to 1000 employees'
+   ICP industries (user-typed): ('Healthcare',)
+   ICP company_types (user-typed): ()
+   ICP employee_range: 50-1000
+   ICP geography: ['United States']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Hospitals and Health Care",
+    "Medical Practices"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [
+    "staffing agency"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 90,
+  "reasoning": "Healthcare has a direct exact linkedin_category match."
+}
+
+3. Term origins (user vs AI): {'healthcare': 'user', 'hospitals and health care': 'ai', 'medical practices': 'ai'}
+   Merged industries reaching Explorium: ('Healthcare', 'Hospitals and Health Care', 'Medical Practices')
+   Merged company_types reaching Explorium: ()
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "Healthcare",
+    "Hospitals and Health Care",
+    "Medical Practices"
+  ],
+  "geography_codes": [
+    "US"
+  ],
+  "company_types": [],
+  "min_employees": 50,
+  "max_employees": 1000,
+  "limit": 20,
+  "term_origin": {
+    "healthcare": "user",
+    "hospitals and health care": "ai",
+    "medical practices": "ai"
+  }
+}
+
+8-9. Explorium response: 2 unique candidates (raw across branches: 2, cross-branch duplicates removed: 0), autocomplete_calls=3, search_calls=1
+
+10-14. PER-CANDIDATE RESULT:
+
+  Midwest Regional Health Group
+    domain=midwestregionalhealth.invalid  industry=General Medical and Surgical Hospitals  employee_range=201-500
+    tier=structured  terms=['Healthcare', 'Hospitals and Health Care', 'Medical Practices']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=PASS  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT
+
+  Pinecrest Medical Practice
+    domain=pinecrestmedical.invalid  industry=Medical Practices  employee_range=51-200
+    tier=structured  terms=['Healthcare', 'Hospitals and Health Care', 'Medical Practices']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=PASS  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT
+
+--- SCENARIO SUMMARY: Healthcare — US, 50-1000 employees (2 candidates) ---
+
+================================================================================================================
+SCENARIO: SaaS — US, 10-500 employees
+================================================================================================================
+
+1. User originally asked: 'B2B SaaS companies in the US'
+   ICP industries (user-typed): ('B2B SaaS',)
+   ICP company_types (user-typed): ()
+   ICP employee_range: 10-500
+   ICP geography: ['United States']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Computer Software",
+    "Information Technology and Services"
+  ],
+  "company_type_terms": [
+    "SaaS"
+  ],
+  "exclusion_terms": [
+    "IT staffing"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "recently funded"
+  ],
+  "confidence": 85,
+  "reasoning": "B2B SaaS has no single exact label; expanded into standard adjacent categories."
+}
+
+3. Term origins (user vs AI): {'b2b saas': 'user', 'computer software': 'ai', 'information technology and services': 'ai', 'saas': 'ai'}
+   Merged industries reaching Explorium: ('B2B SaaS', 'Computer Software', 'Information Technology and Services')
+   Merged company_types reaching Explorium: ('SaaS',)
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "B2B SaaS",
+    "Computer Software",
+    "Information Technology and Services"
+  ],
+  "geography_codes": [
+    "US"
+  ],
+  "company_types": [
+    "SaaS"
+  ],
+  "min_employees": 10,
+  "max_employees": 500,
+  "limit": 20,
+  "term_origin": {
+    "b2b saas": "user",
+    "computer software": "ai",
+    "information technology and services": "ai",
+    "saas": "ai"
+  }
+}
+
+8-9. Explorium response: 3 unique candidates (raw across branches: 3, cross-branch duplicates removed: 0), autocomplete_calls=4, search_calls=2
+
+10-14. PER-CANDIDATE RESULT:
+
+  Ledgerly
+    domain=ledgerly.invalid  industry=Computer Software  employee_range=51-200
+    tier=structured  terms=['B2B SaaS', 'Computer Software', 'Information Technology and Services']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=HOLD  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT
+
+  Apex IT Staffing Solutions
+    domain=apexitstaffing.invalid  industry=Information Technology and Services  employee_range=201-500
+    tier=structured  terms=['B2B SaaS', 'Computer Software', 'Information Technology and Services']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=HOLD  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=An IT staffing agency, not a software company.
+
+  SaaS Growth Advisors
+    domain=saasgrowthadvisors.invalid  industry=Management Consulting  employee_range=11-50
+    tier=keyword  terms=['B2B SaaS', 'SaaS']  sources=['industry', 'company_type']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=keyword_fallback  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A consultancy advising SaaS companies, found via raw 'SaaS' company_type keyword fallback.
+
+--- SCENARIO SUMMARY: SaaS — US, 10-500 employees (3 candidates) ---
+
+================================================================================================================
+SCENARIO: Location+employee constrained — Manufacturing, Germany, 15-150
+================================================================================================================
+
+1. User originally asked: 'manufacturing companies in Germany with 15 to 150 employees'
+   ICP industries (user-typed): ('Manufacturing',)
+   ICP company_types (user-typed): ()
+   ICP employee_range: 15-150
+   ICP geography: ['Germany']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Industrial Automation",
+    "Machinery"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 70,
+  "reasoning": "Manufacturing is broad; expanded into common adjacent categories."
+}
+
+3. Term origins (user vs AI): {'manufacturing': 'user', 'industrial automation': 'ai', 'machinery': 'ai'}
+   Merged industries reaching Explorium: ('Manufacturing', 'Industrial Automation', 'Machinery')
+   Merged company_types reaching Explorium: ()
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "Manufacturing",
+    "Industrial Automation",
+    "Machinery"
+  ],
+  "geography_codes": [
+    "DE"
+  ],
+  "company_types": [],
+  "min_employees": 15,
+  "max_employees": 150,
+  "limit": 20,
+  "term_origin": {
+    "manufacturing": "user",
+    "industrial automation": "ai",
+    "machinery": "ai"
+  }
+}
+
+8-9. Explorium response: 3 unique candidates (raw across branches: 3, cross-branch duplicates removed: 0), autocomplete_calls=4, search_calls=2
+
+10-14. PER-CANDIDATE RESULT:
+
+  Präzisionswerk GmbH
+    domain=praezisionswerk.invalid  industry=Manufacturing  employee_range=51-200
+    tier=structured  terms=['Manufacturing', 'Industrial Automation', 'Machinery']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=PASS  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=AMBIGUOUS  reason=Employee bucket 51-200 overlaps the requested 15-150 range but extends beyond it — genuinely ambiguous without an exact count.
+
+  Bosch Machinery Group
+    domain=example-bosch.invalid  industry=Machinery  employee_range=10001+
+    tier=structured  terms=['Manufacturing', 'Industrial Automation', 'Machinery']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A massive incumbent (10001+), wildly outside the requested 15-150 range — structured match, employee-range mismatch.
+
+  Kleinbetrieb Automation Consulting
+    domain=kleinbetrieb.invalid  industry=Professional Services  employee_range=2-10
+    tier=keyword  terms=['Industrial Automation']  sources=['industry']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=keyword_fallback  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=Below the requested minimum (2-10 vs. 15-150) and a consulting firm, not a manufacturer.
+
+--- SCENARIO SUMMARY: Location+employee constrained — Manufacturing, Germany, 15-150 (3 candidates) ---
+
+================================================================================================================
+SCENARIO: Company-type requirement — E-commerce, PE-backed, US
+================================================================================================================
+
+1. User originally asked: 'PE-backed e-commerce companies in the US'
+   ICP industries (user-typed): ('E-commerce',)
+   ICP company_types (user-typed): ('PE-backed',)
+   ICP employee_range: 5-200
+   ICP geography: ['United States']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Retail",
+    "Internet"
+  ],
+  "company_type_terms": [
+    "Private Equity Portfolio Company"
+  ],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 55,
+  "reasoning": "Expanded E-commerce and added a close synonym for the company_type term."
+}
+
+3. Term origins (user vs AI): {'e-commerce': 'user', 'pe-backed': 'user', 'retail': 'ai', 'internet': 'ai', 'private equity portfolio company': 'ai'}
+   Merged industries reaching Explorium: ('E-commerce', 'Retail', 'Internet')
+   Merged company_types reaching Explorium: ('PE-backed', 'Private Equity Portfolio Company')
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "E-commerce",
+    "Retail",
+    "Internet"
+  ],
+  "geography_codes": [
+    "US"
+  ],
+  "company_types": [
+    "PE-backed",
+    "Private Equity Portfolio Company"
+  ],
+  "min_employees": 5,
+  "max_employees": 200,
+  "limit": 20,
+  "term_origin": {
+    "e-commerce": "user",
+    "pe-backed": "user",
+    "retail": "ai",
+    "internet": "ai",
+    "private equity portfolio company": "ai"
+  }
+}
+
+8-9. Explorium response: 2 unique candidates (raw across branches: 2, cross-branch duplicates removed: 0), autocomplete_calls=3, search_calls=2
+
+10-14. PER-CANDIDATE RESULT:
+
+  Urban Outfitters Online
+    domain=urbanoutfitters-example.invalid  industry=E-commerce  employee_range=51-200
+    tier=structured  terms=['E-commerce', 'Retail', 'Internet']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=HOLD  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT  reason=Genuine e-commerce operator matching industry; company_type (PE-backed) not independently confirmable from Explorium evidence — HOLDs on that rule specifically.
+
+  Meridian Capital Partners
+    domain=meridiancapital.invalid  industry=Investment Management  employee_range=11-50
+    tier=keyword  terms=['PE-backed', 'Private Equity Portfolio Company']  sources=['company_type', 'company_type']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=keyword_fallback  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A private equity FIRM itself (an investor), not a PE-BACKED company — 'PE-backed'/'Private Equity Portfolio Company' keyword fallback caught the wrong side of the relationship.
+
+--- SCENARIO SUMMARY: Company-type requirement — E-commerce, PE-backed, US (2 candidates) ---
+
+================================================================================================================
+SCENARIO: Messy natural-language — subscription pet boxes, US, up to 200 employees
+================================================================================================================
+
+1. User originally asked: "I'm looking for companies that sell subscription boxes for pet owners, based in the US, not too big, maybe under 200 people"
+   ICP industries (user-typed): ('companies that sell subscription boxes for pet owners',)
+   ICP company_types (user-typed): ()
+   ICP employee_range: None-200
+   ICP geography: ['United States']
+
+2. SIMULATED LLM OUTPUT (not a live OpenAI call):
+{
+  "industry_terms": [
+    "Consumer Goods",
+    "E-commerce",
+    "Retail"
+  ],
+  "company_type_terms": [
+    "Subscription"
+  ],
+  "exclusion_terms": [
+    "marketing agency"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "subscription box format specifically \u2014 no dedicated taxonomy category"
+  ],
+  "confidence": 40,
+  "reasoning": "Messy natural-language phrase describing a business model, not a taxonomy term; extracted plausible adjacent categories and flagged the format itself as unsupported."
+}
+
+3. Term origins (user vs AI): {'companies that sell subscription boxes for pet owners': 'user', 'consumer goods': 'ai', 'e-commerce': 'ai', 'retail': 'ai', 'subscription': 'ai'}
+   Merged industries reaching Explorium: ('companies that sell subscription boxes for pet owners', 'Consumer Goods', 'E-commerce', 'Retail')
+   Merged company_types reaching Explorium: ('Subscription',)
+
+7. Exact Explorium request query dict:
+   {
+  "industries": [
+    "companies that sell subscription boxes for pet owners",
+    "Consumer Goods",
+    "E-commerce",
+    "Retail"
+  ],
+  "geography_codes": [
+    "US"
+  ],
+  "company_types": [
+    "Subscription"
+  ],
+  "min_employees": null,
+  "max_employees": 200,
+  "limit": 20,
+  "term_origin": {
+    "companies that sell subscription boxes for pet owners": "user",
+    "consumer goods": "ai",
+    "e-commerce": "ai",
+    "retail": "ai",
+    "subscription": "ai"
+  }
+}
+
+8-9. Explorium response: 3 unique candidates (raw across branches: 3, cross-branch duplicates removed: 0), autocomplete_calls=5, search_calls=2
+
+10-14. PER-CANDIDATE RESULT:
+
+  PawCrate Monthly
+    domain=pawcrate.invalid  industry=Consumer Goods  employee_range=11-50
+    tier=structured  terms=['companies that sell subscription boxes for pet owners', 'Consumer Goods', 'E-commerce', 'Retail']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=HOLD  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=RELEVANT  reason=Name strongly suggests a genuine pet subscription box brand.
+
+  Big Box Pet Retail Corp
+    domain=bigboxpet.invalid  industry=Retail  employee_range=1001-5000
+    tier=structured  terms=['companies that sell subscription boxes for pet owners', 'Consumer Goods', 'E-commerce', 'Retail']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=structured  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A big-box pet retailer, not a subscription-box company, and 20x over the employee ceiling.
+
+  Subscription Box Marketing Co
+    domain=subboxmarketing.invalid  industry=Advertising Services  employee_range=11-50
+    tier=keyword  terms=['companies that sell subscription boxes for pet owners', 'Subscription']  sources=['industry', 'company_type']
+    evidence fields captured: ['company_identity', 'country', 'domain', 'employee_range', 'industry']
+    hard-rule=FAIL  discovery_match_type=keyword_fallback  needs_Phase12_verification=False
+    LABEL=FALSE_POSITIVE  reason=A marketing agency serving subscription-box brands, found via raw 'Subscription' company_type keyword fallback.
+
+--- SCENARIO SUMMARY: Messy natural-language — subscription pet boxes, US, up to 200 employees (3 candidates) ---
+
+================================================================================================================
+PHASE 14 DISCOVERY QUALITY SCORECARD
+================================================================================================================
+
+Scenarios run: 8
+Total candidates: 24
+Hard-rule PASS: 7  HOLD: 6  FAIL: 11
+Candidates that would require Phase 12 OpenAI verification (PASS + not structured): 0
+Cross-branch duplicates removed (business_id repeated across mocked branches): 0
+Total autocomplete API calls (mocked): 34
+Total search API calls (mocked): 16
+
+STRUCTURED tier (n=17, small hand-labeled sample — NOT a statistically valid precision estimate):
+  relevant=8 fp=7 ambiguous=2
+  illustrative precision = 0.47
+
+KEYWORD-FALLBACK tier (n=7, small hand-labeled sample — NOT a statistically valid precision estimate):
+  relevant=1 fp=6 ambiguous=0
+  illustrative precision = 0.14

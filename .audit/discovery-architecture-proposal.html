@@ -1,0 +1,459 @@
+<title>Discovery Architecture Proposal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --paper: #f5f4ef;
+  --paper-raised: #fdfcf9;
+  --ink: #171b22;
+  --ink-soft: #4b5160;
+  --ink-faint: #7c8293;
+  --line: #dcdad0;
+  --line-strong: #c3c0b2;
+  --accent: #3d5a80;
+  --accent-soft: #e4ebf3;
+  --accent-ink: #1f3350;
+  --pass: #2f7d5c;
+  --pass-soft: #e2f0e9;
+  --fail: #b8442f;
+  --fail-soft: #f7e7e2;
+  --hold: #a8752a;
+  --hold-soft: #f5ecd9;
+  --unclear: #6b6f7d;
+  --unclear-soft: #e9e8ec;
+  --new: #6a4c93;
+  --new-soft: #ece5f4;
+  --code-bg: #12151b;
+  --code-ink: #d8dce6;
+  --shadow: 0 1px 2px rgba(23,27,34,0.06), 0 8px 24px -12px rgba(23,27,34,0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14171d; --paper-raised: #1a1e26; --ink: #e7e6e0; --ink-soft: #b4b7c2; --ink-faint: #7d8291;
+    --line: #2c313c; --line-strong: #3a404d; --accent: #7fa3d1; --accent-soft: #202a38; --accent-ink: #bcd4ef;
+    --pass: #5fbf93; --pass-soft: #17281f; --fail: #e08268; --fail-soft: #2b1c17;
+    --hold: #dcae5c; --hold-soft: #2c2415; --unclear: #9a9ea9; --unclear-soft: #23262d;
+    --new: #b39ddb; --new-soft: #241c30;
+    --code-bg: #0c0e12; --code-ink: #cdd2de; --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14171d; --paper-raised: #1a1e26; --ink: #e7e6e0; --ink-soft: #b4b7c2; --ink-faint: #7d8291;
+  --line: #2c313c; --line-strong: #3a404d; --accent: #7fa3d1; --accent-soft: #202a38; --accent-ink: #bcd4ef;
+  --pass: #5fbf93; --pass-soft: #17281f; --fail: #e08268; --fail-soft: #2b1c17;
+  --hold: #dcae5c; --hold-soft: #2c2415; --unclear: #9a9ea9; --unclear-soft: #23262d;
+  --new: #b39ddb; --new-soft: #241c30;
+  --code-bg: #0c0e12; --code-ink: #cdd2de; --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+}
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; font-size: 15.5px; line-height: 1.6; }
+::selection { background: var(--accent-soft); color: var(--accent-ink); }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px 120px; }
+
+.masthead { border-bottom: 1px solid var(--line); padding: 40px 28px 28px; }
+.masthead-inner { max-width: 1180px; margin: 0 auto; }
+.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+h1.title { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.01em; text-wrap: balance; margin: 0 0 12px; }
+.subtitle { color: var(--ink-soft); font-size: 16.5px; max-width: 66ch; margin: 0 0 22px; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.meta-pill { border: 1px solid var(--line-strong); border-radius: 3px; padding: 4px 9px; color: var(--ink-soft); background: var(--paper-raised); }
+.meta-pill b { color: var(--ink); font-weight: 600; }
+
+.tocbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.tocbar-inner { max-width: 1180px; margin: 0 auto; padding: 10px 28px; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tocbar-inner::-webkit-scrollbar { display: none; }
+.tocbar a { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; white-space: nowrap; color: var(--ink-faint); text-decoration: none; padding: 6px 10px; border-radius: 4px; }
+.tocbar a:hover, .tocbar a:focus-visible { background: var(--accent-soft); color: var(--accent-ink); outline: none; }
+
+section { padding: 52px 0 8px; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+.sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
+.sec-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-faint); border: 1px solid var(--line-strong); border-radius: 4px; padding: 2px 7px; }
+h2 { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 27px; letter-spacing: -0.005em; margin: 0; text-wrap: balance; }
+h3 { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 19px; margin: 32px 0 12px; }
+p { max-width: 74ch; color: var(--ink); margin: 0 0 14px; }
+p.lede { font-size: 16.5px; color: var(--ink-soft); max-width: 72ch; }
+ul, ol { max-width: 74ch; padding-left: 22px; margin: 0 0 16px; }
+li { margin-bottom: 6px; }
+strong { font-weight: 600; }
+
+code, .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.87em; }
+p code, li code, td code { background: var(--accent-soft); color: var(--accent-ink); padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+
+pre { background: var(--code-bg); color: var(--code-ink); border-radius: 8px; padding: 16px 18px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 12.8px; line-height: 1.65; margin: 14px 0 20px; box-shadow: var(--shadow); }
+pre .cite { display: block; color: #7d8291; font-size: 11px; margin-bottom: 8px; letter-spacing: 0.03em; }
+
+.tag { display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; line-height: 1.6; white-space: nowrap; }
+.tag-pass { background: var(--pass-soft); color: var(--pass); }
+.tag-fail { background: var(--fail-soft); color: var(--fail); }
+.tag-hold { background: var(--hold-soft); color: var(--hold); }
+.tag-unclear { background: var(--unclear-soft); color: var(--unclear); }
+.tag-new { background: var(--new-soft); color: var(--new); }
+
+.callout { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0 22px; max-width: 74ch; }
+.callout p { margin: 0; color: var(--accent-ink); }
+.callout.warn { border-left-color: var(--fail); background: var(--fail-soft); }
+.callout.warn p { color: var(--fail); }
+.callout.warn strong { color: var(--fail); }
+.callout.good { border-left-color: var(--pass); background: var(--pass-soft); }
+.callout.good p { color: var(--pass); }
+.callout.good strong { color: var(--pass); }
+.callout p:first-child.label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; opacity: 0.85; }
+
+.pipeline { display: flex; flex-wrap: wrap; align-items: center; gap: 0; margin: 22px 0 28px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.pipeline .step { background: var(--paper-raised); border: 1px solid var(--line-strong); border-radius: 6px; padding: 8px 12px; color: var(--ink); box-shadow: var(--shadow); }
+.pipeline .step b { display: block; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12.5px; margin-bottom: 2px; }
+.pipeline .step.new { border-color: var(--new); background: var(--new-soft); }
+.pipeline .step.new b { color: var(--new); }
+.pipeline .step.existing { border-color: var(--pass); }
+.pipeline .arrow { color: var(--ink-faint); padding: 0 8px; font-size: 14px; }
+.pipeline.vertical { flex-direction: column; align-items: stretch; }
+.pipeline.vertical .arrow { padding: 2px 0 2px 18px; }
+.pipeline.vertical .step { width: 100%; }
+.pipeline .branch-label { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--ink-faint); padding-left: 18px; margin: 2px 0; }
+
+.tablewrap { overflow-x: auto; margin: 8px 0 26px; border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); }
+table { border-collapse: collapse; width: 100%; min-width: 760px; background: var(--paper-raised); font-size: 13.3px; }
+th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); background: var(--accent-soft); padding: 10px 14px; border-bottom: 1px solid var(--line-strong); white-space: nowrap; position: sticky; top: 0; }
+td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: color-mix(in srgb, var(--accent-soft) 40%, transparent); }
+td.strong-cell { color: var(--ink); font-weight: 500; }
+td code { white-space: normal; }
+
+.finding { border: 1px solid var(--line); border-radius: 10px; background: var(--paper-raised); padding: 18px 20px; margin: 0 0 16px; box-shadow: var(--shadow); }
+.finding .fhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.finding h4 { font-family: 'Source Serif 4', serif; font-size: 16.5px; font-weight: 600; margin: 0; max-width: 58ch; }
+.finding .sev { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+.sev-high { background: var(--fail-soft); color: var(--fail); }
+.sev-med { background: var(--hold-soft); color: var(--hold); }
+.sev-low { background: var(--unclear-soft); color: var(--unclear); }
+.finding .loc { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--accent); margin-bottom: 8px; }
+.finding p { margin-bottom: 8px; font-size: 14px; }
+.finding p:last-child { margin-bottom: 0; }
+
+.ranked { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.ranked li { display: flex; gap: 16px; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; box-shadow: var(--shadow); }
+.ranked .n { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 22px; color: var(--accent); flex-shrink: 0; width: 28px; }
+.ranked .body h4 { margin: 0 0 6px; font-family: 'Source Serif 4', serif; font-size: 16px; font-weight: 600; }
+.ranked .body p { margin: 0; font-size: 13.8px; }
+
+.phasegrid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 18px 0 10px; }
+.phase { display: grid; grid-template-columns: 90px 1fr; gap: 16px; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; box-shadow: var(--shadow); }
+.phase .pnum { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); font-weight: 600; padding-top: 2px; }
+.phase h4 { font-family: 'Source Serif 4', serif; font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+.phase p { margin: 0 0 6px; font-size: 13.8px; }
+.phase p:last-child { margin-bottom: 0; }
+.phase.first { border-color: var(--pass); border-width: 2px; }
+
+.verdict { background: var(--paper-raised); border: 1px solid var(--line-strong); border-left: 4px solid var(--new); border-radius: 0 10px 10px 0; padding: 22px 26px; margin: 20px 0; box-shadow: var(--shadow); }
+.verdict .q { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 17px; margin-bottom: 10px; color: var(--ink); }
+.verdict p { margin-bottom: 10px; }
+.verdict p:last-child { margin-bottom: 0; }
+
+.checklist { list-style: none; padding: 0; margin: 16px 0; display: flex; flex-direction: column; gap: 10px; }
+.checklist li { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; }
+.checklist .mark { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+.checklist .mark.ok { background: var(--pass-soft); color: var(--pass); }
+
+footer { max-width: 1180px; margin: 0 auto; padding: 36px 28px 60px; color: var(--ink-faint); font-size: 12.5px; font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--line); }
+
+@media (max-width: 640px) {
+  .masthead, .wrap, .tocbar-inner, footer { padding-left: 18px; padding-right: 18px; }
+  h1.title { font-size: 26px; }
+  .phase { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="eyebrow"><span class="dot"></span>DISCOVERY ARCHITECTURE PROPOSAL · POST-8B AUDIT · NO CODE CHANGES</div>
+    <h1 class="title">Beyond Explorium: A Cost-Controlled Discovery Funnel</h1>
+    <p class="subtitle">A benchmark of five candidate providers against the current Phase 8B pipeline, and a proposed multi-stage architecture that adds semantic recall and evidence-backed verification without touching Explorium, hard rules, or the 1210-test suite.</p>
+    <div class="meta-row">
+      <span class="meta-pill">Prepared for <b>ksrivastava@gravityer.com</b></span>
+      <span class="meta-pill"><b>2026-09-01</b></span>
+      <span class="meta-pill">Baseline: <b>Phase 8B, 1210 tests</b></span>
+      <span class="meta-pill">Method: <b>Code trace + live provider docs research</b></span>
+    </div>
+  </div>
+</div>
+
+<nav class="tocbar"><div class="tocbar-inner">
+  <a href="#current">1. Current flow</a>
+  <a href="#weaknesses">2. Weaknesses</a>
+  <a href="#providers">3. Providers</a>
+  <a href="#architecture">4. Architecture</a>
+  <a href="#cost">5. Cost control</a>
+  <a href="#d2c">6. D2C/FMCG test</a>
+  <a href="#plan">7. Implementation</a>
+  <a href="#risk">8. Risk check</a>
+</div></nav>
+
+<div class="wrap">
+
+<section id="current">
+  <div class="sec-head"><span class="sec-num">1</span><h2>Current discovery flow — verified against code today</h2></div>
+  <p class="lede">The Phase 8B description matches the code. Two facts worth flagging before anything else: the "1210/1210 passed" baseline is reproducible in a clean environment, and there is already a complete, unused scaffold for exactly the kind of AI-verification step this proposal recommends.</p>
+
+  <div class="callout">
+    <p class="label">Verified this session</p>
+    <p><code>pytest --collect-only</code> against the current tree collects exactly <strong>1210 tests</strong>, matching the stated baseline exactly. Running the full suite in this environment produced <strong>8 failures</strong> — all traced to this machine's local <code>.env</code> having a real <code>EXPLORIUM_API_KEY</code> set, which flips the provider registry from the mock to the live Explorium adapter and breaks tests that assert on mock-provider routing. This is an environment artifact, not a code regression — <code>.env.example</code> itself documents "leave EXPLORIUM_API_KEY unset to run on MockCompanyDataProvider's fake." The 1210/1210 claim is credible for the intended clean-env configuration.</p>
+  </div>
+
+  <div class="pipeline vertical">
+    <div class="step existing"><b>ICP input</b>Canonical hard rules: industries, geography, employee range, company_type, exclusions, custom_rules</div>
+    <div class="arrow">↓</div>
+    <div class="step existing"><b>build_company_discovery_query</b>app/services/company_discovery.py:29-42 — reads hard_rules only, never soft_preferences</div>
+    <div class="arrow">↓</div>
+    <div class="step existing"><b>Explorium adapter</b>app/providers/explorium.py — linkedin_category → naics_category → keyword fallback, per term, independently</div>
+    <div class="arrow">↓</div>
+    <div class="step existing"><b>Candidates, evidence, hard rules, ranking</b>Unchanged from the prior audit — FAIL/HOLD/PASS all reach the frontend</div>
+  </div>
+
+  <div class="callout good">
+    <p class="label">Load-bearing discovery this session</p>
+    <p><strong>An LLM qualification stage already exists, fully scaffolded, but is not functionally live.</strong> <code>app/services/llm_qualification.py</code> (Phase 16) runs only after a hard-rule PASS, enforces anti-hallucination by rejecting any response that cites an evidence id not actually supplied, and has a clean <code>LLMProvider</code> interface (<code>app/services/llm_providers/base.py</code>) designed for "a real vendor SDK... without any change to <code>llm_qualification.py</code>." But <code>default_registry.py</code> wires only <code>_DefaultMockProvider</code>, which deterministically returns GOOD_FIT regardless of input. A repo-wide grep confirms <strong>zero references to OpenAI, Anthropic, Perplexity, Exa, Tavily, or PDL anywhere in the backend</strong> — no SDK, no API key config, nothing to migrate away from. This proposal's verification stage is the natural, already-designed-for use of this exact interface.</p>
+  </div>
+
+  <p>Also confirmed reusable rather than needing to be built: <code>app/services/company_identity.py::normalize_domain</code> already provides the canonical domain-normalization function the candidate architecture's "DOMAIN DEDUP" stage needs, and <code>docs/evidence-policy.md</code> already defines <code>SEARCH_RESULT</code> and <code>PROVIDER_API</code> as valid evidence source types at MEDIUM confidence — a web-research provider's output has a defined home in the evidence schema without any new taxonomy.</p>
+</section>
+
+<section id="weaknesses">
+  <div class="sec-head"><span class="sec-num">2</span><h2>Current weaknesses — bugs vs. architectural limitations</h2></div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Keyword fallback is a self-documented substring match, not a category match</h4><span class="sev sev-high">High · Architectural limitation</span></div>
+    <div class="loc">providers/explorium.py:38-51, :699</div>
+    <p>Any ICP industry term without an exact LinkedIn-category or NAICS label falls into <code>website_keywords</code>, which Explorium matches against any word appearing anywhere on a site. The adapter's own docstring records a live test where this returned 0/10 genuinely-matching companies for "Healthcare." This is the direct mechanism behind the D2C/FMCG problem (Section 6).</p>
+    <p><strong>Not a bug</strong> — the precedence order (structured tiers first) is a deliberate, working mitigation. The residual risk is inherent to keyword search as a taxonomy-fallback strategy, not a coding error.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Recall ceiling: nothing today can find a company outside Explorium's index or its taxonomy vocabulary</h4><span class="sev sev-high">High · Architectural limitation</span></div>
+    <div class="loc">app/providers/ — only Explorium and the mock declare COMPANY_DISCOVERY</div>
+    <p>Explorium is a structured, keyword/taxonomy-driven database. A genuinely obscure D2C brand with thin web presence, or one whose LinkedIn category doesn't match how a user phrases their ICP, is structurally invisible to the current pipeline regardless of qualification quality downstream — there's no semantic "find companies like this" capability anywhere in the code.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>NAICS is documented but not live-verified</h4><span class="sev sev-med">Medium · Needs live verification, not a code issue</span></div>
+    <div class="loc">providers/explorium.py — NAICS branch, per Phase 8B's own stated status</div>
+    <p>The precedence and caching logic are unit-tested against mocked responses; whether NAICS resolution behaves as expected against the real Explorium API has not been confirmed. This is explicitly flagged rather than assumed.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>The LLM qualification stage cannot currently distinguish anything semantically — it's a mock</h4><span class="sev sev-med">Medium · Gap, not a bug</span></div>
+    <div class="loc">llm_providers/default_registry.py:29-45</div>
+    <p><code>_DefaultMockProvider</code> always returns GOOD_FIT. Any company that passes hard rules today is qualified by a stub, not a real judgment — meaning the false-positive problem currently has no semantic backstop at all downstream of discovery.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Six ICP filter-catalog fields never reach any structured signal (carried over from the Step 1 audit)</h4><span class="sev sev-low">Low-Medium · Confirmed code gap</span></div>
+    <div class="loc">filter_projection.py:112-117</div>
+    <p>Funding, hiring, technology, revenue, and website all fold into a free-text <code>other_preferences</code> field with no consumer. Not this proposal's focus, but relevant: a web-research verification layer (Section 4) is the first plausible consumer for several of these if the architecture is extended later.</p>
+  </div>
+</section>
+
+<section id="providers">
+  <div class="sec-head"><span class="sec-num">3</span><h2>Provider comparison</h2></div>
+  <p>Full per-provider capability notes were researched live against each vendor's current documentation (Sept 2026); pricing and capability claims are marked verified vs. inferred/third-party throughout the underlying research. Summary below.</p>
+
+  <div class="tablewrap"><table>
+    <tr><th>Provider</th><th>Structured DB</th><th>Discovery mode</th><th>Best-fit role</th><th>Cost tier</th></tr>
+    <tr><td class="strong-cell">Explorium <span class="tag tag-pass">current</span></td><td>Yes — LinkedIn/NAICS taxonomy</td><td>Keyword/taxonomy</td><td>Primary bulk discovery (unchanged)</td><td>Low, per-record</td></tr>
+    <tr><td class="strong-cell">OpenAI API</td><td>No — no company DB at all</td><td>N/A (reasoning layer)</td><td>ICP→filter interpretation; bulk verification via Batch API</td><td>Very low (&lt;$1 per 10k companies via Batch + gpt-5-nano)</td></tr>
+    <tr><td class="strong-cell">Exa</td><td>Partial — dedicated 50M+ company vertical with structured entity fields (headcount, funding, HQ)</td><td>Semantic (embeddings) + NL query; no numeric employee/geo pre-filter</td><td>Long-tail semantic discovery (Websets); targeted verification (Contents+Answer)</td><td>Medium ($7/1k search; Websets $49-449+/mo)</td></tr>
+    <tr><td class="strong-cell">Tavily</td><td>No</td><td>AI-augmented keyword aggregation, not confirmed embeddings-based</td><td>Targeted verification (Search→Extract), not discovery</td><td>Low-medium (credit-metered, $0.008-0.016+/call)</td></tr>
+    <tr><td class="strong-cell">Perplexity</td><td>No (finance_search is public-markets-only, not relevant here)</td><td>NL question-answering over live web search</td><td>Selective, high-evidence verification with strong citations</td><td>Medium ($0.01-0.03+ per verification call)</td></tr>
+    <tr><td class="strong-cell">PDL</td><td>Yes — 70M+ companies, native NAICS/SIC, structured firmographics</td><td>Structured Elasticsearch/SQL only — no NL, no semantic, no website reading</td><td><strong>Largely redundant with Explorium for company discovery</strong>; clearest value is person/contact enrichment, out of this audit's scope</td><td>Low-medium, credit-per-record</td></tr>
+  </table></div>
+
+  <h3>Strengths, weaknesses, and role — per provider</h3>
+
+  <div class="finding">
+    <div class="fhead"><h4>OpenAI API</h4><span class="tag tag-new">reasoning layer, not a data source</span></div>
+    <p><strong>Strength:</strong> Structured Outputs give a hard schema-conformance guarantee (never malformed JSON); function calling is a mature, low-risk fit for turning free-text ICP language into structured filter parameters; Batch API halves cost and runs on a separate rate-limit pool, making bulk classification of thousands of companies cost trivial (~$0.25–$3 per 10,000 companies).</p>
+    <p><strong>Weakness:</strong> No company database and no ability to fetch a specific URL's content on its own unless <code>web_search</code> is used — structural conformance is guaranteed, factual correctness is not, and depends entirely on what evidence is in the prompt.</p>
+    <p><strong>Best role:</strong> (a) ICP interpreter — natural language → structured discovery parameters; (b) cheap bulk-tier classifier over evidence someone else fetched, with a mandatory confidence field to escalate ambiguous cases.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Exa</h4><span class="tag tag-new">semantic discovery + targeted verification</span></div>
+    <p><strong>Strength:</strong> the only candidate with both a purpose-built company-search vertical (structured entity fields: headcount, funding, HQ, founded year) <em>and</em> genuine embeddings-based semantic matching, explicitly benchmarked against obscure/long-tail companies rather than famous ones. <code>Contents</code> + <code>Answer</code> with a steerable <code>summary.query</code> is well-suited to the D2C/agency verification question specifically, with cited, schema-constrained output.</p>
+    <p><strong>Weakness:</strong> no numeric employee-count or hard geography pre-filter (expressed only as NL text in the query); bulk discovery at scale requires the separate Websets product with its own subscription pricing, not the pay-as-you-go Search API.</p>
+    <p><strong>Best role:</strong> secondary semantic-discovery branch for recall on companies Explorium's taxonomy/keyword search structurally can't reach, and as the verification engine for ambiguous candidates.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Tavily</h4><span class="tag tag-new">verification/enrichment utility</span></div>
+    <p><strong>Strength:</strong> mature, well-documented Search→Extract→Crawl toolchain explicitly recommended by Tavily itself for due-diligence/enrichment use cases; full-page content extraction (not just snippets), with an "advanced" mode for tables; clean per-result citation URLs.</p>
+    <p><strong>Weakness:</strong> no structured company database, no confirmed embeddings-based semantic search (its own docs describe "proprietary AI" reranking over live web results, not an explicit neural index — genuinely more ambiguous in its own documentation than Exa's positioning); no employee/industry filters; geography is a soft ranking boost only, not a hard filter; no bulk/batch endpoint.</p>
+    <p><strong>Best role:</strong> a credit-efficient alternative or complement to Exa/Perplexity specifically for the "read this company's website" step of verification — narrower in scope than Exa (no company index of its own) but well-documented for exactly this sub-task.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>Perplexity</h4><span class="tag tag-new">high-evidence selective verification</span></div>
+    <p><strong>Strength:</strong> genuine structured citations (per-claim URL annotations with character offsets, plus a full source list) — the strongest audit trail of any candidate; <code>fetch_url</code> + <code>web_search</code> in one orchestrated call is architecturally exactly the "read a specific company's site, corroborate with the wider web" pattern this verification step needs; structured JSON-schema output supported.</p>
+    <p><strong>Weakness:</strong> no structured filters of any kind (no discovery capability); multi-second-to-tens-of-seconds latency per call; QPS caps at low spend tiers (1 QPS at Tier 0); meaningfully more expensive per call than Exa/Tavily for the same job.</p>
+    <p><strong>Best role:</strong> a small, low-volume "second opinion with the strongest citation trail" tier for the genuinely hardest, highest-stakes ambiguous cases — not a default verification path for every borderline candidate.</p>
+  </div>
+
+  <div class="finding">
+    <div class="fhead"><h4>People Data Labs</h4><span class="tag tag-fail">not recommended for this problem</span></div>
+    <p><strong>Strength:</strong> larger raw company count than Explorium (70M+ claimed vs. Explorium's ~30M), native NAICS/SIC codes, mature bulk-enrichment endpoints, and by far the strongest person/contact-enrichment API of the five — genuinely complementary to Unipile/person discovery, just outside this audit's company-discovery scope.</p>
+    <p><strong>Weakness — decisive for this problem:</strong> no natural-language query, no semantic search, no website-content reading, confirmed absent. It is architecturally the same category of tool as Explorium — structured taxonomy lookup — and reviewer commentary suggests its company-level data (as opposed to person data) is comparatively thin for smaller/obscure companies. It cannot answer "is this company actually D2C" any better than Explorium's own industry field already can, because it has no mechanism beyond the same class of categorical proxy.</p>
+    <p><strong>Best role:</strong> none identified for company discovery or verification specifically. Its clearest value (person/contact enrichment) is out of this audit's stated scope and would need its own evaluation against Unipile.</p>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="sec-head"><span class="sec-num">4</span><h2>Recommended architecture</h2></div>
+  <p class="lede">The user's hypothesis is close to right, with two corrections: Exa (not a generic "web/semantic discovery" black box) is the specific right tool for the semantic branch, and the "AI verification" stage should route through the <em>existing</em> Phase 16 LLM qualification interface rather than a new bolt-on stage — this is exactly the interface it was designed for.</p>
+
+  <div class="pipeline vertical">
+    <div class="step existing"><b>USER ICP</b>Unchanged — CanonicalHardRules + CanonicalSoftPreferences</div>
+    <div class="arrow">↓</div>
+    <div class="step new"><b>NEW · ICP interpreter (OpenAI, function calling)</b>NL ICP text → structured discovery parameters. Runs ONCE per ICP, not per candidate. Output feeds the existing build_company_discovery_query — does not replace it.</div>
+    <div class="arrow">↓</div>
+    <div class="branch-label">discovery strategy fans out into two independent branches, run in parallel:</div>
+    <div class="step existing"><b>Explorium structured discovery — UNCHANGED</b>linkedin_category → naics_category → keyword fallback, exactly as today</div>
+    <div class="step new"><b>NEW · Exa semantic discovery (bounded)</b>Company vertical / findSimilar, capped result count, ONLY when structured Explorium branches under-deliver against target — never runs unconditionally</div>
+    <div class="arrow">↓</div>
+    <div class="step existing"><b>DOMAIN DEDUP — reuses existing code</b>app/services/company_identity.py::normalize_domain as the merge key across both branches</div>
+    <div class="arrow">↓</div>
+    <div class="step existing"><b>Evidence import — UNCHANGED</b>Explorium-sourced fields exactly as today; Exa-sourced candidates get SEARCH_RESULT/PROVIDER_API evidence per the existing evidence-policy.md taxonomy</div>
+    <div class="arrow">↓</div>
+    <div class="step existing"><b>Hard-rule qualification — UNCHANGED, UNTOUCHED</b>evaluate_hard_rules stays deterministic, code-only, final authority — per quality-contract.md §1</div>
+    <div class="arrow">↓</div>
+    <div class="step new"><b>NEW · Selective AI verification — ONLY for HOLD/ambiguous PASS</b>Wires a real provider into the EXISTING llm_qualification.py / LLMProvider interface (currently mock-only). Exa Contents+Answer as default; Perplexity/Tavily as escalation for the hardest cases. Never runs on a FAIL — structurally blocked exactly as today.</div>
+    <div class="arrow">↓</div>
+    <div class="step existing"><b>QUALIFIED COMPANIES → existing ranking → Unipile</b>No change to downstream consumers</div>
+  </div>
+
+  <h3>Why each new component exists, specifically</h3>
+  <ul>
+    <li><strong>OpenAI as ICP interpreter</strong> — solves "natural-language ICP understanding" directly, and only. It runs once per ICP submission, not once per candidate, so its cost is negligible regardless of batch size. It produces structured parameters that feed the <em>existing</em> query builder; it does not gain authority over discovery or qualification.</li>
+    <li><strong>Exa as a bounded secondary discovery branch</strong> — solves the recall problem for companies outside Explorium's taxonomy vocabulary or index, using genuine semantic matching rather than another keyword search. Bounded explicitly: only invoked when the Explorium branches, after their existing pagination/branch-merge logic, haven't produced enough candidates against the requested target — mirroring the "under-delivery is expected, never forced" principle already in <code>batch-contract.md</code>, extended to mean "reach for the expensive branch only when the cheap one is insufficient," not "always run both."</li>
+    <li><strong>Selective AI verification wired into the existing Phase 16 interface</strong> — solves the D2C/FMCG problem (Section 6) directly. It never runs on every candidate — only on candidates the deterministic hard-rule engine already marked HOLD, or PASS candidates whose only supporting industry evidence came from Explorium's keyword-fallback tier (a signal already present in evidence records today, since <code>evidence_import.py</code> already tags source/provider per record).</li>
+  </ul>
+
+  <div class="callout warn">
+    <p class="label">What this architecture deliberately does NOT do</p>
+    <p>It does not give any LLM output authority to override a hard-rule FAIL, does not replace Explorium as primary discovery, does not run any paid provider on every candidate, and does not introduce a new evidence taxonomy — everything routes through <code>evidence-policy.md</code>'s existing <code>SEARCH_RESULT</code>/<code>PROVIDER_API</code> source types and <code>quality-contract.md</code>'s existing hard/soft separation.</p>
+  </div>
+</section>
+
+<section id="cost">
+  <div class="sec-head"><span class="sec-num">5</span><h2>Cost-control strategy</h2></div>
+  <p class="lede">The funnel principle: each stage only processes what the previous stage couldn't resolve. Nothing expensive runs on every candidate.</p>
+
+  <div class="tablewrap"><table>
+    <tr><th>Stage</th><th>Runs on</th><th>Volume, typical batch of 20-100 discovered</th><th>Never runs when</th></tr>
+    <tr><td class="strong-cell">OpenAI ICP interpreter</td><td>The ICP submission itself</td><td>1 call, once per ICP (not per candidate)</td><td>N/A — always cheap regardless of batch size</td></tr>
+    <tr><td class="strong-cell">Explorium structured discovery</td><td>Every discovery round</td><td>Unchanged — as today</td><td>Never skipped; remains the primary path always</td></tr>
+    <tr><td class="strong-cell">Exa semantic discovery</td><td>Only the shortfall between target and what Explorium returned</td><td>0 calls if Explorium alone hits target; otherwise capped at the shortfall count</td><td>Explorium already delivered the requested count</td></tr>
+    <tr><td class="strong-cell">Evidence import, hard rules</td><td>Every candidate that entered the pool</td><td>Unchanged — deterministic, no external cost</td><td>Never skipped</td></tr>
+    <tr><td class="strong-cell">AI verification (Exa Contents+Answer default)</td><td>HOLD candidates, or PASS candidates whose only industry evidence is keyword-fallback-sourced</td><td>Realistically a minority of the batch — most PASS candidates have clean structured-tier evidence and skip this entirely</td><td>Candidate already FAILed hard rules; candidate's evidence came from linkedin_category/naics_category (already high-confidence, per evidence_engine.py's TRUSTED_STRUCTURED_FIELDS)</td></tr>
+    <tr><td class="strong-cell">Perplexity/Tavily escalation</td><td>Only verification calls that come back with low self-reported confidence or still-ambiguous after the default pass</td><td>A small fraction of an already-small verification set</td><td>The default verification pass already resolved the question with reasonable confidence</td></tr>
+  </table></div>
+
+  <p><strong>Concrete worked example:</strong> a batch requesting 50 accepted companies, where Explorium alone discovers 60 raw candidates (typical over-discovery to survive attrition) and 12 of them land on HOLD or carry only keyword-fallback industry evidence: OpenAI runs once (ICP interpretation), Exa discovery runs zero times (target already met), and the verification stage runs on 12 candidates, not 60 — at roughly $1-$5 in Exa Contents+Answer cost per company (well under $50 total), with Perplexity/Tavily escalation touching perhaps 2-3 of the hardest cases at $0.01-0.03 each. The expensive providers never see the 48 candidates that were already unambiguous.</p>
+
+  <p>A hard per-batch budget ceiling for external providers is not currently defined anywhere in the codebase — <code>batch-contract.md</code> references "provider budget" as a concept but doesn't quantify one. This proposal treats defining that ceiling as part of the smallest first implementation (Section 7), not something to leave implicit.</p>
+</section>
+
+<section id="d2c">
+  <div class="sec-head"><span class="sec-num">6</span><h2>The D2C/FMCG test</h2></div>
+  <p class="lede">The failure mode: an ICP asks for "D2C/FMCG brands." Explorium's structured taxonomy has no exact label for that phrasing, so the term falls to <code>website_keywords</code>, which matches any site mentioning "D2C" or "FMCG" — surfacing marketing agencies and consultancies whose service pages describe working <em>with</em> D2C/FMCG clients, not companies that <em>are</em> one.</p>
+
+  <h3>How this architecture prevents the false positive — without ICP-specific hardcoding</h3>
+  <ol>
+    <li><strong>Discovery still lets the agency through</strong> — this proposal doesn't change Explorium's discovery-time behavior, deliberately (Section 8: no architecture replacement). The agency still enters the candidate pool, exactly as today.</li>
+    <li><strong>Its evidence is honestly weak, by an existing mechanism.</strong> <code>evidence_engine.py</code> already only trusts a single Explorium sighting as <code>SUPPORTED_STRUCTURED</code> for <code>industry</code> and <code>country</code> specifically <em>when it came from the structured tiers</em>. A keyword-fallback-sourced industry match is exactly the kind of single, unstructured sighting this mechanism was built to treat cautiously — no new logic needed, only a way to tell (at the evidence-record level) which Explorium branch produced a given company, which is already implicit in which filter tier matched.</li>
+    <li><strong>The hard rule already can't rubber-stamp it.</strong> <code>hard_rule_engine.py::_evaluate_choice_field</code> does exact-string equality against the allowed industry list — "Marketing Agency" (the agency's real, evidenced industry, once any evidence exists for it) does not equal "D2C" or "FMCG," so it FAILs or HOLDs on its own, independent of anything new.</li>
+    <li><strong>Where it actually slips through today: when the agency's evidenced <code>industry</code> field itself gets set to something ambiguous or absent</strong>, e.g. Explorium returns a generic "Retail" or "Consumer Goods" naics_description that isn't specific enough for the exact-match rule to reject, and the candidate lands on HOLD rather than a clean FAIL. <strong>This is exactly the HOLD population the new verification stage targets</strong> — not a special D2C/FMCG rule, but the same generic "evidence didn't clear the bar, and there's a reachable-cost way to research further" case the Quality Contract already anticipates (§2, outcome 1: "HOLD the lead and schedule further research, if more evidence is plausibly obtainable").</li>
+    <li><strong>Verification asks the generic question, not a D2C-specific one.</strong> The prompt to Exa/Perplexity is never "is this a D2C company" — it's the same shape for every vertical: "does this company manufacture/sell its own products, or does it provide services to other companies in this space?" (a service-vs-principal distinction), with the ICP's specific industry terms passed as context, not hardcoded into branching logic. This generalizes to any ICP where the keyword-fallback tier risks conflating "mentions X" with "is X" — SaaS-for-healthcare vs. a healthcare provider, fintech-consulting vs. a fintech company, and so on — without a single ICP-specific code path.</li>
+    <li><strong>The verdict feeds back through the existing, not a new, gate.</strong> The verification call's structured output (service-vs-principal classification + confidence + cited evidence) becomes a new evidence record via the existing evidence pipeline, and the existing hard-rule/HOLD-resolution logic decides PASS/FAIL/HOLD from there — the LLM never directly emits PASS/FAIL/HOLD itself, per Phase 16's own already-built anti-fabrication design and per <code>quality-contract.md</code>'s rule that hard rules are "never [evaluated] by an LLM."</li>
+  </ol>
+
+  <h3>Would it still find legitimate D2C companies?</h3>
+  <p>Yes, by construction: a genuine D2C brand's own website reads as "we manufacture and sell our own products directly to consumers" — the same generic service-vs-principal question resolves the opposite way, with equally strong cited evidence, and the candidate proceeds to PASS rather than staying stuck on an unresolved HOLD. Nothing about this mechanism makes false negatives more likely than the current keyword-fallback-only system; it only adds a second opinion for the ambiguous middle, which today has no resolution mechanism beyond an indefinite HOLD.</p>
+</section>
+
+<section id="plan">
+  <div class="sec-head"><span class="sec-num">7</span><h2>Implementation plan — phased, not yet started</h2></div>
+  <p class="lede">Ordered so each phase is independently shippable, testable, and reversible. Nothing here is implemented — this is sequencing only.</p>
+
+  <div class="phasegrid">
+    <div class="phase first">
+      <div class="pnum">FIRST</div>
+      <div>
+        <h4>Wire ONE real LLMProvider into the existing Phase 16 interface, gated to HOLD only, behind a feature flag</h4>
+        <p>The smallest possible first step: implement a single new <code>LLMProvider</code> subclass (Exa- or OpenAI-backed) in <code>llm_providers/</code>, following the exact pattern <code>default_registry.py</code>'s own docstring already describes. Route it only through the existing HOLD path, not PASS/FAIL. No discovery changes, no new evidence source types, no query-builder changes. Fully reversible via the existing dependency-override pattern already used in tests.</p>
+        <p><strong>Why first:</strong> it's the one component with zero blast radius — it can only affect candidates already stuck at HOLD, which today have no automated resolution path at all, so there's no existing behavior to regress.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="pnum">2</div>
+      <div>
+        <h4>Define and enforce a quantified per-batch provider budget</h4>
+        <p>Turn <code>batch-contract.md</code>'s unquantified "provider budget" concept into an actual ceiling (e.g., max N verification calls per batch, hard-stop, reported honestly per the batch contract's existing metrics model) before any provider that costs real money per call is allowed to run unconditionally.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="pnum">3</div>
+      <div>
+        <h4>Tag evidence records by discovery branch/tier at the point of creation</h4>
+        <p>A small addition to <code>evidence_import.py</code> so a company's <code>industry</code> evidence record carries whether it came from linkedin_category, naics_category, or the keyword-fallback tier — the signal the verification-routing logic in Section 4/6 needs to identify "PASS but only via weak evidence" candidates, not just HOLD ones.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="pnum">4</div>
+      <div>
+        <h4>OpenAI ICP interpreter, additive and optional</h4>
+        <p>A new pre-discovery step that proposes structured filter parameters from free-text ICP input, shown to the user for confirmation before <code>build_company_discovery_query</code> runs — never silently overriding what a user typed into structured fields directly.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="pnum">5</div>
+      <div>
+        <h4>Bounded Exa semantic discovery branch, shortfall-triggered only</h4>
+        <p>Added only after Phases 1-3 have real production signal on how often HOLD/weak-evidence verification actually resolves correctly — recall improvements are the highest-risk, highest-cost component and should be sequenced last, once the verification stage it depends on for quality control is already proven.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="pnum">6</div>
+      <div>
+        <h4>Escalation tier (Perplexity/Tavily) for low-confidence verification results</h4>
+        <p>Only after Phase 1's default verification provider has enough real volume to show how often it self-reports low confidence — sized to actual need, not speculative.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="risk">
+  <div class="sec-head"><span class="sec-num">8</span><h2>Risk check</h2></div>
+  <ul class="checklist">
+    <li><span class="mark ok">✓</span><span><strong>Does not break existing discovery</strong> — Explorium's query construction, branch precedence, pagination, and dedup are untouched in every phase; the new discovery branch (Phase 5) is additive and shortfall-triggered, never a replacement.</span></li>
+    <li><span class="mark ok">✓</span><span><strong>Does not remove Explorium</strong> — remains the sole primary discovery provider throughout; nothing in this proposal reduces its role.</span></li>
+    <li><span class="mark ok">✓</span><span><strong>Does not redesign the whole architecture</strong> — the new verification stage reuses the existing Phase 16 <code>LLMProvider</code> interface exactly as designed; domain dedup reuses <code>company_identity.py</code>; evidence reuses the existing <code>SEARCH_RESULT</code>/<code>PROVIDER_API</code> source types. No new abstraction layer is proposed.</span></li>
+    <li><span class="mark ok">✓</span><span><strong>Does not introduce unbounded API calls</strong> — every new external call is scoped: the ICP interpreter runs once per ICP; Exa discovery is shortfall-capped; verification runs only on HOLD/weak-evidence candidates with a proposed hard per-batch ceiling (Phase 2).</span></li>
+    <li><span class="mark ok">✓</span><span><strong>Does not create ICP-specific hardcoding</strong> — the verification prompt asks a generic service-vs-principal question with ICP terms as context, not a D2C/FMCG-specific branch; the same mechanism generalizes to any industry where keyword fallback risks conflating "mentions X" with "is X."</span></li>
+    <li><span class="mark ok">✓</span><span><strong>Does not weaken hard-rule authority</strong> — <code>evaluate_hard_rules</code> is not modified in any phase; the LLM never emits PASS/FAIL/HOLD directly, only evidence that feeds the existing deterministic engine, per <code>quality-contract.md</code>'s explicit rule that hard rules are "never [evaluated] by an LLM, a score, or an aggregate confidence value."</span></li>
+  </ul>
+
+  <div class="verdict">
+    <p class="q">Is this the right architecture, or just the user's hypothesis confirmed by default?</p>
+    <p>The hypothesis was directionally right but under-specified in two places this audit corrects: it named "Exa/etc." generically for the web/semantic branch, when the research shows Exa specifically (not Tavily, not Perplexity, not PDL) is the one candidate built for structured-plus-semantic company discovery — the others are verification-only tools, and PDL adds no real capability over Explorium for this problem at all. And it proposed the AI verification step as a new stage, when the codebase already contains a fully-designed, currently-inert slot for exactly that role (Phase 16's <code>LLMProvider</code> interface) — building a new stage instead of wiring the existing one would be the unnecessary architecture change Section 8 rules out.</p>
+    <p>The corrected recommendation: keep the funnel shape from the hypothesis, but implement it as <strong>wiring, not rebuilding</strong> — one new provider class behind an existing interface first, a quantified cost ceiling second, and the new discovery branch last, after the verification stage has proven itself on real HOLD candidates.</p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Architecture audit only. No files modified. No live provider calls made against Explorium, OpenAI, Exa, Tavily, Perplexity, or PDL. Provider capability and pricing claims are sourced from each vendor's live documentation as of Sept 2026; figures marked as third-party/inferred in the underlying research are called out inline rather than presented as confirmed.
+</footer>

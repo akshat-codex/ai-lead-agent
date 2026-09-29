@@ -1,0 +1,45 @@
+{
+  "provider_id": "gemini-llm-v1",
+  "model_id": "gemini-3.6-flash",
+  "captured_http_status": 200,
+  "captured_usage_metadata": {
+    "promptTokenCount": 299,
+    "candidatesTokenCount": 102,
+    "totalTokenCount": 1025,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 299
+      }
+    ],
+    "thoughtsTokenCount": 624,
+    "serviceTier": "standard"
+  },
+  "captured_model_version": "gemini-3.6-flash",
+  "strategy_status": "SUCCESS",
+  "industry_terms": [
+    "Healthcare",
+    "SaaS",
+    "Healthtech",
+    "Digital Health",
+    "Healthcare Technology",
+    "Software as a Service"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 0.95,
+  "reasoning": "Extracted core industries 'Healthcare' and 'SaaS' from the input and expanded them with closely related domain synonyms like 'Healthtech', 'Digital Health', and 'Software as a Service'.",
+  "error_message": null,
+  "final_merged_industries": [
+    "Healthcare",
+    "SaaS",
+    "Healthtech",
+    "Digital Health",
+    "Healthcare Technology",
+    "Software as a Service"
+  ],
+  "final_merged_company_types": [],
+  "final_merged_exclusions": []
+}

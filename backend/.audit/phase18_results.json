@@ -1,0 +1,3330 @@
+[
+  {
+    "icp_name": "Healthcare SaaS (US, 50-500)",
+    "live": true,
+    "hard_rules": {
+      "industry": [
+        "Healthcare"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "min_employees": 50,
+      "max_employees": 500
+    },
+    "target_count": 10,
+    "discovered_count": 20,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 10,
+      "HOLD": 0,
+      "FAIL": 0,
+      "null": 0
+    },
+    "outcome_counts": {
+      "ACCEPTED": 10
+    },
+    "quality_label_counts": {
+      "STRONG": 10,
+      "REVIEW": 0,
+      "REJECT": 0
+    },
+    "quality_scores_by_label": {
+      "STRONG": [
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927
+      ],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured"
+      ],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "people_discovery_reached_count": 1,
+    "eligible_for_people_discovery_count": 10,
+    "total_items": 10,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "6c0b14be-f2fe-4846-95c0-bb6db360f711",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 2,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "0641f35a-0c1a-4df2-8878-531aca750133",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 3,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "403a6c65-b487-43fe-ab6c-e1c3666ca199",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 4,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "03af114a-2363-4ce7-893d-6fe99dc63807",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 5,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "64fb9e02-1740-4196-86a3-be831a496eda",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "0c904c77-3559-47b9-a2a6-186e544d3bbb",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "ae4758ba-2188-4d2a-b1f2-eac2424280c1",
+        "company_id": "0b19ed15-85e9-4ec8-ae8d-1546ed20e7e6",
+        "person_id": "be43d40f-0946-422a-a1cd-dbd10486256c",
+        "lead_id": "a46c020f-257c-4e8d-95cd-724673070000",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "0d733bd5-0cd5-4668-a207-098666da5300",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "9fe8f147-8c83-49cb-9835-41ab6623be9f",
+        "company_id": "6c0b14be-f2fe-4846-95c0-bb6db360f711",
+        "person_id": null,
+        "lead_id": "3370b21f-2206-45b6-ae3e-5dd8e555abbb",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "85bbd2c8-3321-40fb-8529-d4832357ef03",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "7f6699af-4c93-420b-b32f-88b689fb9d5d",
+        "company_id": "879ef360-8e2d-4e74-9066-ca1987161d69",
+        "person_id": null,
+        "lead_id": "f25a9f89-5982-4a46-bbc0-798292fb54c6",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "effb1d36-bde4-4ddc-ae89-e0f3410b0184",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "f1bf2bbb-3f83-439b-9929-9565fc8cb56a",
+        "company_id": "0641f35a-0c1a-4df2-8878-531aca750133",
+        "person_id": null,
+        "lead_id": "40199c16-4fcb-4a3f-b28a-97927e20b836",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "849b993f-f342-4a3c-9c40-0d9b96caefb8",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "f54369ab-2537-4612-bd45-dc2e8ff695e3",
+        "company_id": "64fb9e02-1740-4196-86a3-be831a496eda",
+        "person_id": null,
+        "lead_id": "9d6e7089-9801-41d0-81a0-95a4f798495b",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "6ebe4ff0-2530-47a8-8d6b-4678be637333",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "70c7591a-757d-4cc8-b73f-2454ce24bc87",
+        "company_id": "d66862df-84b0-4f01-ba94-ab8aad9fff22",
+        "person_id": null,
+        "lead_id": "a8e83671-98a2-4b65-afcb-9c1ea63e141c",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "b9172583-c418-458b-95e3-1485fc1c3cd0",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "54c5c548-5290-4172-8a85-05cf8fc0f32f",
+        "company_id": "403a6c65-b487-43fe-ab6c-e1c3666ca199",
+        "person_id": null,
+        "lead_id": "4e81351d-2808-4711-9064-b75915f4040c",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "789a0132-e5c8-4654-b88e-c70ebb1a3e76",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "5979162f-784a-4ea4-9cf8-6b859b3fa435",
+        "company_id": "152eb660-0e3e-429f-82ab-69c3f53e0777",
+        "person_id": null,
+        "lead_id": "a6dd62da-cf20-429d-9a87-069ffac71e22",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "bd9647ec-acf0-4953-87a1-9df576942769",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "3d2114f0-2df1-4002-835e-da3482150462",
+        "company_id": "03af114a-2363-4ce7-893d-6fe99dc63807",
+        "person_id": null,
+        "lead_id": "602dc459-2c45-49e0-9baa-4410c5e21877",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "af51f121-83c1-40c4-aaa3-7f5717d8111e",
+        "batch_id": "6a598a77-e83f-43d6-b997-72097a9d5316",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "source_candidate_id": "847f544c-9c45-44fe-a310-1c8650bb8ea5",
+        "company_id": "811ad674-6b49-4325-89d2-426bcd9b4faf",
+        "person_id": null,
+        "lead_id": "f5ec09ec-0636-4916-b9b9-be74ba23db13",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:05",
+        "updated_at": "2026-09-01T19:00:06"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "fda229c7-9691-458a-bcbc-d4ea2e73913c",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "0b19ed15-85e9-4ec8-ae8d-1546ed20e7e6",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "46c0c564-a3d6-4bae-a06c-2f84959fca57",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "6c0b14be-f2fe-4846-95c0-bb6db360f711",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "abddfef4-22b6-40b0-863c-761b1af6d3cc",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "879ef360-8e2d-4e74-9066-ca1987161d69",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "34bed173-3332-4ac3-86f5-e6960aa153bf",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "0641f35a-0c1a-4df2-8878-531aca750133",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "bf557e84-d921-4bc2-986d-8517bca0de35",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "64fb9e02-1740-4196-86a3-be831a496eda",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:05"
+      },
+      {
+        "id": "5678360d-60aa-499d-849e-ea89d6ebbac9",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "d66862df-84b0-4f01-ba94-ab8aad9fff22",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "ea89521e-1061-432a-beb5-d853acfb4e8d",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "403a6c65-b487-43fe-ab6c-e1c3666ca199",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "39f0d83b-2aca-4829-ba92-902807a70bf8",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "152eb660-0e3e-429f-82ab-69c3f53e0777",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "4d7285ab-375d-4b72-ac22-2b4348ae0df2",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "03af114a-2363-4ce7-893d-6fe99dc63807",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:06"
+      },
+      {
+        "id": "ea7dd2ee-3b11-4f98-b4c8-3d56bd4bd837",
+        "icp_id": "2e6865e5-7cae-42b3-b6e0-739af70f073b",
+        "icp_version": 1,
+        "company_id": "811ad674-6b49-4325-89d2-426bcd9b4faf",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:06"
+      }
+    ]
+  },
+  {
+    "icp_name": "Fintech Series B+ (US, 100-1000)",
+    "live": true,
+    "hard_rules": {
+      "industry": [
+        "Financial Services"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "min_employees": 100,
+      "max_employees": 1000
+    },
+    "target_count": 10,
+    "discovered_count": 20,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 10,
+      "HOLD": 0,
+      "FAIL": 0,
+      "null": 0
+    },
+    "outcome_counts": {
+      "ACCEPTED": 10
+    },
+    "quality_label_counts": {
+      "STRONG": 10,
+      "REVIEW": 0,
+      "REJECT": 0
+    },
+    "quality_scores_by_label": {
+      "STRONG": [
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927,
+        85.25925925925927
+      ],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured",
+        "structured"
+      ],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "people_discovery_reached_count": 1,
+    "eligible_for_people_discovery_count": 10,
+    "total_items": 10,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "337a07cf-03da-4914-b8ef-c1395b5296a1",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 2,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "6c75ea85-6ee5-4b14-b924-dd3ce4814c92",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 3,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "31af3e79-34c9-400a-ae2e-326b97b5354f",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 4,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "e59361d1-77f9-4916-bbaa-2038ac5d230c",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      },
+      {
+        "rank": 5,
+        "tier": "QUALIFIED_STRONG",
+        "company_id": "72d42eec-08bb-470a-942f-686e4f5d0f83",
+        "final_score": 76.44444444444444,
+        "company_quality_score": 85.25925925925927,
+        "company_quality_label": "STRONG"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "63df7b16-837a-4005-9aa8-df7acc3754e9",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "dad5030e-1c31-48ca-9da0-60f3a8e1607b",
+        "company_id": "8ca376e5-1dd7-4b07-8386-f2af423616ad",
+        "person_id": "9c45e332-d485-4c72-ac01-1a062dbe5273",
+        "lead_id": "9b499688-28ab-42cf-97e8-49f71cf8adcb",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "fde6083e-e518-45d7-abad-62d349884dd5",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "7a50e445-5b83-493a-9cfa-106998e19796",
+        "company_id": "e59361d1-77f9-4916-bbaa-2038ac5d230c",
+        "person_id": null,
+        "lead_id": "69eab84f-1c26-4359-9ae0-b6396f58fae8",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "c36c27a9-9d34-460d-bb63-57a1950aa83b",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "64dcbe4e-82c9-442b-95c2-0c27b4156ec1",
+        "company_id": "31af3e79-34c9-400a-ae2e-326b97b5354f",
+        "person_id": null,
+        "lead_id": "401da441-be68-42c6-aeb4-694b0c0214ee",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "1f9457ce-dcec-4007-8708-2afdf7e7c5be",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "7b0f61ca-eca1-42a2-8902-27ade08ea1e5",
+        "company_id": "52fcbc7b-a2cd-4a9a-9dd4-d41ef1337e13",
+        "person_id": null,
+        "lead_id": "bbb3364b-c04c-4eb7-9a6b-7e0a5dcb677a",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "1eb208f4-d30d-4bba-8e6b-038713925b81",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "33258376-a020-46c9-8b47-16e77ebeb033",
+        "company_id": "337a07cf-03da-4914-b8ef-c1395b5296a1",
+        "person_id": null,
+        "lead_id": "0516f901-4cd4-4e62-81ba-ecbdd0b74ba5",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "6650f745-f1ab-4fed-ad82-42a815e1ca08",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "a09a7b78-8637-4af1-95ca-b77a0184bae3",
+        "company_id": "07d029dc-aa6d-4f29-a8b8-a7eac3087918",
+        "person_id": null,
+        "lead_id": "f12007a9-6ceb-4fc0-97da-ed7415c3ec7c",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "cf3b7f77-2bcd-4aaa-aa51-249711e60ff0",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "8818a763-b066-4023-94e1-8e6f14e2e80b",
+        "company_id": "6c75ea85-6ee5-4b14-b924-dd3ce4814c92",
+        "person_id": null,
+        "lead_id": "11d518a6-ede8-4791-a249-1f9eecf6516f",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "6f818c77-fc3b-4d18-bfa5-42c33a753f99",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "96eb358d-25db-4601-87d9-c56f7195d506",
+        "company_id": "8b7da164-80bf-4995-ac52-e23fab5e29a6",
+        "person_id": null,
+        "lead_id": "813a2a6b-f81d-4c6b-9591-2deaa13dfa69",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "b1e9f915-05ce-435d-b369-87443c0bc671",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "606200bd-4e1b-464b-af60-055d6e8a984b",
+        "company_id": "1f66100b-fe01-4492-8845-7802d4342f03",
+        "person_id": null,
+        "lead_id": "ade47f0b-8160-4658-a76d-c1e17762cc7d",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "39d394d6-165d-407b-9cb4-84871fbcc889",
+        "batch_id": "e3c1942f-dc6f-41e3-a3e1-49ab107a5fc1",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "source_candidate_id": "77779360-1c33-4806-b10b-2aeb5ca10742",
+        "company_id": "72d42eec-08bb-470a-942f-686e4f5d0f83",
+        "person_id": null,
+        "lead_id": "7daf3e5a-490f-4361-96c4-70fdbd2f6df3",
+        "stage": "DONE",
+        "outcome": "ACCEPTED",
+        "error_message": null,
+        "hard_rule_result": "PASS",
+        "qualification_decision": "GOOD_FIT",
+        "created_at": "2026-09-01T19:00:09",
+        "updated_at": "2026-09-01T19:00:09"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "baaacaba-c802-4bf3-a844-8bf010b19063",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "8ca376e5-1dd7-4b07-8386-f2af423616ad",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "78d666a1-4a02-413f-bb2c-ce971a6b207f",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "e59361d1-77f9-4916-bbaa-2038ac5d230c",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "33012629-d72f-4d38-b656-349db05ce4b4",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "31af3e79-34c9-400a-ae2e-326b97b5354f",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "56ce0502-240f-4151-9571-77e1ac401e8f",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "52fcbc7b-a2cd-4a9a-9dd4-d41ef1337e13",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "39de7288-1902-4cbd-bb10-d4d0bb0424ed",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "337a07cf-03da-4914-b8ef-c1395b5296a1",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "5fd1d1ef-9300-4f25-a363-be8f327729ba",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "07d029dc-aa6d-4f29-a8b8-a7eac3087918",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "ab280d83-862a-48c4-8f55-87423acda648",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "6c75ea85-6ee5-4b14-b924-dd3ce4814c92",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "32d8548a-ba7c-4027-abc2-e71c15ece003",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "8b7da164-80bf-4995-ac52-e23fab5e29a6",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "bba9016d-d064-4082-a7ca-2320f0107334",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "1f66100b-fe01-4492-8845-7802d4342f03",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      },
+      {
+        "id": "1241b6e5-4dfb-4909-abc9-77366f9792e9",
+        "icp_id": "44ee3bf6-8f7b-488e-8f8e-8ba235fdc4ab",
+        "icp_version": 1,
+        "company_id": "72d42eec-08bb-470a-942f-686e4f5d0f83",
+        "hard_rule_result": "PASS",
+        "label": "STRONG",
+        "score": 85.25925925925927,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 100.0,
+            "weight": 0.30000000000000004,
+            "explanation": "3/3 configured hard rules PASS (icp_score=100.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 90.0,
+            "weight": 0.20000000000000004,
+            "explanation": "structured Explorium taxonomy match (linkedin_category/naics_category) \u2014 single resolved category"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.10000000000000002,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is PASS; weighted quality score=85.3 -> STRONG. Signals: icp_fit=100(w=0.30), discovery_provenance=90(w=0.20), evidence_strength=51(w=0.20), employee_range_confidence=100(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=70(w=0.10).",
+        "created_at": "2026-09-01T19:00:09"
+      }
+    ]
+  },
+  {
+    "icp_name": "D2C Skincare (broad, keyword-heavy)",
+    "live": true,
+    "hard_rules": {
+      "industry": [
+        "D2C skincare"
+      ],
+      "geography": [],
+      "min_employees": 1,
+      "max_employees": 10000
+    },
+    "target_count": 8,
+    "discovered_count": 18,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 2,
+      "FAIL": 6,
+      "null": 0
+    },
+    "outcome_counts": {
+      "HELD": 2,
+      "REJECTED": 6
+    },
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 2,
+      "REJECT": 6
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [
+        34.89124044679601,
+        35.420340975896536
+      ],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [
+        "keyword",
+        "keyword"
+      ],
+      "REJECT": [
+        "keyword",
+        "keyword",
+        "keyword",
+        "keyword",
+        "keyword",
+        "keyword"
+      ]
+    },
+    "people_discovery_reached_count": 1,
+    "eligible_for_people_discovery_count": 2,
+    "total_items": 8,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "HOLD",
+        "company_id": "74a3b3b0-cf85-4b66-87b5-1281bbbff8e1",
+        "final_score": null,
+        "company_quality_score": 35.420340975896536,
+        "company_quality_label": "REVIEW"
+      },
+      {
+        "rank": 2,
+        "tier": "HOLD",
+        "company_id": "4b3b11a4-9ebe-4721-9976-fd1f68274b8e",
+        "final_score": null,
+        "company_quality_score": 34.89124044679601,
+        "company_quality_label": "REVIEW"
+      },
+      {
+        "rank": 3,
+        "tier": "HARD_FAILED",
+        "company_id": "b54f504e-4285-4d24-9a5c-44fb76c87535",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      },
+      {
+        "rank": 4,
+        "tier": "HARD_FAILED",
+        "company_id": "0be61b09-73a2-4408-907c-69c9e94c8e29",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      },
+      {
+        "rank": 5,
+        "tier": "HARD_FAILED",
+        "company_id": "78a82cf5-c6c5-4b9c-972e-7b1f73735745",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "2bacb3d0-d27c-43c2-8ed9-c0457c29e6f8",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "4c235f50-4ef0-4648-aa16-919866811057",
+        "company_id": "4b3b11a4-9ebe-4721-9976-fd1f68274b8e",
+        "person_id": "2f65b27c-47f2-4786-aa5b-4cea6d154657",
+        "lead_id": "47d93a0a-56e6-4d26-ac8b-e7c1671bf6dc",
+        "stage": "DONE",
+        "outcome": "HELD",
+        "error_message": null,
+        "hard_rule_result": "HOLD",
+        "qualification_decision": "HOLD",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "c3a03db9-8023-4fc6-b66e-abc680663ad1",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "cbf2a7f0-d1e3-47fe-84ae-b1177d11df14",
+        "company_id": "eb076a47-003d-467c-83f0-568d207b47a3",
+        "person_id": null,
+        "lead_id": "ad079663-10dc-473e-b18d-fba2f45575ce",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "e67bc9b9-0051-465a-a2b8-2757f35df354",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "3ff69ab4-1ddc-4671-a749-f97b17f6a4d7",
+        "company_id": "74a3b3b0-cf85-4b66-87b5-1281bbbff8e1",
+        "person_id": null,
+        "lead_id": "343f6051-eca4-4be3-88f3-7bc49e5f2111",
+        "stage": "DONE",
+        "outcome": "HELD",
+        "error_message": null,
+        "hard_rule_result": "HOLD",
+        "qualification_decision": "HOLD",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "d475366c-3cc4-47f9-85dc-564bdbb8e035",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "521657bd-1d8e-4239-8e57-5016edc5c90c",
+        "company_id": "b54f504e-4285-4d24-9a5c-44fb76c87535",
+        "person_id": null,
+        "lead_id": "1469314a-4ab4-4378-879c-67bb98e80ac4",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "1af102bc-a391-45cf-9bdd-3d6cc297608b",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "e0869a8e-48b7-463d-a07a-09529c782e01",
+        "company_id": "d70db09f-23a5-4f9a-8451-3fef2029b2b9",
+        "person_id": null,
+        "lead_id": "7899747f-199d-4b27-bae1-6d728676b4a8",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "3c147d20-8cdd-431e-99cd-ec84d8a383fb",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "8022a3e3-967e-40c4-9033-a8d0bf61f834",
+        "company_id": "0be61b09-73a2-4408-907c-69c9e94c8e29",
+        "person_id": null,
+        "lead_id": "58c6bb6a-fdd4-433c-80af-6456dd44a83c",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "01efe786-ca2b-48a3-bacf-fc468c8b8d5f",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "6406f154-7784-4786-a336-a7132564fe3a",
+        "company_id": "4570db74-a433-416e-90e6-d9d23fe66953",
+        "person_id": null,
+        "lead_id": "753bd816-5b61-4045-885d-aea4f70db289",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "6d34799b-4dba-4ac3-99db-62d2515e560c",
+        "batch_id": "afb7da3c-0c88-4793-84cd-b5bd6c679824",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "source_candidate_id": "ccc5bdff-65f7-4816-aac1-293ae6128c9f",
+        "company_id": "78a82cf5-c6c5-4b9c-972e-7b1f73735745",
+        "person_id": null,
+        "lead_id": "6cd827e4-4762-4eaa-b8f9-db58a3e14fd7",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "10aa4616-fda7-42dc-bece-e848bfe5b4ca",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "4b3b11a4-9ebe-4721-9976-fd1f68274b8e",
+        "hard_rule_result": "HOLD",
+        "label": "REVIEW",
+        "score": 34.89124044679601,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.33333333333333337,
+            "explanation": "0/2 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.22222222222222227,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 37.01058201058201,
+            "weight": 0.22222222222222227,
+            "explanation": "evidence_score=37.0; missing: business_model, company_type; conflicting: company_identity, country, employee_range, industry, linkedin_id, revenue_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.11111111111111113,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.11111111111111113,
+            "explanation": "21 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is HOLD; weighted quality score=34.9 -> REVIEW. Signals: icp_fit=0(w=0.33), discovery_provenance=45(w=0.22), evidence_strength=37(w=0.22), employee_range_confidence=50(w=0.11), evidence_completeness=100(w=0.11).",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "649c30ba-a4c3-4325-bd68-7e9dc61af3a4",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "eb076a47-003d-467c-83f0-568d207b47a3",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.3,
+            "explanation": "1/2 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.2,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.1,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "6a5b773a-00ed-426d-b86d-8757a82b01af",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "74a3b3b0-cf85-4b66-87b5-1281bbbff8e1",
+        "hard_rule_result": "HOLD",
+        "label": "REVIEW",
+        "score": 35.420340975896536,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.33333333333333337,
+            "explanation": "0/2 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.22222222222222227,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 39.39153439153439,
+            "weight": 0.22222222222222227,
+            "explanation": "evidence_score=39.4; missing: business_model, company_type; conflicting: company_identity, country, employee_range, industry, linkedin_id"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.11111111111111113,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.11111111111111113,
+            "explanation": "12 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is HOLD; weighted quality score=35.4 -> REVIEW. Signals: icp_fit=0(w=0.33), discovery_provenance=45(w=0.22), evidence_strength=39(w=0.22), employee_range_confidence=50(w=0.11), evidence_completeness=100(w=0.11).",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "b2193553-31cf-4029-a51f-f5ab9a2c84b3",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "b54f504e-4285-4d24-9a5c-44fb76c87535",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.3,
+            "explanation": "1/2 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.2,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.1,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "f75d8823-2ff9-4769-9d6e-819c1797a51b",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "d70db09f-23a5-4f9a-8451-3fef2029b2b9",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.3,
+            "explanation": "1/2 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.2,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.1,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "26c35b88-a9a0-42f9-b3f5-329a01a05d24",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "0be61b09-73a2-4408-907c-69c9e94c8e29",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.3,
+            "explanation": "1/2 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.2,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.1,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "de8d3d2a-b3fe-4c45-a956-7714cd393e13",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "4570db74-a433-416e-90e6-d9d23fe66953",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.3,
+            "explanation": "1/2 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.2,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.1,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "1e166abe-9ae3-4a7f-961b-1a42c2938a42",
+        "icp_id": "26ec8625-ff3e-40b0-8245-d35edeee0754",
+        "icp_version": 1,
+        "company_id": "78a82cf5-c6c5-4b9c-972e-7b1f73735745",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.3,
+            "explanation": "1/2 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: D2C skincare"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 51.2962962962963,
+            "weight": 0.2,
+            "explanation": "evidence_score=51.3; missing: business_model, company_type"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 70.0,
+            "weight": 0.1,
+            "explanation": "7 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      }
+    ]
+  },
+  {
+    "icp_name": "Manufacturing Mid-Market [MOCK]",
+    "live": false,
+    "hard_rules": {
+      "industry": [
+        "Manufacturing"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "min_employees": 200,
+      "max_employees": 2000
+    },
+    "target_count": 5,
+    "discovered_count": 2,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 0,
+      "FAIL": 2,
+      "null": 0
+    },
+    "outcome_counts": {
+      "REJECTED": 2
+    },
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 0,
+      "REJECT": 2
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": [
+        "keyword",
+        "keyword"
+      ]
+    },
+    "people_discovery_reached_count": 0,
+    "eligible_for_people_discovery_count": 0,
+    "total_items": 2,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "HARD_FAILED",
+        "company_id": "35701678-5be2-413f-80b3-bf3daffdb0f1",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      },
+      {
+        "rank": 2,
+        "tier": "HARD_FAILED",
+        "company_id": "f7407282-7142-4ff9-961b-4c6e2a0b8e5e",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "20f67683-4aa8-4276-be04-ef75fa6c81a1",
+        "batch_id": "80925659-f4c1-448c-a2a5-d5cd19dac8bf",
+        "icp_id": "fe493116-a9e3-4867-9709-446b87a0c1cd",
+        "icp_version": 1,
+        "source_candidate_id": "b5632a0d-75a1-445d-8322-1ff985764843",
+        "company_id": "35701678-5be2-413f-80b3-bf3daffdb0f1",
+        "person_id": null,
+        "lead_id": "3c119285-803e-4eb9-848b-c857b51abf77",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "ae37a9ce-8aa7-48f9-8294-36b41ea035d4",
+        "batch_id": "80925659-f4c1-448c-a2a5-d5cd19dac8bf",
+        "icp_id": "fe493116-a9e3-4867-9709-446b87a0c1cd",
+        "icp_version": 1,
+        "source_candidate_id": "f342535a-be78-44ca-8164-c50b376d672d",
+        "company_id": "f7407282-7142-4ff9-961b-4c6e2a0b8e5e",
+        "person_id": null,
+        "lead_id": "9b43da2d-91e9-461b-bec7-421d808bef4a",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:14"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "51992b8a-95ac-45a4-99e3-1b36a188d494",
+        "icp_id": "fe493116-a9e3-4867-9709-446b87a0c1cd",
+        "icp_version": 1,
+        "company_id": "35701678-5be2-413f-80b3-bf3daffdb0f1",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 33.333333333333336,
+            "weight": 0.3,
+            "explanation": "1/3 configured hard rules PASS (icp_score=33.3)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 69.81481481481482,
+            "weight": 0.2,
+            "explanation": "evidence_score=69.8; missing: revenue_range; conflicting: employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "12 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      },
+      {
+        "id": "67513ca7-383a-460c-b6e2-6d10ab895824",
+        "icp_id": "fe493116-a9e3-4867-9709-446b87a0c1cd",
+        "icp_version": 1,
+        "company_id": "f7407282-7142-4ff9-961b-4c6e2a0b8e5e",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.3,
+            "explanation": "0/3 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 68.14814814814815,
+            "weight": 0.2,
+            "explanation": "evidence_score=68.1; missing: revenue_range; conflicting: country, employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "geography rule HOLD (GEOGRAPHY_UNKNOWN)"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "13 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:14"
+      }
+    ]
+  },
+  {
+    "icp_name": "Legal Services Small Firms [MOCK]",
+    "live": false,
+    "hard_rules": {
+      "industry": [
+        "Legal Services"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "min_employees": 5,
+      "max_employees": 50
+    },
+    "target_count": 5,
+    "discovered_count": 2,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 0,
+      "FAIL": 2,
+      "null": 0
+    },
+    "outcome_counts": {
+      "REJECTED": 2
+    },
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 0,
+      "REJECT": 2
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": [
+        "keyword",
+        "keyword"
+      ]
+    },
+    "people_discovery_reached_count": 0,
+    "eligible_for_people_discovery_count": 0,
+    "total_items": 2,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "HARD_FAILED",
+        "company_id": "edec4d3b-0f8f-40ba-a874-74a69f4edb74",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      },
+      {
+        "rank": 2,
+        "tier": "HARD_FAILED",
+        "company_id": "8cfedcbb-921f-484c-baec-c1617100fb43",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "7cca64e4-3738-4061-ae8f-a1c61fe014d9",
+        "batch_id": "1386e9a7-f7aa-4a06-b5cd-6beac8b74368",
+        "icp_id": "abc89cbb-4493-4176-9be6-761aac5ea100",
+        "icp_version": 1,
+        "source_candidate_id": "07f84744-76b3-4e3e-b08b-0c06915c5e65",
+        "company_id": "edec4d3b-0f8f-40ba-a874-74a69f4edb74",
+        "person_id": null,
+        "lead_id": "7ce2ad9e-3b80-42a0-bdfe-ee8f1d83bae8",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "0004d64b-65e0-4b22-80f1-19f262a1e673",
+        "batch_id": "1386e9a7-f7aa-4a06-b5cd-6beac8b74368",
+        "icp_id": "abc89cbb-4493-4176-9be6-761aac5ea100",
+        "icp_version": 1,
+        "source_candidate_id": "127b0bc9-023c-4b6f-88c5-1fbb4f368776",
+        "company_id": "8cfedcbb-921f-484c-baec-c1617100fb43",
+        "person_id": null,
+        "lead_id": "5abb9894-acba-4db5-a546-ce3c96267a3a",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:14",
+        "updated_at": "2026-09-01T19:00:15"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "af544344-a7d2-4db5-a761-b9e66f166677",
+        "icp_id": "abc89cbb-4493-4176-9be6-761aac5ea100",
+        "icp_version": 1,
+        "company_id": "edec4d3b-0f8f-40ba-a874-74a69f4edb74",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 33.333333333333336,
+            "weight": 0.3,
+            "explanation": "1/3 configured hard rules PASS (icp_score=33.3)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 69.81481481481482,
+            "weight": 0.2,
+            "explanation": "evidence_score=69.8; missing: revenue_range; conflicting: employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "12 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "cda46dc5-90cf-4d09-a3db-572f8ff6bc74",
+        "icp_id": "abc89cbb-4493-4176-9be6-761aac5ea100",
+        "icp_version": 1,
+        "company_id": "8cfedcbb-921f-484c-baec-c1617100fb43",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.3,
+            "explanation": "0/3 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 68.14814814814815,
+            "weight": 0.2,
+            "explanation": "evidence_score=68.1; missing: revenue_range; conflicting: country, employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "geography rule HOLD (GEOGRAPHY_UNKNOWN)"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "13 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      }
+    ]
+  },
+  {
+    "icp_name": "EdTech Series A [MOCK]",
+    "live": false,
+    "hard_rules": {
+      "industry": [
+        "Education Technology"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "min_employees": 20,
+      "max_employees": 200
+    },
+    "target_count": 5,
+    "discovered_count": 2,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 0,
+      "FAIL": 2,
+      "null": 0
+    },
+    "outcome_counts": {
+      "REJECTED": 2
+    },
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 0,
+      "REJECT": 2
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": [
+        "keyword",
+        "keyword"
+      ]
+    },
+    "people_discovery_reached_count": 0,
+    "eligible_for_people_discovery_count": 0,
+    "total_items": 2,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "HARD_FAILED",
+        "company_id": "6df98efc-30dd-4de0-8cb1-cbc9b75817db",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      },
+      {
+        "rank": 2,
+        "tier": "HARD_FAILED",
+        "company_id": "17b64540-f5f3-4db3-8c16-1b097b6d2ef0",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "ea9e8ee4-0972-4c1a-8f05-762a0f74272e",
+        "batch_id": "9e5d30ce-ef44-43f6-b443-7d2a283e193f",
+        "icp_id": "660ada46-49bf-4051-9c02-feb43fec6cfb",
+        "icp_version": 1,
+        "source_candidate_id": "a64d4426-a345-40a3-8ab4-a2022adb5f02",
+        "company_id": "6df98efc-30dd-4de0-8cb1-cbc9b75817db",
+        "person_id": null,
+        "lead_id": "b45caa32-bf3d-4532-953f-d71d08207532",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "796fd3c0-923c-4bca-b531-58d49d7cb614",
+        "batch_id": "9e5d30ce-ef44-43f6-b443-7d2a283e193f",
+        "icp_id": "660ada46-49bf-4051-9c02-feb43fec6cfb",
+        "icp_version": 1,
+        "source_candidate_id": "10a3d31d-accb-481a-aba4-13f4e1eff221",
+        "company_id": "17b64540-f5f3-4db3-8c16-1b097b6d2ef0",
+        "person_id": null,
+        "lead_id": "45276893-38d0-48d8-a63f-8befce12c1e9",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "83590a62-3395-482e-93fc-139fccdb0c25",
+        "icp_id": "660ada46-49bf-4051-9c02-feb43fec6cfb",
+        "icp_version": 1,
+        "company_id": "6df98efc-30dd-4de0-8cb1-cbc9b75817db",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 33.333333333333336,
+            "weight": 0.3,
+            "explanation": "1/3 configured hard rules PASS (icp_score=33.3)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 69.81481481481482,
+            "weight": 0.2,
+            "explanation": "evidence_score=69.8; missing: revenue_range; conflicting: employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "12 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "a92986d7-052d-4238-ae9b-0c9ef133787a",
+        "icp_id": "660ada46-49bf-4051-9c02-feb43fec6cfb",
+        "icp_version": 1,
+        "company_id": "17b64540-f5f3-4db3-8c16-1b097b6d2ef0",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.3,
+            "explanation": "0/3 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 68.14814814814815,
+            "weight": 0.2,
+            "explanation": "evidence_score=68.1; missing: revenue_range; conflicting: country, employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "geography rule HOLD (GEOGRAPHY_UNKNOWN)"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "13 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      }
+    ]
+  },
+  {
+    "icp_name": "Real Estate Tech Broad [MOCK]",
+    "live": false,
+    "hard_rules": {
+      "industry": [
+        "Real Estate"
+      ],
+      "geography": [],
+      "min_employees": null,
+      "max_employees": null
+    },
+    "target_count": 5,
+    "discovered_count": 2,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 0,
+      "FAIL": 2,
+      "null": 0
+    },
+    "outcome_counts": {
+      "REJECTED": 2
+    },
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 0,
+      "REJECT": 2
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": [
+        "keyword",
+        "keyword"
+      ]
+    },
+    "people_discovery_reached_count": 0,
+    "eligible_for_people_discovery_count": 0,
+    "total_items": 2,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "HARD_FAILED",
+        "company_id": "07940068-150d-4255-816e-7dc17b6c50ac",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      },
+      {
+        "rank": 2,
+        "tier": "HARD_FAILED",
+        "company_id": "76338b88-0b78-4c4f-a28f-00fdd36628f5",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "f701a056-c158-48c7-9b55-6c46713c11f4",
+        "batch_id": "d069b27e-9e06-439b-ab2c-d60500c8aed5",
+        "icp_id": "295388a1-3bc8-4ace-be08-e02fc12ffcb4",
+        "icp_version": 1,
+        "source_candidate_id": "2f381168-9960-4b26-915a-5664c7ad8654",
+        "company_id": "07940068-150d-4255-816e-7dc17b6c50ac",
+        "person_id": null,
+        "lead_id": "258f81f4-a382-451d-9473-dab19e121ef1",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "b9688509-e255-42b6-8bc0-e84d10dba221",
+        "batch_id": "d069b27e-9e06-439b-ab2c-d60500c8aed5",
+        "icp_id": "295388a1-3bc8-4ace-be08-e02fc12ffcb4",
+        "icp_version": 1,
+        "source_candidate_id": "bb6bbb6d-076f-4fcd-a855-0c6638a916fe",
+        "company_id": "76338b88-0b78-4c4f-a28f-00fdd36628f5",
+        "person_id": null,
+        "lead_id": "cc400efb-aea3-48d5-bfc7-46aa32f3505b",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "5008ee63-b467-4819-9e70-4125dd6f74d3",
+        "icp_id": "295388a1-3bc8-4ace-be08-e02fc12ffcb4",
+        "icp_version": 1,
+        "company_id": "07940068-150d-4255-816e-7dc17b6c50ac",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.3,
+            "explanation": "0/1 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 69.81481481481482,
+            "weight": 0.2,
+            "explanation": "evidence_score=69.8; missing: revenue_range; conflicting: employee_range"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "12 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "3a2089da-97da-4cba-a0ea-98e323dbf98c",
+        "icp_id": "295388a1-3bc8-4ace-be08-e02fc12ffcb4",
+        "icp_version": 1,
+        "company_id": "76338b88-0b78-4c4f-a28f-00fdd36628f5",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.3,
+            "explanation": "0/1 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 68.14814814814815,
+            "weight": 0.2,
+            "explanation": "evidence_score=68.1; missing: revenue_range; conflicting: country, employee_range"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "13 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      }
+    ]
+  },
+  {
+    "icp_name": "Marketing Agencies Excl. Freelancers [MOCK]",
+    "live": false,
+    "hard_rules": {
+      "industry": [
+        "Marketing"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "min_employees": 10,
+      "max_employees": 100,
+      "exclusions": [
+        "freelance"
+      ]
+    },
+    "target_count": 5,
+    "discovered_count": 2,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 0,
+      "FAIL": 2,
+      "null": 0
+    },
+    "outcome_counts": {
+      "REJECTED": 2
+    },
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 0,
+      "REJECT": 2
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [],
+      "REJECT": [
+        "keyword",
+        "keyword"
+      ]
+    },
+    "people_discovery_reached_count": 0,
+    "eligible_for_people_discovery_count": 0,
+    "total_items": 2,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "HARD_FAILED",
+        "company_id": "844c9e23-edd3-4076-965a-04e01fd9503a",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      },
+      {
+        "rank": 2,
+        "tier": "HARD_FAILED",
+        "company_id": "be135b47-5b69-4bf8-8010-2554d3009f65",
+        "final_score": null,
+        "company_quality_score": null,
+        "company_quality_label": "REJECT"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "389ff8bc-fd52-474d-a281-a3c5ec23c364",
+        "batch_id": "83a810af-a1f5-4561-8d82-df814ea46f2d",
+        "icp_id": "418ef7d2-5d59-4a65-8986-152eb831b72b",
+        "icp_version": 1,
+        "source_candidate_id": "3c79df20-e0d3-4657-88f7-e7bfcdc33a30",
+        "company_id": "844c9e23-edd3-4076-965a-04e01fd9503a",
+        "person_id": null,
+        "lead_id": "db1d3a8f-b56d-4fc4-86bc-1bbd98f97e90",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "2ed5efcd-ddda-4de5-98c0-9c1a7a419960",
+        "batch_id": "83a810af-a1f5-4561-8d82-df814ea46f2d",
+        "icp_id": "418ef7d2-5d59-4a65-8986-152eb831b72b",
+        "icp_version": 1,
+        "source_candidate_id": "9a4d7eec-399d-444e-9ea6-a3c20f5eec21",
+        "company_id": "be135b47-5b69-4bf8-8010-2554d3009f65",
+        "person_id": null,
+        "lead_id": "3c2da6eb-0276-4ed1-bfb2-eafe29498ec2",
+        "stage": "DONE",
+        "outcome": "REJECTED",
+        "error_message": null,
+        "hard_rule_result": "FAIL",
+        "qualification_decision": "REJECT",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "85a9466b-d0a8-45c8-b022-9e15a96a0326",
+        "icp_id": "418ef7d2-5d59-4a65-8986-152eb831b72b",
+        "icp_version": 1,
+        "company_id": "844c9e23-edd3-4076-965a-04e01fd9503a",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.3,
+            "explanation": "2/4 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 69.81481481481482,
+            "weight": 0.2,
+            "explanation": "evidence_score=69.8; missing: revenue_range; conflicting: employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "12 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "4051e85e-9e21-4408-88ef-98f5813959dd",
+        "icp_id": "418ef7d2-5d59-4a65-8986-152eb831b72b",
+        "icp_version": 1,
+        "company_id": "be135b47-5b69-4bf8-8010-2554d3009f65",
+        "hard_rule_result": "FAIL",
+        "label": "REJECT",
+        "score": null,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 25.0,
+            "weight": 0.3,
+            "explanation": "1/4 configured hard rules PASS (icp_score=25.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.2,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 68.14814814814815,
+            "weight": 0.2,
+            "explanation": "evidence_score=68.1; missing: revenue_range; conflicting: country, employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 50.0,
+            "weight": 0.1,
+            "explanation": "geography rule HOLD (GEOGRAPHY_UNKNOWN)"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.1,
+            "explanation": "13 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is FAIL \u2014 no company-quality score is computed; REJECT is authoritative and cannot be overridden by any soft signal.",
+        "created_at": "2026-09-01T19:00:15"
+      }
+    ]
+  },
+  {
+    "icp_name": "No Industry Specified (pure geo+size) [MOCK]",
+    "live": false,
+    "hard_rules": {
+      "industry": [],
+      "geography": [
+        "United States"
+      ],
+      "min_employees": 50,
+      "max_employees": 500
+    },
+    "target_count": 5,
+    "discovered_count": 2,
+    "batch_status": "COMPLETED",
+    "discovery_error_code": null,
+    "discovery_error_message": null,
+    "hard_rule_counts": {
+      "PASS": 0,
+      "HOLD": 2,
+      "FAIL": 0,
+      "null": 0
+    },
+    "outcome_counts": {
+      "HELD": 2
+    },
+    "quality_label_counts": {
+      "STRONG": 0,
+      "REVIEW": 2,
+      "REJECT": 0
+    },
+    "quality_scores_by_label": {
+      "STRONG": [],
+      "REVIEW": [
+        62.96296296296297,
+        42.62962962962963
+      ],
+      "REJECT": []
+    },
+    "provenance_by_label": {
+      "STRONG": [],
+      "REVIEW": [
+        "keyword",
+        "keyword"
+      ],
+      "REJECT": []
+    },
+    "people_discovery_reached_count": 1,
+    "eligible_for_people_discovery_count": 2,
+    "total_items": 2,
+    "top5_ranked": [
+      {
+        "rank": 1,
+        "tier": "HOLD",
+        "company_id": "68da8b0f-1ee1-4fd2-92c4-d52b09ffbd80",
+        "final_score": null,
+        "company_quality_score": 62.96296296296297,
+        "company_quality_label": "REVIEW"
+      },
+      {
+        "rank": 2,
+        "tier": "HOLD",
+        "company_id": "09e09442-ab58-48e5-af8c-f89277f38e9a",
+        "final_score": null,
+        "company_quality_score": 42.62962962962963,
+        "company_quality_label": "REVIEW"
+      }
+    ],
+    "raw_items": [
+      {
+        "id": "31d4cc60-1630-4899-beb9-fb856e0f4a0c",
+        "batch_id": "dbc8b422-665e-48e6-8682-0c777e9f1867",
+        "icp_id": "cd621951-8883-4f92-9ab7-84b40c8611ce",
+        "icp_version": 1,
+        "source_candidate_id": "2cee7528-959e-44be-8c25-949c4d408610",
+        "company_id": "68da8b0f-1ee1-4fd2-92c4-d52b09ffbd80",
+        "person_id": "20142e59-bae0-4feb-90ef-a6dc0e8f2896",
+        "lead_id": "4fe62389-4f66-44c7-abbd-5333a45bd5cd",
+        "stage": "DONE",
+        "outcome": "HELD",
+        "error_message": null,
+        "hard_rule_result": "HOLD",
+        "qualification_decision": "HOLD",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "dd9bbb88-dcde-4cd3-a1e6-6ce7058969bd",
+        "batch_id": "dbc8b422-665e-48e6-8682-0c777e9f1867",
+        "icp_id": "cd621951-8883-4f92-9ab7-84b40c8611ce",
+        "icp_version": 1,
+        "source_candidate_id": "8c3b1d32-c15f-4076-97a2-e25f87750ff5",
+        "company_id": "09e09442-ab58-48e5-af8c-f89277f38e9a",
+        "person_id": null,
+        "lead_id": "f7e95205-6284-4076-8ab7-31efc953d59a",
+        "stage": "DONE",
+        "outcome": "HELD",
+        "error_message": null,
+        "hard_rule_result": "HOLD",
+        "qualification_decision": "HOLD",
+        "created_at": "2026-09-01T19:00:15",
+        "updated_at": "2026-09-01T19:00:15"
+      }
+    ],
+    "raw_quality_rows": [
+      {
+        "id": "8d2b6866-9655-447e-a671-b9e1d145bee6",
+        "icp_id": "cd621951-8883-4f92-9ab7-84b40c8611ce",
+        "icp_version": 1,
+        "company_id": "68da8b0f-1ee1-4fd2-92c4-d52b09ffbd80",
+        "hard_rule_result": "HOLD",
+        "label": "REVIEW",
+        "score": 62.96296296296297,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 50.0,
+            "weight": 0.30000000000000004,
+            "explanation": "1/2 configured hard rules PASS (icp_score=50.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.20000000000000004,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 69.81481481481482,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=69.8; missing: revenue_range; conflicting: employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule PASS"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "12 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is HOLD; weighted quality score=63.0 -> REVIEW. Signals: icp_fit=50(w=0.30), discovery_provenance=45(w=0.20), evidence_strength=70(w=0.20), employee_range_confidence=50(w=0.10), geographic_fit=100(w=0.10), evidence_completeness=100(w=0.10).",
+        "created_at": "2026-09-01T19:00:15"
+      },
+      {
+        "id": "4934627d-845b-4310-a1e4-216b5aa86f44",
+        "icp_id": "cd621951-8883-4f92-9ab7-84b40c8611ce",
+        "icp_version": 1,
+        "company_id": "09e09442-ab58-48e5-af8c-f89277f38e9a",
+        "hard_rule_result": "HOLD",
+        "label": "REVIEW",
+        "score": 42.62962962962963,
+        "signals": [
+          {
+            "name": "icp_fit",
+            "value": 0.0,
+            "weight": 0.30000000000000004,
+            "explanation": "0/2 configured hard rules PASS (icp_score=0.0)"
+          },
+          {
+            "name": "discovery_provenance",
+            "value": 45.0,
+            "weight": 0.20000000000000004,
+            "explanation": "keyword (website_keywords) fallback match on: unspecified term(s)"
+          },
+          {
+            "name": "evidence_strength",
+            "value": 68.14814814814815,
+            "weight": 0.20000000000000004,
+            "explanation": "evidence_score=68.1; missing: revenue_range; conflicting: country, employee_range"
+          },
+          {
+            "name": "employee_range_confidence",
+            "value": 50.0,
+            "weight": 0.10000000000000002,
+            "explanation": "employee_range rule HOLD (EMPLOYEE_COUNT_UNKNOWN)"
+          },
+          {
+            "name": "geographic_fit",
+            "value": 50.0,
+            "weight": 0.10000000000000002,
+            "explanation": "geography rule HOLD (GEOGRAPHY_UNKNOWN)"
+          },
+          {
+            "name": "evidence_completeness",
+            "value": 100.0,
+            "weight": 0.10000000000000002,
+            "explanation": "13 distinct evidence item(s) available"
+          }
+        ],
+        "explanation": "Hard-rule result is HOLD; weighted quality score=42.6 -> REVIEW. Signals: icp_fit=0(w=0.30), discovery_provenance=45(w=0.20), evidence_strength=68(w=0.20), employee_range_confidence=50(w=0.10), geographic_fit=50(w=0.10), evidence_completeness=100(w=0.10).",
+        "created_at": "2026-09-01T19:00:15"
+      }
+    ]
+  }
+]

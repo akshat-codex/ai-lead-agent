@@ -1,0 +1,28 @@
+{
+  "aborted": true,
+  "total_calls": 2,
+  "results": [
+    {
+      "field": "linkedin_category",
+      "query": "Healthcare",
+      "status_code": 200,
+      "raw_body": [
+        {
+          "query": "Healthcare",
+          "label": "Healthcare",
+          "value": "healthcare"
+        }
+      ],
+      "credit_flag": false,
+      "archetype": "Healthcare (control, known match)"
+    },
+    {
+      "field": "naics_category",
+      "query": "Healthcare",
+      "status_code": 403,
+      "raw_body": "{\"details\":\"You have insufficient credits to perform this operation. Please purchase additional credits.\",\"correlation_id\":\"a2c6300b9414493c9fb522e537739161\"}",
+      "credit_flag": true,
+      "archetype": "Healthcare (control, known match)"
+    }
+  ]
+}

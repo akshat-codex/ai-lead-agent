@@ -1,0 +1,511 @@
+
+==============================================================================================================
+SCENARIO: D2C — skincare, India
+==============================================================================================================
+
+ICP industries (user-typed): ('D2C skincare',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Cosmetics, Beauty Supplies, and Perfume Stores",
+    "Consumer Goods",
+    "E-commerce"
+  ],
+  "company_type_terms": [
+    "D2C"
+  ],
+  "exclusion_terms": [
+    "agency",
+    "consultancy"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "growing companies"
+  ],
+  "confidence": 78,
+  "reasoning": "D2C skincare has no exact linkedin_category match."
+}
+Merged industries reaching Explorium: ('D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce')
+Merged company_types reaching Explorium: ('D2C',)
+
+Explorium response: success=True, 5 candidates, autocomplete_calls=6, search_calls=3
+
+--- PER-CANDIDATE RESULT ---
+
+  Beauty Brand Growth Partners
+    domain=beautybrandgrowth.invalid  industry=Consumer Goods  employee_range=11-50
+    tier=structured  matched_term(s)=['D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce']
+    hard-rule=HOLD  LABEL=FALSE_POSITIVE  reason=A growth/marketing agency serving beauty brands, not a D2C brand itself — matched via AI-expanded 'Consumer Goods' term.
+
+  ShopBuild E-commerce Agency
+    domain=shopbuild.invalid  industry=E-commerce  employee_range=11-50
+    tier=structured  matched_term(s)=['D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce']
+    hard-rule=HOLD  LABEL=FALSE_POSITIVE  reason=A Shopify/e-commerce build agency, not a D2C product company — matched via AI-expanded 'E-commerce' term.
+
+  Glow & Co Skincare
+    domain=glowandco.invalid  industry=Cosmetics, Beauty Supplies, and Perfume Stores  employee_range=51-200
+    tier=structured  matched_term(s)=['D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce']
+    hard-rule=HOLD  LABEL=RELEVANT
+
+  Radiance Naturals
+    domain=radiancenaturals.invalid  industry=Cosmetics, Beauty Supplies, and Perfume Stores  employee_range=51-200
+    tier=structured  matched_term(s)=['D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce']
+    hard-rule=HOLD  LABEL=RELEVANT
+
+  SkinLaunch Consulting
+    domain=skinlaunch.invalid  industry=Management Consulting  employee_range=11-50
+    tier=keyword  matched_term(s)=['D2C skincare', 'D2C']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A D2C-skincare-focused MANAGEMENT CONSULTANCY, not a D2C brand itself — matched via keyword fallback on the raw, unresolved 'D2C skincare' term mentioning 'D2C' and 'skincare' on its site.
+
+--- SCENARIO SUMMARY: D2C — skincare, India (5 candidates) ---
+
+==============================================================================================================
+SCENARIO: FMCG — food & beverage, US
+==============================================================================================================
+
+ICP industries (user-typed): ('FMCG',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Consumer Goods",
+    "Food & Beverages",
+    "Food Production"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [
+    "distributor",
+    "brokerage"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 70,
+  "reasoning": "FMCG is an industry category umbrella term, not a single exact taxonomy label."
+}
+Merged industries reaching Explorium: ('FMCG', 'Consumer Goods', 'Food & Beverages', 'Food Production')
+Merged company_types reaching Explorium: ()
+
+Explorium response: success=True, 4 candidates, autocomplete_calls=6, search_calls=3
+
+--- PER-CANDIDATE RESULT ---
+
+  National FMCG Distribution Group
+    domain=nationalfmcgdist.invalid  industry=Consumer Goods  employee_range=1001-5000
+    tier=structured  matched_term(s)=['FMCG', 'Consumer Goods', 'Food & Beverages', 'Food Production']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A distribution/logistics company that moves FMCG goods for other brands, not an FMCG manufacturer itself — matched via AI-expanded 'Consumer Goods'.
+
+  Riverbend Snack Co
+    domain=riverbendsnack.invalid  industry=Food & Beverages  employee_range=51-200
+    tier=structured  matched_term(s)=['FMCG', 'Consumer Goods', 'Food & Beverages', 'Food Production']
+    hard-rule=PASS  LABEL=RELEVANT
+
+  Harvest Grove Foods
+    domain=harvestgrove.invalid  industry=Food Production  employee_range=201-500
+    tier=structured  matched_term(s)=['FMCG', 'Consumer Goods', 'Food & Beverages', 'Food Production']
+    hard-rule=PASS  LABEL=RELEVANT
+
+  FMCG Insights Media
+    domain=fmcginsights.invalid  industry=Media & Publishing  employee_range=51-200
+    tier=keyword  matched_term(s)=['FMCG']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=An FMCG-industry trade publication/media company, not an FMCG brand — matched via keyword fallback on the raw 'FMCG' term appearing in its content.
+
+--- SCENARIO SUMMARY: FMCG — food & beverage, US (4 candidates) ---
+
+==============================================================================================================
+SCENARIO: Healthcare — US
+==============================================================================================================
+
+ICP industries (user-typed): ('Healthcare',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Hospitals and Health Care",
+    "Medical Practices",
+    "Health, Wellness and Fitness"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [
+    "staffing agency",
+    "recruiting"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 85,
+  "reasoning": "Healthcare has a direct linkedin_category match; expanded for recall."
+}
+Merged industries reaching Explorium: ('Healthcare', 'Hospitals and Health Care', 'Medical Practices', 'Health, Wellness and Fitness')
+Merged company_types reaching Explorium: ()
+
+Explorium response: success=True, 3 candidates, autocomplete_calls=4, search_calls=1
+
+--- PER-CANDIDATE RESULT ---
+
+  Midwest Regional Health Group
+    domain=midwestregionalhealth.invalid  industry=General Medical and Surgical Hospitals  employee_range=201-500
+    tier=structured  matched_term(s)=['Healthcare', 'Hospitals and Health Care', 'Medical Practices', 'Health, Wellness and Fitness']
+    hard-rule=PASS  LABEL=RELEVANT
+
+  Sunrise Wellness Staffing
+    domain=sunrisewellnessstaffing.invalid  industry=Health, Wellness and Fitness  employee_range=51-200
+    tier=structured  matched_term(s)=['Healthcare', 'Hospitals and Health Care', 'Medical Practices', 'Health, Wellness and Fitness']
+    hard-rule=PASS  LABEL=FALSE_POSITIVE  reason=A healthcare STAFFING agency, not a healthcare provider — matched via the exact linkedin_category label 'Health, Wellness and Fitness' (structured tier false positive, not keyword).
+
+  Pinecrest Medical Practice
+    domain=pinecrestmedical.invalid  industry=Medical Practices  employee_range=51-200
+    tier=structured  matched_term(s)=['Healthcare', 'Hospitals and Health Care', 'Medical Practices', 'Health, Wellness and Fitness']
+    hard-rule=PASS  LABEL=RELEVANT
+
+--- SCENARIO SUMMARY: Healthcare — US (3 candidates) ---
+
+==============================================================================================================
+SCENARIO: OTT — streaming platforms, US
+==============================================================================================================
+
+ICP industries (user-typed): ('OTT platforms',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Media Production",
+    "Entertainment",
+    "Broadcast Media"
+  ],
+  "company_type_terms": [
+    "Streaming"
+  ],
+  "exclusion_terms": [
+    "production studio",
+    "talent agency"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 55,
+  "reasoning": "OTT (over-the-top streaming) has no exact taxonomy match; proposed adjacent media categories."
+}
+Merged industries reaching Explorium: ('OTT platforms', 'Media Production', 'Entertainment', 'Broadcast Media')
+Merged company_types reaching Explorium: ('Streaming',)
+
+Explorium response: success=True, 4 candidates, autocomplete_calls=5, search_calls=2
+
+--- PER-CANDIDATE RESULT ---
+
+  StreamVault Media
+    domain=streamvault.invalid  industry=Media Production  employee_range=51-200
+    tier=structured  matched_term(s)=['OTT platforms', 'Media Production', 'Entertainment', 'Broadcast Media']
+    hard-rule=HOLD  LABEL=AMBIGUOUS  reason=A media production company — plausibly a content studio for an OTT platform, but 'Media Production' does not confirm it OPERATES a streaming platform vs. merely produces content.
+
+  Apex Talent & Casting Agency
+    domain=apextalent.invalid  industry=Entertainment  employee_range=11-50
+    tier=structured  matched_term(s)=['OTT platforms', 'Media Production', 'Entertainment', 'Broadcast Media']
+    hard-rule=HOLD  LABEL=FALSE_POSITIVE  reason=A talent/casting agency, matched only because it's tagged 'Entertainment' broadly — has nothing to do with operating a streaming platform.
+
+  Riverside Broadcast Network
+    domain=riversidebroadcast.invalid  industry=Broadcast Media  employee_range=201-500
+    tier=structured  matched_term(s)=['OTT platforms', 'Media Production', 'Entertainment', 'Broadcast Media']
+    hard-rule=HOLD  LABEL=FALSE_POSITIVE  reason=A traditional broadcast network, not an OTT/streaming platform — 'Broadcast Media' is adjacent but structurally distinct from OTT.
+
+  NextGen Streaming Consultants
+    domain=nextgenstreaming.invalid  industry=Management Consulting  employee_range=11-50
+    tier=keyword  matched_term(s)=['OTT platforms', 'Streaming']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A consulting firm advising streaming companies, not an OTT platform operator itself — matched via keyword fallback on 'Streaming'/'OTT platforms' mentioned in its service description.
+
+--- SCENARIO SUMMARY: OTT — streaming platforms, US (4 candidates) ---
+
+==============================================================================================================
+SCENARIO: Microdrama — short-video drama apps, US (niche)
+==============================================================================================================
+
+ICP industries (user-typed): ('microdrama short-video production',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Media Production",
+    "Entertainment",
+    "Mobile Games"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "microdrama specifically \u2014 an emerging category with no taxonomy match"
+  ],
+  "confidence": 30,
+  "reasoning": "Microdrama (short-form vertical video drama apps) has no close taxonomy match at all; proposed only broad, low-confidence parent categories."
+}
+Merged industries reaching Explorium: ('microdrama short-video production', 'Media Production', 'Entertainment', 'Mobile Games')
+Merged company_types reaching Explorium: ()
+
+Explorium response: success=True, 4 candidates, autocomplete_calls=5, search_calls=2
+
+--- PER-CANDIDATE RESULT ---
+
+  ReelDrama Studios
+    domain=reeldrama.invalid  industry=Media Production  employee_range=11-50
+    tier=structured  matched_term(s)=['microdrama short-video production', 'Media Production', 'Entertainment', 'Mobile Games']
+    hard-rule=PASS  LABEL=RELEVANT  reason=Name and Media Production tag plausibly align with vertical drama content — the strongest signal available without richer evidence.
+
+  Titan Mobile Games Inc
+    domain=titanmobile.invalid  industry=Mobile Games  employee_range=201-500
+    tier=structured  matched_term(s)=['microdrama short-video production', 'Media Production', 'Entertainment', 'Mobile Games']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A mobile games company, wrong medium entirely and 5x over the requested employee ceiling — 'Mobile Games' is too broad a proxy for microdrama.
+
+  Acme Entertainment Law Group
+    domain=acmeent.invalid  industry=Entertainment  employee_range=11-50
+    tier=structured  matched_term(s)=['microdrama short-video production', 'Media Production', 'Entertainment', 'Mobile Games']
+    hard-rule=PASS  LABEL=FALSE_POSITIVE  reason=An entertainment LAW firm, matched only via the broad 'Entertainment' tag — completely unrelated business.
+
+  VertiFlix
+    domain=vertiflix.invalid  industry=Internet Publishing  employee_range=11-50
+    tier=keyword  matched_term(s)=['microdrama short-video production']
+    hard-rule=FAIL  LABEL=RELEVANT  reason=Name plausibly suggests a vertical-video app; found only via keyword fallback since 'microdrama' has no taxonomy match at all — the genuinely obscure candidate a structured-only search would have missed entirely.
+
+--- SCENARIO SUMMARY: Microdrama — short-video drama apps, US (niche) (4 candidates) ---
+
+==============================================================================================================
+SCENARIO: B2B SaaS — US
+==============================================================================================================
+
+ICP industries (user-typed): ('B2B SaaS',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Computer Software",
+    "Information Technology and Services",
+    "Internet"
+  ],
+  "company_type_terms": [
+    "SaaS"
+  ],
+  "exclusion_terms": [
+    "IT staffing",
+    "IT consulting"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "recently funded"
+  ],
+  "confidence": 88,
+  "reasoning": "B2B SaaS has no single exact taxonomy label; expanded into standard adjacent categories."
+}
+Merged industries reaching Explorium: ('B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet')
+Merged company_types reaching Explorium: ('SaaS',)
+
+Explorium response: success=True, 5 candidates, autocomplete_calls=5, search_calls=2
+
+--- PER-CANDIDATE RESULT ---
+
+  Ledgerly
+    domain=ledgerly.invalid  industry=Computer Software  employee_range=51-200
+    tier=structured  matched_term(s)=['B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet']
+    hard-rule=HOLD  LABEL=RELEVANT
+
+  Apex IT Staffing Solutions
+    domain=apexitstaffing.invalid  industry=Information Technology and Services  employee_range=201-500
+    tier=structured  matched_term(s)=['B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet']
+    hard-rule=HOLD  LABEL=FALSE_POSITIVE  reason=An IT staffing agency, not a software company — matched via AI-expanded 'Information Technology and Services'.
+
+  Northbeam Analytics
+    domain=northbeamanalytics.invalid  industry=Computer Software  employee_range=11-50
+    tier=structured  matched_term(s)=['B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet']
+    hard-rule=HOLD  LABEL=RELEVANT
+
+  Global Internet Registrars LLC
+    domain=globalregistrars.invalid  industry=Internet  employee_range=51-200
+    tier=structured  matched_term(s)=['B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet']
+    hard-rule=HOLD  LABEL=FALSE_POSITIVE  reason=A domain registrar, not a SaaS product company — 'Internet' is an extremely broad category, matched via AI-expanded term.
+
+  SaaS Growth Advisors
+    domain=saasgrowthadvisors.invalid  industry=Management Consulting  employee_range=11-50
+    tier=keyword  matched_term(s)=['B2B SaaS', 'SaaS']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A consultancy that advises SaaS companies, not a SaaS company itself — matched via keyword fallback on 'SaaS'/'B2B SaaS' in its own marketing copy.
+
+--- SCENARIO SUMMARY: B2B SaaS — US (5 candidates) ---
+
+==============================================================================================================
+SCENARIO: Niche #1 — industrial drone inspection, US
+==============================================================================================================
+
+ICP industries (user-typed): ('industrial drone inspection services',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Aviation & Aerospace",
+    "Industrial Automation",
+    "Utilities"
+  ],
+  "company_type_terms": [],
+  "exclusion_terms": [],
+  "geography_notes": [],
+  "unsupported_intent": [
+    "drone inspection specifically \u2014 no taxonomy category exists"
+  ],
+  "confidence": 45,
+  "reasoning": "No close taxonomy match exists; proposed only broad, plausible parent categories, flagged low confidence."
+}
+Merged industries reaching Explorium: ('industrial drone inspection services', 'Aviation & Aerospace', 'Industrial Automation', 'Utilities')
+Merged company_types reaching Explorium: ()
+
+Explorium response: success=True, 3 candidates, autocomplete_calls=6, search_calls=2
+
+--- PER-CANDIDATE RESULT ---
+
+  Continental Airlines Cargo Division
+    domain=continentalcargo.invalid  industry=Aviation & Aerospace  employee_range=10001+
+    tier=structured  matched_term(s)=['industrial drone inspection services', 'Aviation & Aerospace', 'Industrial Automation', 'Utilities']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A giant airline, not a drone inspection company and 100x over the requested employee ceiling — 'Aviation & Aerospace' is far too broad a proxy.
+
+  Metro Power & Utilities Co
+    domain=metropower.invalid  industry=Utilities  employee_range=5000-10000
+    tier=structured  matched_term(s)=['industrial drone inspection services', 'Aviation & Aerospace', 'Industrial Automation', 'Utilities']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A utility company (a plausible drone-inspection CUSTOMER), not a drone inspection vendor — 'Utilities' captures the wrong side of the relationship entirely.
+
+  SkyGrid Inspections
+    domain=skygridinspections.invalid  industry=Professional Services  employee_range=11-50
+    tier=keyword  matched_term(s)=['industrial drone inspection services', 'Industrial Automation']
+    hard-rule=FAIL  LABEL=RELEVANT  reason=Name plausibly suggests drone inspection, falls in the correct size range — the genuinely obscure niche company, found ONLY via keyword fallback since no structured category exists for this specialization at all.
+
+--- SCENARIO SUMMARY: Niche #1 — industrial drone inspection, US (3 candidates) ---
+
+==============================================================================================================
+SCENARIO: Niche #2 — carbon accounting software, US
+==============================================================================================================
+
+ICP industries (user-typed): ('carbon accounting software',)
+ICP company_types (user-typed): ()
+
+--- SIMULATED LLM OUTPUT (not a live OpenAI call) ---
+{
+  "industry_terms": [
+    "Computer Software",
+    "Environmental Services",
+    "Renewables & Environment"
+  ],
+  "company_type_terms": [
+    "SaaS"
+  ],
+  "exclusion_terms": [
+    "consulting",
+    "auditing firm"
+  ],
+  "geography_notes": [],
+  "unsupported_intent": [],
+  "confidence": 50,
+  "reasoning": "Carbon accounting software is a specific software niche with no exact taxonomy label; proposed the closest real software + environmental categories."
+}
+Merged industries reaching Explorium: ('carbon accounting software', 'Computer Software', 'Environmental Services', 'Renewables & Environment')
+Merged company_types reaching Explorium: ('SaaS',)
+
+Explorium response: success=True, 4 candidates, autocomplete_calls=5, search_calls=2
+
+--- PER-CANDIDATE RESULT ---
+
+  Emitrack Software
+    domain=emitrack.invalid  industry=Computer Software  employee_range=11-50
+    tier=structured  matched_term(s)=['carbon accounting software', 'Computer Software', 'Environmental Services', 'Renewables & Environment']
+    hard-rule=HOLD  LABEL=RELEVANT  reason=A software company; name plausibly aligns with emissions tracking — reasonable structured-tier proxy.
+
+  GreenPath Environmental Consulting
+    domain=greenpathconsulting.invalid  industry=Environmental Services  employee_range=51-200
+    tier=structured  matched_term(s)=['carbon accounting software', 'Computer Software', 'Environmental Services', 'Renewables & Environment']
+    hard-rule=HOLD  LABEL=FALSE_POSITIVE  reason=An environmental CONSULTING firm (a services business), not a software company — 'Environmental Services' captures the wrong business model.
+
+  Meridian Solar Farms LLC
+    domain=meridiansolar.invalid  industry=Renewables & Environment  employee_range=201-500
+    tier=structured  matched_term(s)=['carbon accounting software', 'Computer Software', 'Environmental Services', 'Renewables & Environment']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A solar energy operator, not a software company at all — 'Renewables & Environment' is a subject-matter-adjacent but structurally unrelated category.
+
+  Sustainability Metrics Advisory
+    domain=sustainmetrics.invalid  industry=Management Consulting  employee_range=11-50
+    tier=keyword  matched_term(s)=['carbon accounting software', 'SaaS']
+    hard-rule=FAIL  LABEL=FALSE_POSITIVE  reason=A sustainability consulting/advisory firm, not carbon accounting SOFTWARE — matched via keyword fallback on 'carbon accounting software'/'SaaS' mentioned in its marketing copy.
+
+--- SCENARIO SUMMARY: Niche #2 — carbon accounting software, US (4 candidates) ---
+
+==============================================================================================================
+GLOBAL BENCHMARK RESULTS
+==============================================================================================================
+
+Total candidates across all scenarios: 32
+Total autocomplete API calls: 42
+Total search API calls: 17
+Duplicate business_ids observed: 0
+
+STRUCTURED tier: 25 labeled candidates
+  relevant=10  false_positive=14  ambiguous=1
+  strict precision (relevant/total) = 0.40
+  lenient precision ((relevant+ambiguous)/total) = 0.44
+
+KEYWORD-FALLBACK tier: 7 labeled candidates
+  relevant=2  false_positive=5  ambiguous=0
+  strict precision (relevant/total) = 0.29
+  lenient precision ((relevant+ambiguous)/total) = 0.29
+
+==============================================================================================================
+PER-TERM PRECISION (origin tracked independently by this harness, not by the running system)
+==============================================================================================================
+  'Media Production' [AI]: relevant=1 fp=4 ambiguous=1  precision=0.17
+  'Entertainment' [AI]: relevant=1 fp=4 ambiguous=1  precision=0.17
+  'Computer Software' [AI]: relevant=3 fp=4 ambiguous=0  precision=0.43
+  'D2C skincare' [user]: relevant=2 fp=3 ambiguous=0  precision=0.40
+  'Consumer Goods' [AI]: relevant=4 fp=3 ambiguous=0  precision=0.57
+  'OTT platforms' [user]: relevant=0 fp=3 ambiguous=1  precision=0.00
+  'B2B SaaS' [user]: relevant=2 fp=3 ambiguous=0  precision=0.40
+  'carbon accounting software' [user]: relevant=1 fp=3 ambiguous=0  precision=0.25
+  'Cosmetics, Beauty Supplies, and Perfume Stores' [AI]: relevant=2 fp=2 ambiguous=0  precision=0.50
+  'E-commerce' [AI]: relevant=2 fp=2 ambiguous=0  precision=0.50
+  'FMCG' [user]: relevant=2 fp=2 ambiguous=0  precision=0.50
+  'Broadcast Media' [AI]: relevant=0 fp=2 ambiguous=1  precision=0.00
+  'microdrama short-video production' [user]: relevant=2 fp=2 ambiguous=0  precision=0.50
+  'Mobile Games' [AI]: relevant=1 fp=2 ambiguous=0  precision=0.33
+  'Information Technology and Services' [AI]: relevant=2 fp=2 ambiguous=0  precision=0.50
+  'Internet' [AI]: relevant=2 fp=2 ambiguous=0  precision=0.50
+  'SaaS' [AI]: relevant=0 fp=2 ambiguous=0  precision=0.00
+  'industrial drone inspection services' [user]: relevant=1 fp=2 ambiguous=0  precision=0.33
+  'Aviation & Aerospace' [AI]: relevant=0 fp=2 ambiguous=0  precision=0.00
+  'Industrial Automation' [AI]: relevant=1 fp=2 ambiguous=0  precision=0.33
+  'Utilities' [AI]: relevant=0 fp=2 ambiguous=0  precision=0.00
+  'Environmental Services' [AI]: relevant=1 fp=2 ambiguous=0  precision=0.33
+  'Renewables & Environment' [AI]: relevant=1 fp=2 ambiguous=0  precision=0.33
+  'D2C' [AI]: relevant=0 fp=1 ambiguous=0  precision=0.00
+  'Food & Beverages' [AI]: relevant=2 fp=1 ambiguous=0  precision=0.67
+  'Food Production' [AI]: relevant=2 fp=1 ambiguous=0  precision=0.67
+  'Healthcare' [user]: relevant=2 fp=1 ambiguous=0  precision=0.67
+  'Hospitals and Health Care' [AI]: relevant=2 fp=1 ambiguous=0  precision=0.67
+  'Medical Practices' [AI]: relevant=2 fp=1 ambiguous=0  precision=0.67
+  'Health, Wellness and Fitness' [AI]: relevant=2 fp=1 ambiguous=0  precision=0.67
+  'Streaming' [AI]: relevant=0 fp=1 ambiguous=0  precision=0.00
+
+==============================================================================================================
+FALSE POSITIVE REASONS
+==============================================================================================================
+  - [D2C — skincare, India] Beauty Brand Growth Partners (tier=structured, terms=['D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce']): A growth/marketing agency serving beauty brands, not a D2C brand itself — matched via AI-expanded 'Consumer Goods' term.
+  - [D2C — skincare, India] ShopBuild E-commerce Agency (tier=structured, terms=['D2C skincare', 'Cosmetics, Beauty Supplies, and Perfume Stores', 'Consumer Goods', 'E-commerce']): A Shopify/e-commerce build agency, not a D2C product company — matched via AI-expanded 'E-commerce' term.
+  - [D2C — skincare, India] SkinLaunch Consulting (tier=keyword, terms=['D2C skincare', 'D2C']): A D2C-skincare-focused MANAGEMENT CONSULTANCY, not a D2C brand itself — matched via keyword fallback on the raw, unresolved 'D2C skincare' term mentioning 'D2C' and 'skincare' on its site.
+  - [FMCG — food & beverage, US] National FMCG Distribution Group (tier=structured, terms=['FMCG', 'Consumer Goods', 'Food & Beverages', 'Food Production']): A distribution/logistics company that moves FMCG goods for other brands, not an FMCG manufacturer itself — matched via AI-expanded 'Consumer Goods'.
+  - [FMCG — food & beverage, US] FMCG Insights Media (tier=keyword, terms=['FMCG']): An FMCG-industry trade publication/media company, not an FMCG brand — matched via keyword fallback on the raw 'FMCG' term appearing in its content.
+  - [Healthcare — US] Sunrise Wellness Staffing (tier=structured, terms=['Healthcare', 'Hospitals and Health Care', 'Medical Practices', 'Health, Wellness and Fitness']): A healthcare STAFFING agency, not a healthcare provider — matched via the exact linkedin_category label 'Health, Wellness and Fitness' (structured tier false positive, not keyword).
+  - [OTT — streaming platforms, US] Apex Talent & Casting Agency (tier=structured, terms=['OTT platforms', 'Media Production', 'Entertainment', 'Broadcast Media']): A talent/casting agency, matched only because it's tagged 'Entertainment' broadly — has nothing to do with operating a streaming platform.
+  - [OTT — streaming platforms, US] Riverside Broadcast Network (tier=structured, terms=['OTT platforms', 'Media Production', 'Entertainment', 'Broadcast Media']): A traditional broadcast network, not an OTT/streaming platform — 'Broadcast Media' is adjacent but structurally distinct from OTT.
+  - [OTT — streaming platforms, US] NextGen Streaming Consultants (tier=keyword, terms=['OTT platforms', 'Streaming']): A consulting firm advising streaming companies, not an OTT platform operator itself — matched via keyword fallback on 'Streaming'/'OTT platforms' mentioned in its service description.
+  - [Microdrama — short-video drama apps, US (niche)] Titan Mobile Games Inc (tier=structured, terms=['microdrama short-video production', 'Media Production', 'Entertainment', 'Mobile Games']): A mobile games company, wrong medium entirely and 5x over the requested employee ceiling — 'Mobile Games' is too broad a proxy for microdrama.
+  - [Microdrama — short-video drama apps, US (niche)] Acme Entertainment Law Group (tier=structured, terms=['microdrama short-video production', 'Media Production', 'Entertainment', 'Mobile Games']): An entertainment LAW firm, matched only via the broad 'Entertainment' tag — completely unrelated business.
+  - [B2B SaaS — US] Apex IT Staffing Solutions (tier=structured, terms=['B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet']): An IT staffing agency, not a software company — matched via AI-expanded 'Information Technology and Services'.
+  - [B2B SaaS — US] Global Internet Registrars LLC (tier=structured, terms=['B2B SaaS', 'Computer Software', 'Information Technology and Services', 'Internet']): A domain registrar, not a SaaS product company — 'Internet' is an extremely broad category, matched via AI-expanded term.
+  - [B2B SaaS — US] SaaS Growth Advisors (tier=keyword, terms=['B2B SaaS', 'SaaS']): A consultancy that advises SaaS companies, not a SaaS company itself — matched via keyword fallback on 'SaaS'/'B2B SaaS' in its own marketing copy.
+  - [Niche #1 — industrial drone inspection, US] Continental Airlines Cargo Division (tier=structured, terms=['industrial drone inspection services', 'Aviation & Aerospace', 'Industrial Automation', 'Utilities']): A giant airline, not a drone inspection company and 100x over the requested employee ceiling — 'Aviation & Aerospace' is far too broad a proxy.
+  - [Niche #1 — industrial drone inspection, US] Metro Power & Utilities Co (tier=structured, terms=['industrial drone inspection services', 'Aviation & Aerospace', 'Industrial Automation', 'Utilities']): A utility company (a plausible drone-inspection CUSTOMER), not a drone inspection vendor — 'Utilities' captures the wrong side of the relationship entirely.
+  - [Niche #2 — carbon accounting software, US] GreenPath Environmental Consulting (tier=structured, terms=['carbon accounting software', 'Computer Software', 'Environmental Services', 'Renewables & Environment']): An environmental CONSULTING firm (a services business), not a software company — 'Environmental Services' captures the wrong business model.
+  - [Niche #2 — carbon accounting software, US] Meridian Solar Farms LLC (tier=structured, terms=['carbon accounting software', 'Computer Software', 'Environmental Services', 'Renewables & Environment']): A solar energy operator, not a software company at all — 'Renewables & Environment' is a subject-matter-adjacent but structurally unrelated category.
+  - [Niche #2 — carbon accounting software, US] Sustainability Metrics Advisory (tier=keyword, terms=['carbon accounting software', 'SaaS']): A sustainability consulting/advisory firm, not carbon accounting SOFTWARE — matched via keyword fallback on 'carbon accounting software'/'SaaS' mentioned in its marketing copy.
