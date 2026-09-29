@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
@@ -59,89 +60,91 @@ export default function IcpBuilder({ mode, initialDraft, onSaved }: IcpBuilderPr
   };
 
   return (
-    <Stack spacing={3}>
-      <TextField
-        label="ICP name"
-        placeholder="e.g. D2C Skincare"
-        value={draft.name}
-        onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-        error={showErrors && Boolean(errors.name)}
-        helperText={
-          (showErrors && errors.name) ||
-          (mode === "new-version"
-            ? "Saving will create the next version under this name."
-            : "Give this ICP a short, memorable name — versions are tracked under it.")
-        }
-        disabled={mode === "new-version"}
-        fullWidth
-      />
+    <Paper variant="outlined" sx={{ p: { xs: 2.5, sm: 3.5 }, borderRadius: 2.5 }}>
+      <Stack spacing={3}>
+        <TextField
+          label="ICP name"
+          placeholder="e.g. D2C Skincare"
+          value={draft.name}
+          onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+          error={showErrors && Boolean(errors.name)}
+          helperText={
+            (showErrors && errors.name) ||
+            (mode === "new-version"
+              ? "Saving will create the next version under this name."
+              : "Give this ICP a short, memorable name — versions are tracked under it.")
+          }
+          disabled={mode === "new-version"}
+          fullWidth
+        />
 
-      <Stepper activeStep={activeStep}>
-        {STEPS.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+        <Stepper activeStep={activeStep}>
+          {STEPS.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-      {showErrors && errors.general && <Alert severity="error">{errors.general}</Alert>}
+        {showErrors && errors.general && <Alert severity="error">{errors.general}</Alert>}
 
-      <Box>
-        {activeStep === 0 && (
-          <HardRulesSection
-            value={draft.hardRules}
-            errors={showErrors ? errors.hardRules : {}}
-            onChange={(hardRules) => setDraft({ ...draft, hardRules })}
-          />
+        <Box>
+          {activeStep === 0 && (
+            <HardRulesSection
+              value={draft.hardRules}
+              errors={showErrors ? errors.hardRules : {}}
+              onChange={(hardRules) => setDraft({ ...draft, hardRules })}
+            />
+          )}
+          {activeStep === 1 && (
+            <SoftPreferencesSection
+              value={draft.softPreferences}
+              errors={showErrors ? errors.softPreferences : {}}
+              onChange={(softPreferences) => setDraft({ ...draft, softPreferences })}
+            />
+          )}
+          {activeStep === 2 && (
+            <Stack spacing={2}>
+              <Typography variant="body2" color="text.secondary">
+                Review the configuration below before saving.
+              </Typography>
+              {showErrors && !valid && (
+                <Alert severity="error">
+                  <Stack spacing={0.5}>
+                    {collectErrorMessages(errors).map((message) => (
+                      <Typography variant="body2" key={message}>
+                        {message}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </Alert>
+              )}
+              <IcpSummary draft={draft} />
+            </Stack>
+          )}
+        </Box>
+
+        {mutation.isError && (
+          <Alert severity="error">
+            {mutation.error instanceof Error ? mutation.error.message : "Failed to save ICP."}
+          </Alert>
         )}
-        {activeStep === 1 && (
-          <SoftPreferencesSection
-            value={draft.softPreferences}
-            errors={showErrors ? errors.softPreferences : {}}
-            onChange={(softPreferences) => setDraft({ ...draft, softPreferences })}
-          />
-        )}
-        {activeStep === 2 && (
-          <Stack spacing={2}>
-            <Typography variant="body2" color="text.secondary">
-              Review the configuration below before saving.
-            </Typography>
-            {showErrors && !valid && (
-              <Alert severity="error">
-                <Stack spacing={0.5}>
-                  {collectErrorMessages(errors).map((message) => (
-                    <Typography variant="body2" key={message}>
-                      {message}
-                    </Typography>
-                  ))}
-                </Stack>
-              </Alert>
-            )}
-            <IcpSummary draft={draft} />
-          </Stack>
-        )}
-      </Box>
 
-      {mutation.isError && (
-        <Alert severity="error">
-          {mutation.error instanceof Error ? mutation.error.message : "Failed to save ICP."}
-        </Alert>
-      )}
-
-      <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between" }}>
-        <Button onClick={goBack} disabled={activeStep === 0}>
-          Back
-        </Button>
-        {activeStep < STEPS.length - 1 ? (
-          <Button variant="contained" onClick={goNext}>
-            Next
+        <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between" }}>
+          <Button onClick={goBack} disabled={activeStep === 0}>
+            Back
           </Button>
-        ) : (
-          <Button variant="contained" onClick={handleSave} disabled={mutation.isPending}>
-            {mutation.isPending ? "Saving..." : mode === "new-version" ? "Save new version" : "Save ICP"}
-          </Button>
-        )}
+          {activeStep < STEPS.length - 1 ? (
+            <Button variant="contained" onClick={goNext}>
+              Next
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={handleSave} disabled={mutation.isPending}>
+              {mutation.isPending ? "Saving..." : mode === "new-version" ? "Save new version" : "Save ICP"}
+            </Button>
+          )}
+        </Stack>
       </Stack>
-    </Stack>
+    </Paper>
   );
 }

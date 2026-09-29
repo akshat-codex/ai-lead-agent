@@ -145,12 +145,12 @@ export default function SearchDefinitionBuilder({ onConfirmed }: SearchDefinitio
             helperText={nameError}
           />
 
-          <Paper variant="outlined" sx={{ p: 0 }}>
+          <Paper variant="outlined" sx={{ p: 0, borderRadius: 2.5, overflow: "hidden" }}>
             <Tabs
               value={mode}
               onChange={(_e, value: BuilderMode) => setMode(value)}
               variant="fullWidth"
-              sx={{ borderBottom: "1px solid", borderColor: "divider" }}
+              sx={{ borderBottom: "1px solid", borderColor: "divider", bgcolor: "background.default" }}
             >
               {/* Phase 4 (AI/UX audit) fix: this tab runs
                   extractFiltersFromDescription — a deterministic,

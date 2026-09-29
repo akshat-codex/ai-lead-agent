@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import HourglassEmptyOutlinedIcon from "@mui/icons-material/HourglassEmptyOutlined";
+import SearchOffOutlinedIcon from "@mui/icons-material/SearchOffOutlined";
 import Alert from "@mui/material/Alert";
 import Collapse from "@mui/material/Collapse";
 import Link from "@mui/material/Link";
@@ -112,7 +114,13 @@ export default function CompanyRankingList({ result, attributes, onContinue, her
 
   if (totalFound === 0) {
     const { title, description } = emptyStateCopy(hermesSearching);
-    return <EmptyState title={title} description={description} />;
+    return (
+      <EmptyState
+        icon={hermesSearching ? <HourglassEmptyOutlinedIcon fontSize="small" /> : <SearchOffOutlinedIcon fontSize="small" />}
+        title={title}
+        description={description}
+      />
+    );
   }
 
   const renderCard = (lead: (typeof companyLeads)[number]) => {

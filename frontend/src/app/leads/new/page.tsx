@@ -11,7 +11,7 @@ export default function NewLeadSearchPage() {
 
   return (
     <Container maxWidth="lg">
-      <Stack spacing={3} sx={{ py: 6 }}>
+      <Stack spacing={3} sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={0.5}>
           <Typography variant="h4" component="h1">
             Define your ideal customer

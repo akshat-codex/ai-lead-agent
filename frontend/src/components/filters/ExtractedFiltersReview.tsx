@@ -52,9 +52,9 @@ export default function ExtractedFiltersReview({
   }
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
+    <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: "background.default" }}>
       <Stack spacing={1.5}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
           Review extracted filters
         </Typography>
         <Typography variant="body2" color="text.secondary">

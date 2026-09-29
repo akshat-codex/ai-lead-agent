@@ -6,8 +6,10 @@ import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { motion } from "framer-motion";
 import PersonCard from "./PersonCard";
 import EmptyState from "@/components/ui/EmptyState";
+import { staggerContainer } from "@/components/ui/FadeIn";
 import type { CanonicalPerson } from "@/lib/people/types";
 import type { CandidatePerson } from "@/lib/peopleDiscovery/types";
 import type { LeadQualification } from "@/lib/qualification/types";
@@ -47,13 +49,20 @@ export default function CompanyPeopleGroup({
   const allSelected = personIds.length > 0 && personIds.every((id) => selectedPersonIds.includes(id));
 
   return (
-    <Stack spacing={1.5} component={Paper} variant="outlined" sx={{ p: 2.5 }}>
+    <Stack spacing={1.75} component={Paper} variant="outlined" sx={{ p: 2.5, borderRadius: 2.5, bgcolor: "background.default" }}>
       <Stack direction="row" spacing={1} sx={{ alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", rowGap: 1 }}>
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
             {companyName}
           </Typography>
-          {personIds.length > 0 && <Chip size="small" variant="outlined" label={`${personIds.length} ${personIds.length === 1 ? "person" : "people"}`} />}
+          {personIds.length > 0 && (
+            <Chip
+              size="small"
+              variant="outlined"
+              label={`${personIds.length} ${personIds.length === 1 ? "person" : "people"}`}
+              sx={{ borderColor: "divider", bgcolor: "background.paper" }}
+            />
+          )}
         </Stack>
         {personIds.length > 0 && (
           <Button
@@ -82,27 +91,31 @@ export default function CompanyPeopleGroup({
         <EmptyState title="No decision-makers found" description="No people matched this company for the ICP's allowed titles." />
       )}
 
-      {personIds.map((personId) => {
-        const person = people[personId];
-        if (!person) return null;
-        const candidate = candidatesByPersonId[personId];
-        const qualification = qualifications[personId];
-        const ranked = rankedByPersonId[personId] ?? null;
-        return (
-          <PersonCard
-            key={personId}
-            name={person.canonicalName}
-            title={candidate?.title ?? null}
-            ranked={ranked}
-            qualificationSummary={qualification?.summary || null}
-            qualificationExplanation={qualification?.commercialFitExplanation || null}
-            linkedinId={person.linkedinId}
-            isEvaluationPending={!qualification}
-            selected={selectedPersonIds.includes(personId)}
-            onToggleSelected={() => onTogglePerson(personId)}
-          />
-        );
-      })}
+      {personIds.length > 0 && (
+        <Stack component={motion.div} initial="hidden" animate="show" variants={staggerContainer} spacing={1.75}>
+          {personIds.map((personId) => {
+            const person = people[personId];
+            if (!person) return null;
+            const candidate = candidatesByPersonId[personId];
+            const qualification = qualifications[personId];
+            const ranked = rankedByPersonId[personId] ?? null;
+            return (
+              <PersonCard
+                key={personId}
+                name={person.canonicalName}
+                title={candidate?.title ?? null}
+                ranked={ranked}
+                qualificationSummary={qualification?.summary || null}
+                qualificationExplanation={qualification?.commercialFitExplanation || null}
+                linkedinId={person.linkedinId}
+                isEvaluationPending={!qualification}
+                selected={selectedPersonIds.includes(personId)}
+                onToggleSelected={() => onTogglePerson(personId)}
+              />
+            );
+          })}
+        </Stack>
+      )}
     </Stack>
   );
 }

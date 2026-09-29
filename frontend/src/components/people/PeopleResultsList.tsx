@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import CompanyPeopleGroup from "./CompanyPeopleGroup";
@@ -40,12 +42,19 @@ export default function PeopleResultsList({ companies, result, onRetryCompany, o
   };
 
   if (companyIds.length === 0) {
-    return <EmptyState title="No companies to search" description="Go back and select at least one company." />;
+    return (
+      <EmptyState
+        icon={<PersonSearchOutlinedIcon fontSize="small" />}
+        title="No companies to search"
+        description="Go back and select at least one company."
+      />
+    );
   }
 
   if (totalPeople === 0 && companyIds.every((id) => result.outcomes[id].status === "done")) {
     return (
       <EmptyState
+        icon={<PersonSearchOutlinedIcon fontSize="small" />}
         title="No decision-makers found"
         description="No people matched the ICP's allowed titles at the selected companies."
       />
@@ -54,10 +63,27 @@ export default function PeopleResultsList({ companies, result, onRetryCompany, o
 
   return (
     <Stack spacing={4} sx={{ pb: 12 }}>
-      <Typography variant="body1" color="text.secondary">
-        {totalPeople} {totalPeople === 1 ? "person" : "people"} found across {companyIds.length}{" "}
-        {companyIds.length === 1 ? "company" : "companies"} &middot; select decision-makers to enrich
-      </Typography>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          px: 2,
+          py: 1.5,
+          borderRadius: 2,
+          bgcolor: "background.paper",
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <GroupsOutlinedIcon fontSize="small" sx={{ color: "text.secondary" }} />
+        <Typography variant="body2" color="text.secondary">
+          <Typography component="span" variant="body2" sx={{ fontWeight: 700, color: "text.primary" }}>
+            {totalPeople} {totalPeople === 1 ? "person" : "people"} found
+          </Typography>
+          {" "}across {companyIds.length} {companyIds.length === 1 ? "company" : "companies"} &middot; select decision-makers to enrich
+        </Typography>
+      </Stack>
 
       {companyIds.map((companyId) => {
         const company = companies[companyId];

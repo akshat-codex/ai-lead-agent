@@ -39,8 +39,8 @@ interface ReviewLeadTableProps {
 
 export default function ReviewLeadTable({ leads }: ReviewLeadTableProps) {
   return (
-    <TableContainer component={Paper} variant="outlined">
-      <Table size="small">
+    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2.5, maxHeight: "70vh" }}>
+      <Table size="small" stickyHeader>
         <TableHead>
           <TableRow>
             <TableCell>Company</TableCell>
@@ -59,9 +59,13 @@ export default function ReviewLeadTable({ leads }: ReviewLeadTableProps) {
         </TableHead>
         <TableBody>
           {leads.map((lead) => (
-            <TableRow key={lead.leadId} hover>
-              <TableCell>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            <TableRow
+              key={lead.leadId}
+              hover
+              sx={{ "&:last-child td": { borderBottom: 0 } }}
+            >
+              <TableCell sx={{ whiteSpace: "nowrap" }}>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
                   {lead.companyName ?? <Unavailable />}
                 </Typography>
                 {lead.companyDomain && (
@@ -70,17 +74,17 @@ export default function ReviewLeadTable({ leads }: ReviewLeadTableProps) {
                   </Typography>
                 )}
               </TableCell>
-              <TableCell>{lead.personName ?? <Unavailable />}</TableCell>
-              <TableCell>{lead.title ?? <Unavailable />}</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>{lead.personName ?? <Unavailable />}</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>{lead.title ?? <Unavailable />}</TableCell>
               <TableCell>
                 <LinkedInCell url={lead.companyLinkedinUrl} />
               </TableCell>
               <TableCell>
                 <LinkedInCell url={lead.personLinkedinUrl} />
               </TableCell>
-              <TableCell>{lead.email ?? <Unavailable />}</TableCell>
-              <TableCell>{lead.emailStatus ?? <Unavailable />}</TableCell>
-              <TableCell>{lead.phone ?? <Unavailable />}</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>{lead.email ?? <Unavailable />}</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>{lead.emailStatus ?? <Unavailable />}</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>{lead.phone ?? <Unavailable />}</TableCell>
               <TableCell>
                 <StatusChip status={lead.enrichmentStatus === "enriched" ? "done" : "idle"} label={lead.enrichmentStatus === "enriched" ? "Enriched" : "Not enriched"} />
               </TableCell>
@@ -88,7 +92,7 @@ export default function ReviewLeadTable({ leads }: ReviewLeadTableProps) {
               <TableCell>
                 <ScorePercent value={lead.finalScore} />
               </TableCell>
-              <TableCell>{lead.qualificationDecision ?? <Unavailable />}</TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>{lead.qualificationDecision ?? <Unavailable />}</TableCell>
             </TableRow>
           ))}
         </TableBody>

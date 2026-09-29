@@ -74,32 +74,27 @@ export default function BatchDiscoveryTrigger({ phase, error, onRun }: BatchDisc
   return (
     <Paper
       variant="outlined"
-      sx={{ p: 2.5, borderRadius: 2.5, bgcolor: "background.paper" }}
+      sx={{ p: { xs: 2.5, sm: 3 }, borderRadius: 2.5, bgcolor: "background.paper" }}
     >
-      <Stack spacing={2}>
-        <Typography variant="body2" color="text.secondary">
-          Ready to search for companies matching your ICP. Each search finds up to {MAX_INITIAL_TARGET_COUNT}
-          {" "}companies — use &quot;Add More Leads&quot; afterward for more.
-        </Typography>
-        <Stack direction="row" spacing={2} sx={{ alignItems: "center", flexWrap: "wrap" }}>
-          <Button
-            variant="contained"
-            startIcon={<SearchIcon />}
-            onClick={() => onRun(parseTargetCount(targetCountInput), discoveryMode)}
-            disableElevation
-            size="large"
-          >
-            Find companies
-          </Button>
+      <Stack spacing={2.5}>
+        <Stack spacing={0.5}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            Search for matching companies
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Each search finds up to {MAX_INITIAL_TARGET_COUNT} companies — use &quot;Add More Leads&quot;
+            {" "}afterward for more.
+          </Typography>
+        </Stack>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { xs: "stretch", sm: "flex-end" }, flexWrap: "wrap" }}>
           <TextField
             type="number"
-            size="small"
             label={`Target count (up to ${MAX_INITIAL_TARGET_COUNT})`}
             placeholder={`e.g. ${MAX_INITIAL_TARGET_COUNT}`}
             value={targetCountInput}
             onChange={(e) => setTargetCountInput(e.target.value)}
             slotProps={{ htmlInput: { min: 1, max: MAX_INITIAL_TARGET_COUNT } }}
-            sx={{ width: 180 }}
+            sx={{ width: { xs: "100%", sm: 200 } }}
           />
           <ToggleButtonGroup
             size="small"
@@ -125,6 +120,15 @@ export default function BatchDiscoveryTrigger({ phase, error, onRun }: BatchDisc
               </ToggleButton>
             ))}
           </ToggleButtonGroup>
+          <Button
+            variant="contained"
+            startIcon={<SearchIcon />}
+            onClick={() => onRun(parseTargetCount(targetCountInput), discoveryMode)}
+            size="large"
+            sx={{ ml: { sm: "auto" } }}
+          >
+            Find companies
+          </Button>
         </Stack>
       </Stack>
     </Paper>

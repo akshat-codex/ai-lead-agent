@@ -1,5 +1,8 @@
 "use client";
 
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import SearchOffOutlinedIcon from "@mui/icons-material/SearchOffOutlined";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -41,6 +44,7 @@ export default function FindMoreLeadsButton({
   if (phase === "target-reached") {
     return (
       <EmptyState
+        icon={<CheckCircleOutlineIcon fontSize="small" />}
         title={`Found ${acceptedCount} qualified leads`}
         description={`Your target of ${targetCount} has been reached.`}
       />
@@ -50,6 +54,7 @@ export default function FindMoreLeadsButton({
   if (phase === "exhausted") {
     return (
       <EmptyState
+        icon={<SearchOffOutlinedIcon fontSize="small" />}
         title="No more qualified leads"
         description={
           targetCount != null
@@ -67,14 +72,17 @@ export default function FindMoreLeadsButton({
     // round budget), never resumes past the limit that already applied to
     // this search.
     return (
-      <Stack spacing={1}>
+      <Stack spacing={1.5}>
         <EmptyState
+          icon={<InfoOutlinedIcon fontSize="small" />}
           title={`Found ${acceptedCount} qualified lead${acceptedCount === 1 ? "" : "s"} so far`}
           description="This search reached its safety limit on how many rounds it searches at once. Add more leads to continue with a fresh, controlled batch."
+          action={
+            <Button variant="outlined" onClick={onFindMore}>
+              Add More Leads
+            </Button>
+          }
         />
-        <Button variant="outlined" onClick={onFindMore} sx={{ alignSelf: "flex-start" }}>
-          Add More Leads
-        </Button>
       </Stack>
     );
   }
@@ -96,11 +104,13 @@ export default function FindMoreLeadsButton({
     // job's status (see backend's _maybe_advance_hermes_job) rather than
     // starting anything new.
     return (
-      <Stack spacing={1}>
-        <Typography variant="body2" color="text.secondary">
-          Explorium unavailable — Hermes is searching for additional companies.
-        </Typography>
-        <Button variant="outlined" onClick={onFindMore} sx={{ alignSelf: "flex-start" }}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        sx={{ alignItems: "center", flexWrap: "wrap", rowGap: 1, p: 1.5, borderRadius: 2, bgcolor: "background.paper", border: "1px solid", borderColor: "divider" }}
+      >
+        <LoadingState label="Explorium unavailable — Hermes is searching for additional companies." />
+        <Button variant="outlined" onClick={onFindMore} size="small">
           Check for results
         </Button>
       </Stack>

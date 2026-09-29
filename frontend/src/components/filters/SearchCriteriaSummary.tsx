@@ -31,12 +31,12 @@ interface SearchCriteriaSummaryProps {
  */
 export default function SearchCriteriaSummary({ name, criteria, catalogByKey }: SearchCriteriaSummaryProps) {
   return (
-    <Paper variant="outlined" sx={{ p: 2.5, position: { md: "sticky" }, top: { md: 24 } }}>
+    <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2.5, bgcolor: "background.paper", position: { md: "sticky" }, top: { md: 24 } }}>
       <Stack spacing={1.5}>
         <Typography variant="overline" color="text.secondary">
           ICP summary
         </Typography>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
           {name.trim() || "Untitled search"}
         </Typography>
 

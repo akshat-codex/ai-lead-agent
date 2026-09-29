@@ -3,9 +3,12 @@
 import { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQueries } from "@tanstack/react-query";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import PersonEnrichmentRow from "@/components/enrichment/PersonEnrichmentRow";
@@ -53,7 +56,7 @@ export default function EnrichPage({ params }: { params: Promise<{ icpId: string
 
   return (
     <Container maxWidth="lg">
-      <Stack spacing={3} sx={{ py: 4 }}>
+      <Stack spacing={3.5} sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={0.5}>
           <Typography variant="h4" component="h1">
             Enrich contacts
@@ -65,6 +68,7 @@ export default function EnrichPage({ params }: { params: Promise<{ icpId: string
 
         {selectedPersonIds.length === 0 && (
           <EmptyState
+            icon={<MarkEmailReadOutlinedIcon fontSize="small" />}
             title="No people selected"
             description="Go back to step 3 and select at least one person before enriching contacts."
           />
@@ -75,24 +79,25 @@ export default function EnrichPage({ params }: { params: Promise<{ icpId: string
             {peopleLoading && <LoadingState label="Loading selected people..." />}
 
             {!peopleLoading && pipeline.phase === "idle" && (
-              <Stack spacing={1.5}>
-                <Typography variant="body2" color="text.secondary">
-                  Ready to enrich {selectedPersonIds.length} selected {selectedPersonIds.length === 1 ? "contact" : "contacts"}.
-                </Typography>
-                <Stack direction="row">
+              <Paper variant="outlined" sx={{ p: { xs: 2.5, sm: 3 }, borderRadius: 2.5, bgcolor: "background.paper" }}>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between" }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Ready to enrich {selectedPersonIds.length} selected {selectedPersonIds.length === 1 ? "contact" : "contacts"}.
+                  </Typography>
                   <Button
                     variant="contained"
                     startIcon={<AutorenewIcon />}
                     onClick={() => pipeline.run(selectedPersonIds)}
+                    size="large"
                   >
                     Enrich {selectedPersonIds.length} {selectedPersonIds.length === 1 ? "contact" : "contacts"}
                   </Button>
                 </Stack>
-              </Stack>
+              </Paper>
             )}
 
             {(pipeline.phase === "running" || pipeline.phase === "done") && (
-              <Stack spacing={2}>
+              <Stack spacing={1.5}>
                 {pipeline.phase === "running" && <LoadingState label="Enriching contacts..." />}
                 {selectedPersonIds.map((personId) => {
                   const person = personQueries.find((_, i) => selectedPersonIds[i] === personId)?.data;
@@ -111,8 +116,8 @@ export default function EnrichPage({ params }: { params: Promise<{ icpId: string
             )}
 
             {pipeline.phase === "done" && (
-              <Stack direction="row" sx={{ justifyContent: "flex-end", pt: 2 }}>
-                <Button variant="contained" onClick={() => router.push(`/leads/${icpId}/review`)}>
+              <Stack direction="row" sx={{ justifyContent: "flex-end", pt: 1 }}>
+                <Button variant="contained" endIcon={<ArrowForwardIcon />} onClick={() => router.push(`/leads/${icpId}/review`)}>
                   Continue to Review
                 </Button>
               </Stack>

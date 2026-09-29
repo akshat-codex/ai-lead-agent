@@ -25,7 +25,7 @@ export default function HardRulesSection({ value, errors, onChange }: HardRulesS
   return (
     <Paper
       variant="outlined"
-      sx={{ p: 3, borderLeft: "4px solid", borderLeftColor: "error.main" }}
+      sx={{ p: 3, borderRadius: 2.5, borderLeft: "4px solid", borderLeftColor: "error.main" }}
     >
       <Stack spacing={2.5}>
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>

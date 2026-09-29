@@ -32,7 +32,7 @@ export default function IcpSummary({ draft }: { draft: IcpDraft }) {
     <Stack spacing={3}>
       <Typography variant="h6">{draft.name || "Untitled ICP"}</Typography>
 
-      <Paper variant="outlined" sx={{ p: 2.5, borderLeft: "4px solid", borderLeftColor: "error.main" }}>
+      <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2.5, borderLeft: "4px solid", borderLeftColor: "error.main" }}>
         <Typography variant="subtitle1" sx={{ mb: 1.5 }}>
           Hard rules
         </Typography>
@@ -82,7 +82,7 @@ export default function IcpSummary({ draft }: { draft: IcpDraft }) {
 
       <Divider />
 
-      <Paper variant="outlined" sx={{ p: 2.5, borderLeft: "4px solid", borderLeftColor: "info.main" }}>
+      <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2.5, borderLeft: "4px solid", borderLeftColor: "info.main" }}>
         <Typography variant="subtitle1" sx={{ mb: 1.5 }}>
           Soft / commercial preferences
         </Typography>
