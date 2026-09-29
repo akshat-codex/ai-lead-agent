@@ -3,6 +3,7 @@
 import { use, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueries, useQuery } from "@tanstack/react-query";
+import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -99,7 +100,7 @@ export default function ReviewPage({ params }: { params: Promise<{ icpId: string
 
   return (
     <Container maxWidth="lg">
-      <Stack spacing={3} sx={{ py: 4 }}>
+      <Stack spacing={3} sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={0.5}>
           <Typography variant="h4" component="h1">
             Review{icpQuery.data ? ` — "${icpQuery.data.name}"` : ""}
@@ -116,6 +117,7 @@ export default function ReviewPage({ params }: { params: Promise<{ icpId: string
 
         {icpQuery.data && selectedPersonIds.length === 0 && (
           <EmptyState
+            icon={<TableChartOutlinedIcon fontSize="small" />}
             title="No people selected"
             description="Go back to step 3 and select the people you want to review before exporting."
           />
@@ -134,6 +136,7 @@ export default function ReviewPage({ params }: { params: Promise<{ icpId: string
 
         {icpQuery.data && selectedPersonIds.length > 0 && exportQuery.data && selectedLeads.length === 0 && (
           <EmptyState
+            icon={<TableChartOutlinedIcon fontSize="small" />}
             title="Selected people are not ranked yet"
             description="The selected people don't have a ranked lead for this search yet. Go back to step 3 and try again."
           />
@@ -144,11 +147,11 @@ export default function ReviewPage({ params }: { params: Promise<{ icpId: string
             {detailLoading && <LoadingState label="Loading contact details..." />}
 
             {!detailLoading && (
-              <>
+              <Stack spacing={2.5}>
                 <ReviewFilterBar filters={filters} onChange={setFilters} />
                 <ReviewLeadTable leads={filteredLeads} />
                 <ExportActionBar leadCount={filteredLeads.length} onExportCsv={handleExportCsv} onStartOver={handleStartOver} />
-              </>
+              </Stack>
             )}
           </>
         )}

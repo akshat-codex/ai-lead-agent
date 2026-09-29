@@ -47,8 +47,8 @@ export default function PersonEnrichmentRow({ name, companyName, state }: Person
     typeof linkedinUrl === "string" ? linkedinUrl : typeof linkedinId === "string" ? `https://linkedin.com/in/${linkedinId}` : undefined;
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ alignItems: { md: "center" } }}>
+    <Paper variant="outlined" sx={{ p: 2.25, borderRadius: 2.5 }}>
+      <Stack direction={{ xs: "column", md: "row" }} spacing={2.5} sx={{ alignItems: { md: "center" } }}>
         <Stack sx={{ minWidth: 180 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             {name}
@@ -58,32 +58,34 @@ export default function PersonEnrichmentRow({ name, companyName, state }: Person
           </Typography>
         </Stack>
 
-        <Field label="Title" value={typeof title === "string" ? title : null} />
-        <Field label="Email" value={typeof email === "string" ? email : null} />
-        {/* Phone is never returned by this phase's Apollo integration —
-            Apollo only delivers it asynchronously via a webhook this
-            codebase has no receiver for. Always shown as Unavailable,
-            never fabricated. */}
-        <Field label="Phone" value={null} />
-        <Field label="LinkedIn" value={linkedinHref ? "View profile" : null} href={linkedinHref} />
+        <Stack direction="row" spacing={3} sx={{ flexWrap: "wrap", rowGap: 1.5, flexGrow: 1 }}>
+          <Field label="Title" value={typeof title === "string" ? title : null} />
+          <Field label="Email" value={typeof email === "string" ? email : null} />
+          {/* Phone is never returned by this phase's Apollo integration —
+              Apollo only delivers it asynchronously via a webhook this
+              codebase has no receiver for. Always shown as Unavailable,
+              never fabricated. */}
+          <Field label="Phone" value={null} />
+          <Field label="LinkedIn" value={linkedinHref ? "View profile" : null} href={linkedinHref} />
 
-        <Stack sx={{ minWidth: 140 }}>
-          <Typography variant="caption" color="text.secondary">
-            Source
-          </Typography>
-          <Typography variant="body2">{state.providerId ?? "—"}</Typography>
+          <Stack sx={{ minWidth: 120 }}>
+            <Typography variant="caption" color="text.secondary">
+              Source
+            </Typography>
+            <Typography variant="body2">{state.providerId ?? "—"}</Typography>
+          </Stack>
         </Stack>
 
         <EnrichmentStatusChip status={state.status} />
       </Stack>
 
       {state.status === "failed" && state.errorMessage && (
-        <Typography variant="caption" color="error" sx={{ mt: 1, display: "block" }}>
+        <Typography variant="caption" color="error" sx={{ mt: 1.25, display: "block" }}>
           {state.errorMessage}
         </Typography>
       )}
       {state.status === "unavailable" && (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 1.25, display: "block" }}>
           No enrichment provider is configured yet.
         </Typography>
       )}

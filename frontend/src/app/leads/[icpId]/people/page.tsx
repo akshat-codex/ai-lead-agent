@@ -4,6 +4,7 @@ import { use, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueries, useQuery } from "@tanstack/react-query";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -47,7 +48,7 @@ export default function PeoplePage({ params }: { params: Promise<{ icpId: string
 
   return (
     <Container maxWidth="lg">
-      <Stack spacing={3} sx={{ py: 4 }}>
+      <Stack spacing={3.5} sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={0.5}>
           <Typography variant="h4" component="h1">
             People{icpQuery.data ? ` for "${icpQuery.data.name}"` : ""}
@@ -73,6 +74,7 @@ export default function PeoplePage({ params }: { params: Promise<{ icpId: string
 
         {icpQuery.data && selectedCompanyIds.length === 0 && (
           <EmptyState
+            icon={<GroupsOutlinedIcon fontSize="small" />}
             title="No companies selected"
             description="Go back to step 2 and select at least one company before finding decision-makers."
             action={

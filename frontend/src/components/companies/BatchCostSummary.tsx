@@ -48,7 +48,7 @@ export default function BatchCostSummary({ batch }: BatchCostSummaryProps) {
         borderColor: "divider",
       }}
     >
-      <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: "0.02em", textTransform: "uppercase" }}>
+      <Typography variant="overline" color="text.secondary" sx={{ lineHeight: 1.5 }}>
         This search used
       </Typography>
       {entries.map(([providerId, count]) => (

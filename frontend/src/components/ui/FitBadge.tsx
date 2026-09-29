@@ -1,6 +1,7 @@
 "use client";
 
 import Chip from "@mui/material/Chip";
+import { alpha, useTheme } from "@mui/material/styles";
 
 /** Backend RankTier values (backend/app/schemas/ranking.py), verbatim. */
 export type RankTier =
@@ -60,23 +61,31 @@ const TIER_COLOR: Record<UiTier, "success" | "warning" | "default" | "error"> = 
   rejected: "error",
 };
 
-// A soft, tinted look (light background + matching text, no hard fill) —
-// premium/modern SaaS badge style rather than MUI's default saturated
-// filled Chip. Colors are still driven entirely by the same semantic
-// TIER_COLOR mapping above, just expressed as a soft tint per tier.
-const TIER_TINT: Record<UiTier, { bg: string; fg: string; border: string }> = {
-  strong: { bg: "rgba(30, 142, 90, 0.12)", fg: "#166a44", border: "rgba(30, 142, 90, 0.28)" },
-  good: { bg: "rgba(185, 137, 0, 0.12)", fg: "#8a6600", border: "rgba(185, 137, 0, 0.28)" },
-  weak: { bg: "rgba(93, 100, 114, 0.10)", fg: "#5d6472", border: "rgba(93, 100, 114, 0.24)" },
-  rejected: { bg: "rgba(211, 47, 47, 0.10)", fg: "#a92a2a", border: "rgba(211, 47, 47, 0.26)" },
-};
-
 interface FitBadgeProps {
   tier: UiTier;
 }
 
+// A soft, tinted look (light background + matching text, no hard fill) —
+// premium/modern SaaS badge style rather than MUI's default saturated
+// filled Chip. Colors are derived from the theme's own palette via
+// alpha() (previously hardcoded hex/rgba literals independent of the
+// theme) — still driven entirely by the same semantic TIER_COLOR mapping
+// above, just resolved from theme.palette.{success,warning,text,error}
+// instead of being duplicated as one-off values.
 export default function FitBadge({ tier }: FitBadgeProps) {
-  const tint = TIER_TINT[tier];
+  const theme = useTheme();
+  const tintSource: Record<UiTier, { main: string; dark: string }> = {
+    strong: { main: theme.palette.success.main, dark: theme.palette.success.dark },
+    good: { main: theme.palette.warning.main, dark: theme.palette.warning.dark },
+    weak: { main: theme.palette.text.secondary, dark: theme.palette.text.secondary },
+    rejected: { main: theme.palette.error.main, dark: theme.palette.error.dark },
+  };
+  const source = tintSource[tier];
+  const tint = {
+    bg: alpha(source.main, 0.12),
+    fg: source.dark,
+    border: alpha(source.main, 0.28),
+  };
   return (
     <Chip
       label={TIER_LABEL[tier]}
