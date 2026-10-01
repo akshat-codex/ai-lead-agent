@@ -54,7 +54,9 @@ from app.providers.tavily import (
     _is_crunchbase_block_page,
     _is_homepage_host,
     _is_job_role_title,
+    _looks_like_directory_profile_path,
     _sanitize_query_term,
+    _url_path,
     _verify_homepage_match,
 )
 from app.services.company_identity import normalize_domain
@@ -165,6 +167,12 @@ class SerperCompanyDiscoveryProvider(ProviderAdapter):
                 continue
             host = _host_of(url)
             if not host or not _is_homepage_host(host):
+                continue
+            # Path-shape guard (see app/providers/tavily.py::
+            # _looks_like_directory_profile_path's own comment) — catches
+            # a data-broker/directory site even when its hostname was
+            # never added to the shared denylist.
+            if _looks_like_directory_profile_path(_url_path(url)):
                 continue
             if not _verify_homepage_match(company_name, candidate_description, title, snippet):
                 continue

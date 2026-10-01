@@ -297,6 +297,116 @@ def test_verify_homepage_match_requires_at_least_two_shared_significant_words():
     assert _verify_homepage_match("Some Co", "", "Some Title", "Some content") is False
 
 
+# --- live-test regression (2026-10-01): bad domains leaking through ---------
+#
+# A real Safe-mode batch against a Healthcare ICP (see app/providers/
+# tavily.py's own _NON_HOMEPAGE_HOST_SUFFIXES comment) surfaced several
+# directory/data-broker sites that were never on the denylist, each wrongly
+# accepted as a candidate's own homepage domain. These tests cover both the
+# expanded denylist AND the new path-shape guard that catches an UNLISTED
+# future data-broker site the same way.
+
+
+def test_newly_confirmed_data_broker_hosts_are_rejected_as_homepages():
+    from app.providers.tavily import _is_homepage_host
+
+    for host in ("leadiq.com", "rocketreach.co", "cbinsights.com", "tracxn.com", "squarepeg.vc", "mapquest.com", "samplefocus.com", "extruct.ai"):
+        assert _is_homepage_host(host) is False, host
+
+
+def test_directory_profile_path_shape_is_rejected_even_for_an_unlisted_host():
+    """The path-shape guard must catch the SAME class of bad domain even
+    for a hostname that was never explicitly denylisted — this is what
+    makes the fix robust against the next unlisted data-broker site,
+    rather than only today's confirmed examples."""
+    from app.providers.tavily import _looks_like_directory_profile_path
+
+    assert _looks_like_directory_profile_path("/company/some-totally-new-directory-site") is True
+    assert _looks_like_directory_profile_path("/companies/acme-inc") is True
+    assert _looks_like_directory_profile_path("/organization/acme-inc") is True
+    assert _looks_like_directory_profile_path("/profile/acme-inc") is True
+    assert _looks_like_directory_profile_path("/people/jane-doe") is True
+
+
+def test_directory_profile_path_shape_never_rejects_a_real_marketing_path():
+    """A legitimate homepage path that merely CONTAINS one of the
+    directory-shaped words must still pass — the guard only rejects a
+    path that STARTS with that segment."""
+    from app.providers.tavily import _looks_like_directory_profile_path
+
+    assert _looks_like_directory_profile_path("/") is False
+    assert _looks_like_directory_profile_path("/about-our-company") is False
+    assert _looks_like_directory_profile_path("/pricing") is False
+    assert _looks_like_directory_profile_path("/en/home") is False
+
+
+@respx.mock
+def test_homepage_resolution_rejects_a_directory_site_even_with_strong_word_overlap():
+    """End-to-end reproduction of the live bug: a directory/data-broker
+    result that genuinely republishes the company's own description (so
+    it WOULD pass _verify_homepage_match's word-overlap check) must still
+    be rejected by the path-shape guard, and resolution must fall through
+    to no-domain rather than accepting the wrong one."""
+    respx.post(TAVILY_SEARCH_URL).mock(
+        side_effect=_tavily_handler_by_query(
+            {
+                "site:crunchbase.com/organization": {
+                    "results": [
+                        {
+                            "title": "1001 AI - Crunchbase Company Profile & Funding",
+                            "url": "https://www.crunchbase.com/organization/1001-ai",
+                            "content": "1001 AI builds autonomous agents for enterprise workflows.",
+                        }
+                    ]
+                },
+                # Homepage-resolution follow-up: a directory site
+                # republishing the SAME description (high word overlap) at
+                # a profile-shaped path, never 1001 AI's own real homepage.
+                "official site": {
+                    "results": [
+                        {
+                            "title": "1001 AI - Company Profile",
+                            "url": "https://www.somenewdatabroker.com/company/1001-ai",
+                            "content": "1001 AI builds autonomous agents for enterprise workflows, serving enterprise customers.",
+                        },
+                    ]
+                },
+            }
+        )
+    )
+    provider = TavilyCompanyDiscoveryProvider(api_key="test-key")
+    response = provider.run(_tavily_request())
+
+    assert len(response.data) == 1
+    assert "domain" not in response.data[0].attributes
+
+
+def test_crunchbase_title_suffix_strips_a_truncated_or_varied_trailing_phrase():
+    """Live-test regression: real Crunchbase SERP titles sometimes end
+    with a truncated "..." or a phrase other than the exact "& Funding"
+    the original regex required (confirmed live: "NextGen Healthcare -
+    Crunchbase Company Profile & ..." leaked the raw suffix straight into
+    the stored company name). The fix matches from "- Crunchbase Company
+    Profile" onward regardless of what follows."""
+    from app.providers.tavily import _extract_directory_result
+
+    extracted = _extract_directory_result(
+        "https://www.crunchbase.com/organization/nextgen-healthcare",
+        "NextGen Healthcare - Crunchbase Company Profile & ...",
+    )
+    assert extracted is not None
+    _, name = extracted
+    assert name == "NextGen Healthcare"
+
+    extracted_overview = _extract_directory_result(
+        "https://www.crunchbase.com/organization/acme-inc",
+        "Acme Inc - Crunchbase Company Profile & Overview",
+    )
+    assert extracted_overview is not None
+    _, name_overview = extracted_overview
+    assert name_overview == "Acme Inc"
+
+
 @respx.mock
 def test_tavily_excludes_yc_category_listing_pages_never_individual_companies():
     """Live-verified distinction: ycombinator.com/companies/industry/<slug>

@@ -150,8 +150,16 @@ def _is_job_role_title(title: str) -> bool:
 _YC_CATEGORY_LISTING_RE = re.compile(r"^/companies/industry(?:/|$)", re.IGNORECASE)
 
 # "<Company Name> - Crunchbase Company Profile & Funding" — confirmed live,
-# the exact, consistent Crunchbase SERP title format.
-_CRUNCHBASE_TITLE_SUFFIX_RE = re.compile(r"\s*-\s*Crunchbase Company Profile(?:\s*&\s*Funding)?\s*$", re.IGNORECASE)
+# the exact, consistent Crunchbase SERP title prefix. The suffix AFTER
+# "Company Profile" varies ("& Funding", "& Overview", ...) and is
+# sometimes truncated by the search result itself with a literal "..."
+# (confirmed live, 2026-10-01: "NextGen Healthcare - Crunchbase Company
+# Profile & ..." leaked straight through into the stored company name
+# because the original regex required an EXACT "& Funding" ending and
+# simply didn't match anything else) — so this now matches from "-
+# Crunchbase Company Profile" through to the end of the string,
+# regardless of what that trailing text actually says.
+_CRUNCHBASE_TITLE_SUFFIX_RE = re.compile(r"\s*-\s*Crunchbase Company Profile.*$", re.IGNORECASE)
 # "<Company>: <tagline> | Y Combinator" or "<Company> - Y Combinator" —
 # confirmed live (e.g. "Flux Auto: Physical AI for Warehouses and
 # Factories | Y Combinator").
@@ -284,6 +292,17 @@ def _extract_hiring_result(url: str, title: str) -> tuple[str, str] | None:
 # solved for the original generic-query design, reused here for the same
 # reason: a LinkedIn or Crunchbase URL turning up in the resolution
 # search is a mention of the company, never its own site.
+#
+# Live-test finding (2026-10-01): a real Safe-mode batch against a
+# Healthcare ICP surfaced EIGHT additional data-broker/directory sites not
+# previously on this list (leadiq.com, rocketreach.co, cbinsights.com,
+# tracxn.com, squarepeg.vc, mapquest.com, samplefocus.com, extruct.ai),
+# each wrongly accepted as a candidate's own "homepage" domain — this
+# denylist can never be exhaustive (new data-broker sites appear
+# continuously), which is exactly why _is_homepage_host is now also
+# paired with _looks_like_directory_profile_path below: a path-SHAPE
+# check that catches the same class of site even when its hostname was
+# never explicitly listed here. Both checks must pass.
 _NON_HOMEPAGE_HOST_SUFFIXES = frozenset(
     {
         "linkedin.com",
@@ -304,8 +323,56 @@ _NON_HOMEPAGE_HOST_SUFFIXES = frozenset(
         "pitchbook.com",
         "jobs.lever.co",
         "boards.greenhouse.io",
+        # Added 2026-10-01 — confirmed live false positives (see comment above).
+        "leadiq.com",
+        "rocketreach.co",
+        "cbinsights.com",
+        "tracxn.com",
+        "squarepeg.vc",
+        "mapquest.com",
+        "samplefocus.com",
+        "extruct.ai",
+        # Other common data-broker/directory sites in the same category,
+        # not yet confirmed live but structurally identical to the ones
+        # above (a per-company profile page, never a real homepage).
+        "glnkco.com",
+        "signalhire.com",
+        "apollo.io",
+        "cision.com",
+        "dnb.com",
+        "manta.com",
+        "buzzfile.com",
+        "zippia.com",
+        "comparably.com",
+        "craft.co",
+        "theorg.com",
+        "wellfound.com",
+        "angel.co",
+        "builtin.com",
+        "clutch.co",
+        "producthunt.com",
     }
 )
+
+# A real company's own homepage is virtually always served at or near the
+# root path ("/", "/about", "/en/home", ...). A directory/data-broker site
+# instead serves one page PER COMPANY under a shared path prefix — this is
+# structurally true regardless of which specific site it is, so it catches
+# an unlisted future data-broker the hostname denylist above never will.
+# Deliberately conservative (word-boundary anchored, case-insensitive):
+# only rejects a path that STARTS with one of these directory-shaped
+# segments, never a legitimate marketing path that merely contains one of
+# these words elsewhere (e.g. "/about-our-company" must still pass).
+_DIRECTORY_PROFILE_PATH_RE = re.compile(
+    r"^/(?:company|companies|organization|organizations|org|profile|profiles|"
+    r"people|person|employee|employees|business|businesses|listing|listings|"
+    r"directory|firm|firms|b|biz)/",
+    re.IGNORECASE,
+)
+
+
+def _looks_like_directory_profile_path(path: str) -> bool:
+    return bool(_DIRECTORY_PROFILE_PATH_RE.match(path))
 
 _WORD_RE = re.compile(r"[a-z0-9]+")
 _STOPWORDS = frozenset(
@@ -498,6 +565,11 @@ class TavilyCompanyDiscoveryProvider(ProviderAdapter):
                 continue
             host = _host_of(url)
             if not host or not _is_homepage_host(host):
+                continue
+            # Path-shape guard (see _looks_like_directory_profile_path's
+            # own comment) — catches a data-broker/directory site even
+            # when its hostname was never added to the denylist above.
+            if _looks_like_directory_profile_path(_url_path(url)):
                 continue
             if not _verify_homepage_match(company_name, candidate_description, title, content):
                 continue
