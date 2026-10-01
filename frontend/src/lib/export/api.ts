@@ -10,16 +10,27 @@ interface ApiExportIdentity {
   person_linkedin_id: string | null;
 }
 
+interface ApiExportEvidenceSummary {
+  verified_fields: Record<string, string>;
+  conflicting_fields: string[];
+  missing_critical_fields: string[];
+}
+
 interface ApiExportScores {
   final_score: number | null;
   icp_score: number | null;
   commercial_score: number | null;
+  evidence_score: number | null;
+  freshness_score: number | null;
+  identity_confidence: number | null;
 }
 
 interface ApiExportedLead {
   lead_id: string;
   identity: ApiExportIdentity;
+  evidence: ApiExportEvidenceSummary;
   hard_rule_result: string | null;
+  ranking_reason_codes: string[];
   scores: ApiExportScores;
   qualification_decision: string | null;
   qualification_summary: string | null;
@@ -43,11 +54,20 @@ function fromApiLead(api: ApiExportedLead): ExportedLead {
       personName: api.identity.person_name,
       personLinkedinId: api.identity.person_linkedin_id,
     },
+    evidence: {
+      verifiedFields: api.evidence.verified_fields,
+      conflictingFields: api.evidence.conflicting_fields,
+      missingCriticalFields: api.evidence.missing_critical_fields,
+    },
     hardRuleResult: api.hard_rule_result,
+    rankingReasonCodes: api.ranking_reason_codes,
     scores: {
       finalScore: api.scores.final_score,
       icpScore: api.scores.icp_score,
       commercialScore: api.scores.commercial_score,
+      evidenceScore: api.scores.evidence_score,
+      freshnessScore: api.scores.freshness_score,
+      identityConfidence: api.scores.identity_confidence,
     },
     qualificationDecision: api.qualification_decision,
     qualificationSummary: api.qualification_summary,

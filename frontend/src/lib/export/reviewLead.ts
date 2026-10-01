@@ -33,6 +33,22 @@ export interface ReviewLead {
   personLinkedinUrl: string | null;
   tier: string | null;
   finalScore: number | null;
+  /** How confident the system is this is genuinely the same real-world
+   * (company, person) across providers — distinct from finalScore's
+   * overall fit judgment (see ExportScores.identityConfidence's own
+   * docstring). */
+  identityConfidence: number | null;
+  /** Component scores, surfaced only as a confidence-tooltip breakdown,
+   * never as their own top-level columns (keeps the table scannable). */
+  icpScore: number | null;
+  commercialScore: number | null;
+  evidenceScore: number | null;
+  /** Real, machine-readable "why" behind rank/tier — e.g.
+   * ["HARD_RULE_PASS", "QUALIFICATION_GOOD_FIT"]. */
+  rankingReasonCodes: string[];
+  /** Fields where independent sources disagree (e.g. industry) — shown as
+   * an honest quality warning, never silently resolved. */
+  conflictingFields: string[];
   qualificationDecision: string | null;
   qualificationSummary: string | null;
   rank: number | null;
@@ -77,6 +93,12 @@ export function buildReviewLead(
     personLinkedinUrl: linkedinUrl ?? (personLinkedinId ? `https://linkedin.com/in/${personLinkedinId}` : null),
     tier: exported.tier,
     finalScore: exported.scores.finalScore,
+    identityConfidence: exported.scores.identityConfidence,
+    icpScore: exported.scores.icpScore,
+    commercialScore: exported.scores.commercialScore,
+    evidenceScore: exported.scores.evidenceScore,
+    rankingReasonCodes: exported.rankingReasonCodes,
+    conflictingFields: exported.evidence.conflictingFields,
     qualificationDecision: exported.qualificationDecision,
     qualificationSummary: exported.qualificationSummary,
     rank: exported.rank,
