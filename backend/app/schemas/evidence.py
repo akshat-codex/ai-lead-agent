@@ -117,13 +117,28 @@ class EvidenceCreate(BaseModel):
 
 class FieldEvidenceSummary(BaseModel):
     """Every record gathered for one field, plus the derived status. Never
-    picks a single "true" value — records is the full, unfiltered set."""
+    picks a single "true" value — records is the full, unfiltered set.
+
+    freshness_score/is_stale are additive, per-field staleness signals
+    (see app/services/evidence_engine.py::_field_freshness_score) — they
+    reuse app/schemas/scoring.py's own FreshnessConfig decay curve, the
+    same one app/services/lead_scoring.py's whole-lead freshness_score
+    already applies across an entity's newest evidence overall. This is
+    deliberately NOT folded into `status` above: an old field's
+    SUPPORTED/SUPPORTED_STRUCTURED/INSUFFICIENT status must never flip
+    purely from elapsed time with no new evidence, since hard_rule_engine.py
+    reads that status to gate PASS/HOLD — see this field's own field-level
+    docstring in evidence_engine.py for the full rationale. Both are None
+    when the field has no records at all (nothing to date), matching
+    lead_scoring.py's own "None, never a fabricated number" convention."""
 
     model_config = ConfigDict(frozen=True)
 
     field: str
     status: EvidenceStatus
     records: tuple[EvidenceRecord, ...]
+    freshness_score: float | None = None
+    is_stale: bool = False
 
 
 class EntityEvidenceSummary(BaseModel):

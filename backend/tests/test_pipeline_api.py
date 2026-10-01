@@ -282,6 +282,61 @@ def test_export_csv_format_is_available(client):
     assert "text/csv" in response.headers["content-type"]
 
 
+def test_pipeline_run_completion_fires_the_export_webhook_when_configured(client, monkeypatch, respx_mock):
+    """End-to-end proof that app/services/pipeline_orchestration.py's own
+    completion hook actually calls send_export_webhook with a real,
+    populated ExportResult — not just that the unit-level webhook function
+    works in isolation."""
+    import httpx
+
+    import app.services.pipeline_orchestration as orchestration_module
+    from app.core.config import Settings
+
+    webhook_url = "https://hooks.example.invalid/lead-agent"
+    route = respx_mock.post(webhook_url).mock(return_value=httpx.Response(200))
+
+    live_settings = Settings(
+        export_webhook_url=webhook_url,
+        export_webhook_secret="test-secret",
+        database_url="sqlite:///:memory:",
+    )
+    monkeypatch.setattr(orchestration_module, "get_settings", lambda: live_settings)
+
+    icp = _create_icp(client, "Pipeline API Webhook")
+    _create_run(client, icp["id"], target_count=2)
+
+    assert route.called
+
+
+def test_pipeline_run_completion_never_calls_the_webhook_when_unconfigured(client, respx_mock):
+    """The default posture (no ENV configured) — no outbound call is ever
+    attempted, confirmed at the HTTP layer itself via respx's own
+    assert_all_called=False default plus an explicit route with zero hits."""
+    import httpx
+
+    route = respx_mock.post("https://hooks.example.invalid/lead-agent").mock(return_value=httpx.Response(200))
+
+    icp = _create_icp(client, "Pipeline API No Webhook")
+    _create_run(client, icp["id"], target_count=2)
+
+    assert not route.called
+
+
+def test_export_hubspot_and_salesforce_csv_formats_are_available(client):
+    icp = _create_icp(client, "Pipeline API HubSpot Salesforce")
+    run = _create_run(client, icp["id"], target_count=1)
+
+    hubspot_response = client.get(f"/api/v1/pipeline-runs/{run['id']}/export", params={"format": "HUBSPOT_CSV"})
+    assert hubspot_response.status_code == 200
+    assert "text/csv" in hubspot_response.headers["content-type"]
+    assert "Company name" in hubspot_response.text
+
+    salesforce_response = client.get(f"/api/v1/pipeline-runs/{run['id']}/export", params={"format": "SALESFORCE_CSV"})
+    assert salesforce_response.status_code == 200
+    assert "text/csv" in salesforce_response.headers["content-type"]
+    assert "Account Name" in salesforce_response.text
+
+
 # --- audit / provenance -------------------------------------------------
 
 

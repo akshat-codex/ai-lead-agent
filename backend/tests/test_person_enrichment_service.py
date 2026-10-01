@@ -124,3 +124,82 @@ def test_facts_carry_external_id_and_retrieved_at_for_provenance():
 
     assert facts[0].external_id == "apollo-42"
     assert facts[0].retrieved_at is not None
+
+
+# --- email carry-forward within one enrichment pass -------------------
+
+
+class _EmailEchoProvider(ProviderAdapter):
+    """Records the email it actually received in its query, so a test can
+    assert whether an earlier provider's newly-found email was carried
+    forward to it — mirrors AbstractEmailVerificationProvider's own real
+    "verify, never discover" contract without needing real HTTP."""
+
+    def __init__(self, provider_id: str = "abstract-email-verification-v1"):
+        super().__init__(provider_id=provider_id, provider_name="Echo", capabilities={ProviderCapability.PERSON_ENRICHMENT})
+        self.received_emails: list[str | None] = []
+
+    def execute(self, request: ProviderRequest) -> ProviderResponse:
+        email = request.query.get("email")
+        self.received_emails.append(email)
+        if not email:
+            return ProviderResponse(
+                provider_id=self.provider_id,
+                capability=request.capability,
+                success=False,
+                error=ProviderError(code="NO_EMAIL", message="no email", retryable=False),
+            )
+        return ProviderResponse(
+            provider_id=self.provider_id,
+            capability=request.capability,
+            success=True,
+            data=(NormalizedRecord(external_id=email, name=email, attributes={"email_deliverability": "DELIVERABLE"}),),
+            source=SourceMetadata(
+                provider_id=self.provider_id, provider_name=self.provider_name,
+                retrieved_at=datetime.now(timezone.utc), is_mock=False,
+            ),
+        )
+
+
+def test_a_later_providers_query_receives_an_earlier_providers_newly_found_email():
+    registry = ProviderRegistry()
+    registry.register(_StubPersonEnrichmentProvider("apollo-person-enrichment-v1", {"email": "jane@x.invalid"}))
+    echo = _EmailEchoProvider()
+    registry.register(echo)
+
+    outcome, facts = run_person_enrichment("person-1", _query(), registry)
+
+    assert echo.received_emails == ["jane@x.invalid"]
+    assert outcome.status == PersonEnrichmentRunStatus.COMPLETED
+    fields = {f.field: f.value for f in facts}
+    assert fields["email_deliverability"] == "DELIVERABLE"
+
+
+def test_carry_forward_never_overwrites_an_email_already_supplied_by_the_caller():
+    """A caller-supplied query.email (from a prior run's own evidence — see
+    app/api/people.py's own _latest_evidence_value use) must win over
+    whatever an earlier provider in THIS pass separately returns — the
+    already-known value is not replaced mid-pass."""
+    registry = ProviderRegistry()
+    registry.register(_StubPersonEnrichmentProvider("apollo-person-enrichment-v1", {"email": "new@x.invalid"}))
+    echo = _EmailEchoProvider()
+    registry.register(echo)
+
+    query = PersonEnrichmentQuery(full_name="Jane Testperson", email="already-known@x.invalid")
+    run_person_enrichment("person-1", query, registry)
+
+    assert echo.received_emails == ["already-known@x.invalid"]
+
+
+def test_no_email_ever_produced_means_a_later_provider_still_runs_with_none():
+    registry = ProviderRegistry()
+    registry.register(_StubPersonEnrichmentProvider("apollo-person-enrichment-v1", {"title": "CMO"}))
+    echo = _EmailEchoProvider()
+    registry.register(echo)
+
+    outcome, facts = run_person_enrichment("person-1", _query(), registry)
+
+    assert echo.received_emails == [None]
+    assert outcome.status == PersonEnrichmentRunStatus.PARTIAL_FAILURE  # echo failed with NO_EMAIL
+    fields = {f.field for f in facts}
+    assert fields == {"title"}

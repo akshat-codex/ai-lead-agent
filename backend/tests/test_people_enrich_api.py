@@ -310,6 +310,87 @@ def test_enrichment_does_not_create_a_duplicate_person(client):
     assert before == after
 
 
+class _FixedEmailVerificationProvider(ProviderAdapter):
+    """Mirrors AbstractEmailVerificationProvider's real "verify, never
+    discover" contract: returns success only when it actually received an
+    email in its query, exactly like the real adapter's own
+    ABSTRACT_EMAIL_NO_EMAIL_SUPPLIED guard."""
+
+    def __init__(self, provider_id: str = "abstract-email-verification-v1"):
+        super().__init__(provider_id=provider_id, provider_name=provider_id, capabilities={ProviderCapability.PERSON_ENRICHMENT})
+
+    def execute(self, request: ProviderRequest) -> ProviderResponse:
+        email = request.query.get("email")
+        if not email:
+            from app.providers.contracts import ProviderError
+
+            return ProviderResponse(
+                provider_id=self.provider_id, capability=request.capability, success=False,
+                error=ProviderError(code="NO_EMAIL", message="no email", retryable=False),
+            )
+        return ProviderResponse(
+            provider_id=self.provider_id, capability=request.capability, success=True,
+            data=(NormalizedRecord(external_id=email, name=email, attributes={"email_deliverability": "DELIVERABLE"}),),
+            source=SourceMetadata(provider_id=self.provider_id, provider_name=self.provider_name, retrieved_at=datetime.now(timezone.utc), is_mock=False),
+        )
+
+
+def test_email_verification_provider_sees_apollos_email_in_the_same_enrich_call(client):
+    """End-to-end proof of the carry-forward fix in app/services/
+    person_enrichment.py: a first-ever /enrich call has no prior evidence,
+    so the verification provider can only succeed if it receives the email
+    Apollo (registered first) just found, within this SAME call."""
+    icp = _create_icp(client, "ICP Enrich Email Verification Same Pass")
+    person_id = _discover_resolve_person(client, icp["id"])
+
+    registry = ProviderRegistry()
+    registry.register(_FixedPersonEnrichmentProvider("apollo-person-enrichment-v1", {"email": "jane@example-test.invalid"}))
+    registry.register(_FixedEmailVerificationProvider())
+    app.dependency_overrides[get_provider_registry] = lambda: registry
+    try:
+        response = client.post(f"/api/v1/people/{person_id}/enrich")
+    finally:
+        del app.dependency_overrides[get_provider_registry]
+
+    assert response.status_code == 201
+    assert response.json()["status"] == "COMPLETED"
+
+    evidence = client.get("/api/v1/evidence", params={"entity_type": "PERSON", "entity_id": person_id}).json()
+    fields = {e["field"]: e["value"] for e in evidence}
+    assert fields["email_deliverability"] == "DELIVERABLE"
+
+
+def test_email_verification_provider_uses_a_prior_runs_persisted_email_on_a_second_call(client):
+    """Proves app/api/people.py's own _latest_evidence_value(db, person_id,
+    "email") pre-population: a SECOND /enrich call (Apollo no longer
+    registered) must still be able to verify the email a prior call already
+    persisted as evidence."""
+    icp = _create_icp(client, "ICP Enrich Email Verification Second Pass")
+    person_id = _discover_resolve_person(client, icp["id"])
+
+    registry = ProviderRegistry()
+    registry.register(_FixedPersonEnrichmentProvider("apollo-person-enrichment-v1", {"email": "jane@example-test.invalid"}))
+    app.dependency_overrides[get_provider_registry] = lambda: registry
+    try:
+        client.post(f"/api/v1/people/{person_id}/enrich")
+    finally:
+        del app.dependency_overrides[get_provider_registry]
+
+    registry_second_pass = ProviderRegistry()
+    registry_second_pass.register(_FixedEmailVerificationProvider())
+    app.dependency_overrides[get_provider_registry] = lambda: registry_second_pass
+    try:
+        response = client.post(f"/api/v1/people/{person_id}/enrich")
+    finally:
+        del app.dependency_overrides[get_provider_registry]
+
+    assert response.status_code == 201
+    assert response.json()["status"] == "COMPLETED"
+    evidence = client.get("/api/v1/evidence", params={"entity_type": "PERSON", "entity_id": person_id}).json()
+    fields = {e["field"]: e["value"] for e in evidence}
+    assert fields["email_deliverability"] == "DELIVERABLE"
+
+
 def test_re_enriching_the_same_person_does_not_duplicate_identical_evidence(client):
     icp = _create_icp(client, "ICP Enrich Idempotent")
     person_id = _discover_resolve_person(client, icp["id"])

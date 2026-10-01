@@ -27,6 +27,15 @@ SCHEMA_VERSION = "1.0.0"
 class ExportFormat(str, Enum):
     JSON = "JSON"
     CSV = "CSV"
+    # CRM-shaped bulk-import CSVs — see app/services/lead_export.py's own
+    # render_hubspot_csv/render_salesforce_csv docstrings for the exact,
+    # verified column mapping and its honest limits (e.g. full-name
+    # splitting). These produce a FILE the user still uploads through that
+    # CRM's own import wizard — no OAuth, no API key, no network call to
+    # any CRM is ever made by this codebase; same read-only, DB-only
+    # architecture as CSV/JSON above, just a different column mapping.
+    HUBSPOT_CSV = "HUBSPOT_CSV"
+    SALESFORCE_CSV = "SALESFORCE_CSV"
 
 
 class ExportIdentity(BaseModel):

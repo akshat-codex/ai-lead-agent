@@ -93,6 +93,42 @@ def test_csv_export_reflects_real_pipeline_data(client):
         assert row["lead_id"]
 
 
+# --- CRM-shaped export formats (HUBSPOT_CSV / SALESFORCE_CSV) -------------
+
+
+def test_hubspot_csv_export_is_a_real_csv_with_expected_columns(client):
+    icp = _create_icp(client, "Export API HubSpot")
+    _run_batch(client, icp["id"], target_count=2)
+
+    response = client.get("/api/v1/exports", params={"icp_id": icp["id"], "format": "HUBSPOT_CSV"})
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/csv")
+    rows = list(csv.DictReader(io.StringIO(response.text)))
+    assert len(rows) == 2
+    for row in rows:
+        assert "Email" in row
+        assert "Company name" in row
+        assert "First Name" in row
+        assert "Last Name" in row
+
+
+def test_salesforce_csv_export_is_a_real_csv_with_expected_columns(client):
+    icp = _create_icp(client, "Export API Salesforce")
+    _run_batch(client, icp["id"], target_count=2)
+
+    response = client.get("/api/v1/exports", params={"icp_id": icp["id"], "format": "SALESFORCE_CSV"})
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/csv")
+    rows = list(csv.DictReader(io.StringIO(response.text)))
+    assert len(rows) == 2
+    for row in rows:
+        assert "Account Name" in row
+        assert "Website" in row
+        assert "Last Name" in row
+        # Salesforce's own hard Contact requirement — never blank.
+        assert row["Last Name"] != ""
+
+
 # --- missing fields --------------------------------------------------
 
 

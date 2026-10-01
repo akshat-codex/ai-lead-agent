@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from app.schemas.evidence import ConfidenceLevel, EntityType, EvidenceRecord, EvidenceStatus, SourceType
 from app.services.evidence_engine import (
@@ -269,3 +269,68 @@ def test_summary_is_deterministic_for_identical_input():
     first = summarize_entity(EntityType.COMPANY, "company-1", records)
     second = summarize_entity(EntityType.COMPANY, "company-1", records)
     assert first == second
+
+
+# --- per-field freshness (additive, never affects status) ------------------
+
+
+def _field_summary(fields, field_name):
+    return next(f for f in fields if f.field == field_name)
+
+
+def test_field_with_no_records_has_no_freshness_score():
+    summary = summarize_field("industry", [])
+    assert summary.freshness_score is None
+    assert summary.is_stale is False
+
+
+def test_fresh_record_gets_full_freshness_credit():
+    now = datetime(2026, 9, 30, tzinfo=timezone.utc)
+    record = _record(field="industry", retrieved_at=datetime(2026, 9, 25, tzinfo=timezone.utc))
+    summary = summarize_field("industry", [record], now=now)
+    assert summary.freshness_score == 100.0
+    assert summary.is_stale is False
+
+
+def test_very_old_record_decays_to_zero_and_is_flagged_stale():
+    now = datetime(2026, 9, 30, tzinfo=timezone.utc)
+    record = _record(field="industry", retrieved_at=datetime(2025, 1, 1, tzinfo=timezone.utc))
+    summary = summarize_field("industry", [record], now=now)
+    assert summary.freshness_score == 0.0
+    assert summary.is_stale is True
+
+
+def test_partially_aged_record_decays_linearly_between_the_two_bounds():
+    now = datetime(2026, 9, 30, tzinfo=timezone.utc)
+    # Default FreshnessConfig: full credit <=30 days, zero credit >=180 days.
+    # 105 days is the exact midpoint of that span -> 50.0.
+    record = _record(field="industry", retrieved_at=now - __import__("datetime").timedelta(days=105))
+    summary = summarize_field("industry", [record], now=now)
+    assert summary.freshness_score == 50.0
+    assert summary.is_stale is False
+
+
+def test_freshness_uses_this_fields_own_newest_record_not_a_global_one():
+    """Two different fields on the same entity must decay independently —
+    a fresh domain record must not make a stale industry record look fresh
+    just because they belong to the same company."""
+    now = datetime(2026, 9, 30, tzinfo=timezone.utc)
+    records = [
+        _record(id="ev-1", field="industry", retrieved_at=datetime(2025, 1, 1, tzinfo=timezone.utc)),
+        _record(id="ev-2", field="domain", value="acme.com", retrieved_at=now),
+    ]
+    summary = summarize_entity(EntityType.COMPANY, "company-1", records, now=now)
+    assert _field_summary(summary.fields, "industry").freshness_score == 0.0
+    assert _field_summary(summary.fields, "domain").freshness_score == 100.0
+
+
+def test_stale_field_still_keeps_its_original_status_unchanged():
+    """The core safety property: an old single-source record must still
+    resolve to the exact same EvidenceStatus it always did — freshness is
+    observability, never a hidden second gate on hard-rule PASS/HOLD."""
+    now = datetime(2026, 9, 30, tzinfo=timezone.utc)
+    old_record = _record(field="business_model", value="Subscription", retrieved_at=datetime(2025, 1, 1, tzinfo=timezone.utc))
+    summary = summarize_field("business_model", [old_record], now=now)
+    assert summary.status == compute_field_status("business_model", [old_record])
+    assert summary.status == EvidenceStatus.INSUFFICIENT
+    assert summary.is_stale is True

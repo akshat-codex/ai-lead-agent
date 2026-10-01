@@ -273,7 +273,7 @@ def run_prescreen_batch(items: list[BatchItemForPrescreen], ...) -> dict[str, De
   raised later once real-world latency/cost is observed. This is the only genuinely new tunable; everything
   else reuses existing limits.
 - **Spend ceiling reuse, not reinvention:** the number of candidates entering pre-screen in any round is
-  already bounded by `discovery_limit` (schema-capped 1–100, further clamped by `live_test_mode` to 5 when
+  already bounded by `discovery_limit` (schema-capped 1–100, further clamped by `live_test_mode` to 25 when
   active — audit point 5) and by `max_discovery_rounds_per_batch` (hard ceiling of 5 rounds/batch,
   independent of mode). Deep mode adds **no new spend ceiling primitive** — it rides entirely on limits
   that already exist, satisfying "reuse all existing discovery_limit, live_test_mode,

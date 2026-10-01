@@ -40,6 +40,33 @@ class Settings(BaseSettings):
     unipile_dsn: str | None = None
     unipile_account_id: str | None = None
 
+    # Abstract API's Email Validation & Verification endpoint — a second,
+    # independent PERSON_ENRICHMENT provider (see app/providers/
+    # abstract_email_verification.py's own module docstring) that performs
+    # a real, live SMTP/MX/catch-all/disposable deliverability check,
+    # rather than trusting Apollo's own self-reported email_status guess
+    # alone. Free tier confirmed live (2026-09-30, abstractapi.com/pricing):
+    # 100 requests/month, a genuinely recurring monthly allowance, not an
+    # expiring trial credit. Leave ABSTRACT_EMAIL_API_KEY unset to skip it
+    # entirely — PERSON_ENRICHMENT then runs on whatever other providers
+    # (Apollo) are configured, exactly as before this was added.
+    abstract_email_api_key: str | None = None
+    abstract_email_base_url: str = "https://emailvalidation.abstractapi.com/v1"
+
+    # Abstract API's Phone Validation endpoint — a THIRD, independent
+    # PERSON_ENRICHMENT provider (see app/providers/
+    # abstract_phone_verification.py's own module docstring). Same account
+    # family/free-tier shape as the email sibling above (100 requests/month,
+    # recurring, no card). Honest scope: the documented response has no
+    # real-time reachability field, only format/numbering-plan validity and
+    # line-type/carrier — this closes this codebase's previous ZERO phone
+    # capability with a real, narrowly-scoped signal, not a claim of parity
+    # with a dedicated phone-data vendor. Leave ABSTRACT_PHONE_API_KEY unset
+    # to skip it entirely — PERSON_ENRICHMENT then runs on whatever other
+    # providers are configured, exactly as before this was added.
+    abstract_phone_api_key: str | None = None
+    abstract_phone_base_url: str = "https://phonevalidation.abstractapi.com/v1"
+
     # Phase 9: real OpenAI provider for LLM qualification (Phase 16) /
     # adversarial review (Phase 17). Registered only when openai_api_key is
     # set — see app/services/llm_providers/default_registry.py. Leave unset
@@ -129,9 +156,20 @@ class Settings(BaseSettings):
     # once a real provider's actual per-round yield/cost is understood
     # from a deliberate, small, monitored first run — this setting is a
     # training-wheel for that first run, not a permanent production cap.
+    #
+    # Raised from an original 5 to 25 (still fails closed by default, still
+    # meaningfully tighter than discovery_limit/target_count's own schema
+    # ranges of [1,100]/[1,1000] — this is not a removal of the rail, only
+    # a less cramped one): with items 1-2's real COMPANY_ENRICHMENT/signal
+    # providers now landed, a 5-company first run was too small a sample to
+    # meaningfully judge real provider yield/quality/cost before a user
+    # would need to raise this setting anyway — 25 is enough to see a
+    # representative spread of PASS/HOLD/FAIL outcomes and real per-round
+    # cost while still bounding a config mistake's blast radius on the very
+    # first live call.
     live_test_mode: bool = True
-    live_test_max_discovery_limit: int = 5
-    live_test_max_target_count: int = 5
+    live_test_max_discovery_limit: int = 25
+    live_test_max_target_count: int = 25
 
     # Discovery-mode web-search COMPANY_DISCOVERY sources — see
     # app/providers/tavily.py / app/providers/serper.py's own module
@@ -147,6 +185,53 @@ class Settings(BaseSettings):
 
     serper_api_key: str | None = None
     serper_base_url: str = "https://google.serper.dev"
+
+    # SEC EDGAR + Wikidata COMPANY_ENRICHMENT — free, public, no-API-key
+    # data sources (see app/providers/sec_edgar.py / app/providers/
+    # wikidata.py's own module docstrings for their honest, narrow coverage
+    # scope: US SEC-registered public companies only / Wikidata-notable
+    # companies only). OFF by default, unlike every genuinely optional
+    # provider elsewhere in this file being "off" because no key is
+    # configured — these have no key to configure at all, so they need
+    # their own explicit opt-in flag instead, for two reasons: (1) tests
+    # must never make real network calls by default (see tests/conftest.py's
+    # own "respx-mocked, no global httpx blocking" design — an
+    # unconditionally-registered real provider would silently hit the real
+    # internet on every test that builds the default registry), and (2) a
+    # user should be able to choose not to enrich with public-registry data
+    # even though it costs nothing, e.g. to keep discovery fully offline-
+    # testable or to avoid the (small, honest) latency of two extra HTTP
+    # calls per company. Set to true to enable both providers together;
+    # see app/providers/default_registry.py for the one place this is read.
+    enable_free_company_enrichment_providers: bool = False
+
+    # Signal Check — a Tavily-backed COMPANY_ENRICHMENT provider that makes
+    # two targeted, real web searches per company (hiring-for-marketing,
+    # funding announcements) so app/services/commercial_signal_extractor.py's
+    # existing MARKETING_HIRING/FUNDING keyword-matching engine has real
+    # evidence text to actually detect, instead of only whatever text
+    # happened to already be collected by an unrelated provider (see
+    # app/providers/signal_check.py's own module docstring for the full
+    # root-cause rationale). Reuses settings.tavily_api_key — no new
+    # credential is required — so this flag exists purely to gate the
+    # EXTRA search cost/latency (two more Tavily calls per company) behind
+    # an explicit, conscious opt-in, exactly like
+    # enable_free_company_enrichment_providers above gates its own extra
+    # calls; it is never registered at all when tavily_api_key is unset,
+    # matching every other Tavily-dependent provider in this codebase (see
+    # app/providers/default_registry.py for the one place this is read).
+    enable_signal_check_provider: bool = False
+
+    # Tech Stack Detector — a free, no-API-key COMPANY_ENRICHMENT provider
+    # (see app/providers/tech_stack_detector.py's own module docstring) that
+    # fetches a company's own homepage once and checks it against a small,
+    # curated table of unambiguous platform signatures (Shopify/WordPress/
+    # HubSpot/etc.). Same two reasons as
+    # enable_free_company_enrichment_providers above for needing its own
+    # explicit opt-in flag despite costing nothing: tests must never make a
+    # real network call by default, and a user should be able to opt out of
+    # the extra per-company homepage-fetch latency even though it's free.
+    enable_tech_stack_detector: bool = False
 
     # Explorium exposes NO programmatic credit-balance/usage endpoint
     # (confirmed against Explorium's own API docs — credits are visible
@@ -197,6 +282,29 @@ class Settings(BaseSettings):
     # model unless deep_prescreen_llm_provider="gemini" is also set — this
     # field only ever feeds OpenAIProvider's own model_id parameter.
     deep_prescreen_openai_model: str | None = None
+
+    # Export webhook — a generic, file-free delivery mechanism (see
+    # app/services/export_webhook.py's own module docstring). When a
+    # pipeline run completes, its export JSON (the same shape GET
+    # /api/v1/pipeline-runs/{id}/export?format=JSON already returns) is
+    # POSTed to this URL, HMAC-signed so the receiver can verify it really
+    # came from this app. This is deliberately NOT a specific CRM
+    # integration — it is what Zapier/Make/n8n themselves consume to bridge
+    # to ANY downstream tool, so one webhook unlocks the whole live-
+    # integration ecosystem rather than one vendor. No OAuth, no stored
+    # third-party credential, no outbound call of any kind when unset
+    # (the default) — a pipeline run behaves exactly as before this was
+    # added. Never blocks or fails a pipeline run: see that module's own
+    # "never raise" discipline.
+    export_webhook_url: str | None = None
+    # A per-deployment secret used to HMAC-sign the webhook payload (header
+    # X-Lead-Agent-Signature) — required whenever export_webhook_url is
+    # set, so a receiver can always verify authenticity; generate any
+    # random string (e.g. `openssl rand -hex 32`). Not sent to the
+    # receiving URL's own operator by any other channel — this app only
+    # ever uses it locally to compute the signature.
+    export_webhook_secret: str | None = None
+    export_webhook_timeout_seconds: float = 10.0
 
 
 @lru_cache

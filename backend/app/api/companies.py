@@ -65,11 +65,45 @@ def _candidate_row_to_schema(row: DiscoveryCandidateModel) -> CandidateCompany:
     )
 
 
-def _apply_match(company_row: CanonicalCompanyModel, candidate: CandidateCompany, conflicting: list[str]) -> None:
+def _apply_match(
+    company_row: CanonicalCompanyModel,
+    candidate: CandidateCompany,
+    conflicting: list[str],
+    other_company_domains: set[str] = frozenset(),
+) -> None:
     """Adds this candidate's identity info to an existing company —
     never overwriting a provider's already-recorded external id, and never
     overwriting an already-set canonical domain. Conflicts are appended to
     `conflicting` (mutated in place) rather than silently dropped.
+
+    Bug fix: a candidate can MATCH an existing company via a signal other
+    than domain (e.g. a shared provider external id — see
+    app/services/company_resolution.py's own provider-identity match,
+    section 1) while that company's canonical_domain is still None. Before
+    this fix, this function unconditionally claimed the candidate's own
+    domain for company_row in that case — with no check for whether a
+    DIFFERENT existing company already legitimately owns that exact
+    domain. Two different candidates independently matching two different
+    domain-less companies, both observed under the same real domain (e.g.
+    two separate Tavily/Serper sightings of the same company, resolved
+    against two different pre-existing company rows because their OTHER
+    match signals - e.g. provider_identity, name-similarity heuristics -
+    happened to point at different rows), could both "win" the same
+    domain — triggering a real, reproducible
+    canonical_companies_canonical_domain_key UniqueViolation that crashes
+    the entire batch request with an unhandled 500 (confirmed live,
+    2026-10-01: two DiscoveryCandidateModel rows for "leadiq.com" each
+    independently matched a different existing company and both tried to
+    claim the domain in the same resolve_discovery_run() call).
+
+    `other_company_domains` is the set of canonical_domain values already
+    claimed by every OTHER company in this resolution run (passed by the
+    caller, which alone has visibility across every row) — when the
+    candidate's domain is already in that set, this is treated exactly
+    like every other case this codebase handles by refusing to guess: a
+    conflict is recorded (never a crash, never a silent wrong merge) and
+    company_row's own domain is left unset, matching this module's own
+    "HOLD/conflict over silent fabrication" discipline elsewhere.
     """
     provider_identities = dict(company_row.provider_identities)
     existing_external_id = provider_identities.get(candidate.provider_id)
@@ -81,7 +115,11 @@ def _apply_match(company_row: CanonicalCompanyModel, candidate: CandidateCompany
 
     normalized_domain = normalize_domain(candidate.domain)
     if company_row.canonical_domain is None and normalized_domain is not None:
-        company_row.canonical_domain = normalized_domain
+        if normalized_domain in other_company_domains:
+            if "domain_conflict" not in conflicting:
+                conflicting.append("domain_conflict")
+        else:
+            company_row.canonical_domain = normalized_domain
     elif (
         normalized_domain is not None
         and normalized_domain != company_row.canonical_domain
@@ -140,7 +178,12 @@ def resolve_discovery_run(payload: CompanyResolveRequest, db: Session = Depends(
             identities.append(_to_identity(new_row))
         elif decision.status == ResolutionStatus.MATCH:
             company_row = company_rows[decision.canonical_company_id]
-            _apply_match(company_row, candidate, conflicting)
+            other_company_domains = {
+                identity.canonical_domain
+                for identity in identities
+                if identity.id != company_row.id and identity.canonical_domain is not None
+            }
+            _apply_match(company_row, candidate, conflicting, other_company_domains)
             for i, identity in enumerate(identities):
                 if identity.id == company_row.id:
                     identities[i] = _to_identity(company_row)
