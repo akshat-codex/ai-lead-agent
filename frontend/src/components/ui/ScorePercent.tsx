@@ -3,8 +3,12 @@
 import Typography from "@mui/material/Typography";
 
 interface ScorePercentProps {
-  /** 0-1 fractional score, or null when the backend never scored this lead
-   * (e.g. hard_icp_result FAIL/HOLD) — null means "not eligible," not "0%". */
+  /** A 0-100 score, exactly as every backend scoring field already is
+   * (see backend/app/services/lead_scoring.py::_clamp, which bounds every
+   * component score to [0, 100] — confirmed live: a real final_score of
+   * 77.69 is stored and returned as-is, never as a 0-1 fraction). null
+   * when the backend never scored this lead (e.g. hard_icp_result
+   * FAIL/HOLD) — null means "not eligible," not "0%". */
   value: number | null;
 }
 
@@ -30,7 +34,7 @@ export default function ScorePercent({ value }: ScorePercentProps) {
         borderColor: "divider",
       }}
     >
-      {Math.round(value * 100)}%
+      {Math.round(value)}%
     </Typography>
   );
 }
