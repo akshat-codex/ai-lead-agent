@@ -29,6 +29,15 @@ class PersonEnrichmentQuery(BaseModel):
 
     full_name: str | None = None
     email: str | None = None
+    # Phone has no discovery source anywhere in this codebase today (Apollo
+    # deliberately never requests/returns one — see app/providers/apollo.py's
+    # own module docstring) — this is populated only from a phone number a
+    # human has already recorded as evidence directly (e.g. via
+    # POST /api/v1/evidence), read back the same way email is on a second
+    # /enrich call (see app/api/people.py's own _latest_evidence_value use).
+    # AbstractPhoneVerificationProvider verifies whatever is here; it never
+    # discovers a phone number itself.
+    phone: str | None = None
     linkedin_id: str | None = None
     company_domain: str | None = None
     company_name: str | None = None

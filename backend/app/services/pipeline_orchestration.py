@@ -22,13 +22,22 @@ module does not reimplement any stage:
 
 A hard FAIL/HOLD can never be rescued here because none of the reused
 functions ever rescues one - this module only reads their outputs.
+
+Export webhook (additive, opt-in — see app/services/export_webhook.py's own
+module docstring): once the run's own status/summary is fully finalized and
+committed, the same export JSON is optionally POSTed to
+settings.export_webhook_url, HMAC-signed. No-op (not even attempted) when
+that setting is unset, which is the default — every pipeline run behaves
+exactly as before this was added unless a user explicitly configures it.
 """
 from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from app.api.export import _build_export_result
 from app.api.lead_confidence import _build_result
 from app.api.ranking import _compute_ranking, _latest_human_review
+from app.core.config import get_settings
 from app.models.batch import BatchItemModel, BatchModel
 from app.models.lead import CanonicalLeadModel, LeadIcpMembershipModel
 from app.models.pipeline import PipelineRunModel
@@ -38,6 +47,7 @@ from app.schemas.pipeline import (
     PipelineStageStatus,
 )
 from app.services.batch_orchestration import run_batch
+from app.services.export_webhook import send_export_webhook
 
 _BATCH_STAGE_NAMES = (
     PipelineStageName.DISCOVERY,
@@ -198,3 +208,21 @@ def run_pipeline(db, registry, run: PipelineRunModel, batch: BatchModel) -> None
     db.add(run)
     db.commit()
     db.refresh(run)
+
+    # Export webhook (see app/services/export_webhook.py's own module
+    # docstring) — fires once per run, after the run row is fully
+    # finalized and committed, so a receiver's payload always reflects the
+    # exact same data GET .../export would return if fetched right now.
+    # Never raises and never affects run.status: a delivery failure is
+    # purely observability (logged inside send_export_webhook itself), not
+    # a pipeline failure — the run already succeeded or failed on its own
+    # terms before this ever runs.
+    settings = get_settings()
+    if settings.export_webhook_url:
+        export_result = _build_export_result(db, run.icp_id, run.batch_id)
+        send_export_webhook(
+            export_result,
+            webhook_url=settings.export_webhook_url,
+            webhook_secret=settings.export_webhook_secret,
+            timeout_seconds=settings.export_webhook_timeout_seconds,
+        )

@@ -1,53 +1,100 @@
-# Leads Agent
+# Lead Agent
 
-**Leads Agent** is an AI-powered ICP (Ideal Customer Profile) Lead Research & Qualification Platform.
+**Lead Agent** is an open-source, AI-assisted ICP (Ideal Customer Profile) lead discovery and
+qualification tool. Give it an ICP — in plain language or as structured filters — and it discovers
+candidate companies, validates them against hard rules, discovers and enriches decision-makers, runs
+LLM-based qualification, ranks the results, and exports outreach-ready leads.
 
-Given an ICP, the eventual system will discover candidate companies, enrich them, find decision-makers,
-verify identities, collect evidence, score leads, run LLM qualification with adversarial verification,
-deduplicate, route through human review, and export verified leads — all governed by one core principle:
+> **QUALITY > QUANTITY.** Nothing here ever fabricates or guesses a lead's information. A field that
+> can't be evidenced stays unknown (`HOLD`), never silently filled in. See
+> [docs/quality-contract.md](docs/quality-contract.md) and [docs/evidence-policy.md](docs/evidence-policy.md)
+> for the full contract every part of the pipeline is built against.
 
-> **QUALITY > QUANTITY.** Never fabricate or guess lead information.
+This is a standalone project — anyone can clone it, plug in their own provider API keys, and run it
+locally or self-host it. It is **bring-your-own-keys**: no provider is required to start the app, and
+each one is entirely optional — the app degrades honestly (mock data, or a narrower discovery pool) when
+a key is missing, rather than failing or faking results.
 
-This repository will eventually be integrated into the company's main website/repository. **For now it is
-a fully standalone project.**
+## What it actually does today
 
-## Current development stage
+- **ICP intake** — describe your ideal customer in plain language or build it field-by-field; saved and
+  versioned.
+- **Company discovery** — three discovery modes let you choose which sources run:
+  - `fast` — a structured company database only (Explorium).
+  - `safe` — open web search only (Tavily + Serper), for industries a fixed taxonomy can't resolve.
+  - `hard` — every configured source combined, for the widest possible pool.
+- **Evidence-gated hard-rule validation** — every candidate is checked against your ICP's non-negotiable
+  rules (industry, geography, employee count, company type, exclusions, allowed decision-maker titles).
+  A rule only ever passes on real evidence; missing evidence holds, it never guesses.
+- **Decision-maker discovery & enrichment** — finds people at qualifying companies and resolves contact
+  details (email/phone/LinkedIn) through configured providers.
+- **LLM qualification + adversarial review** — a real LLM judges commercial fit on candidates that pass
+  the hard-rule gate, citing only real evidence (fabricated citations are rejected outright), followed by
+  a second adversarial pass that can downgrade an unconvincing qualification.
+- **Ranking, deduplication, and export** — a final reviewable, filterable table of leads, exportable as
+  plain CSV/JSON or as a CRM-shaped bulk-import CSV (`format=HUBSPOT_CSV` / `format=SALESFORCE_CSV`) ready
+  to upload directly into that CRM's own import wizard — no OAuth or live CRM connection involved.
 
-**Phase 0 — Project Foundation & Quality Contract.**
+## Providers — bring your own keys
 
-This stage establishes the development skeleton (a running frontend, a running backend with a health
-endpoint, database/queue configuration, Docker Compose for local development, and baseline tests) plus the
-canonical quality contract every later phase must be built against. No ICP, lead-research, scraping,
-enrichment, scoring, or LLM-qualification logic exists yet. See
-[docs/architecture.md](docs/architecture.md) for the full roadmap and architectural principles, and:
+Every real data source is optional and independently gated by its own API key. With **zero keys
+configured**, the app still runs end-to-end on deterministic mock data (useful for development/testing
+the pipeline itself — mock-sourced leads are visibly flagged in the UI, never silently mixed in as if
+real).
 
-- [docs/quality-contract.md](docs/quality-contract.md) — ICP hard vs. soft rules, anti-fabrication rules,
-  manager feedback, quality KPIs.
-- [docs/lead-decision-policy.md](docs/lead-decision-policy.md) — lead states, transitions, and
-  accept/hold/reject/duplicate rules.
-- [docs/evidence-policy.md](docs/evidence-policy.md) — the provenance contract for critical fields.
-- [docs/batch-contract.md](docs/batch-contract.md) — rules for batch/bulk generation runs.
+| Provider | Used for | Env var(s) | Notes |
+|---|---|---|---|
+| **Explorium** | Company discovery (structured database) | `EXPLORIUM_API_KEY` | The only source with real structured employee-count/geography/industry data — configuring this is the single highest-leverage thing you can do for hard-rule accuracy. |
+| **Tavily** | Company discovery (web search) | `TAVILY_API_KEY` | Covers industries a fixed taxonomy can't name. Free-text description evidence is bridged into industry/company_type matching (see below) since Tavily has no structured taxonomy of its own. |
+| **Serper** | Company discovery (Google search) | `SERPER_API_KEY` | Same role as Tavily, an independent second web-search source — combine both for broader/cross-corroborated coverage. |
+| **Hermes** | Company discovery (async research agent) | `HERMES_API_TOKEN` | A secondary, slower (multi-minute) discovery source, used only when the faster sources don't produce enough candidates. |
+| **Unipile** | Decision-maker discovery + company enrichment | `UNIPILE_API_KEY`, `UNIPILE_DSN`, `UNIPILE_ACCOUNT_ID` | Requires a pre-connected LinkedIn account in your Unipile dashboard; all three values are required together. |
+| **Apollo** | Person enrichment (email/phone) | `APOLLO_API_KEY` | Triggered explicitly per selected person, not automatically for everyone discovered. |
+| **OpenAI** | LLM qualification + adversarial review | `OPENAI_API_KEY` | Without this, qualification runs on a deterministic mock that always returns a rubber-stamp "good fit" — real discriminating judgment requires a real key. |
+| **Gemini** | Discovery-strategy term expansion / deep-mode pre-screen (optional) | `GEMINI_API_KEY` + `DISCOVERY_STRATEGY_LLM_PROVIDER=gemini` | A separate, opt-in slot — never affects qualification even if configured. |
+
+Copy `backend/.env.example` to `backend/.env` and fill in whichever keys you have — see that file for the
+full, documented list (it matches `app/core/config.py`'s settings 1:1).
+
+### Getting the strongest results
+
+Company discovery breaks down into two fundamentally different kinds of sources, and knowing which one
+you have configured explains what results to expect:
+
+- **Structured sources** (Explorium) return a real, queryable database record — employee count,
+  resolved country, a real taxonomy category. Candidates from these sources can cleanly pass every
+  hard rule.
+- **Web-search sources** (Tavily, Serper, Hermes) return search results and free text, not a database
+  row. A free-text evidence bridge lets a candidate's industry/company_type still pass the hard-rule gate
+  when its own description literally states the required terms (e.g. "a D2C skincare brand..." against
+  an ICP requiring `company_type=D2C`) — but employee count and geography have no such bridge yet, since
+  free text rarely states them precisely enough to evidence confidently.
+
+If you're only running `safe` mode (web search only) and seeing few "strong fit" results, the two
+highest-leverage fixes, in order, are: **(1)** add an `EXPLORIUM_API_KEY` if you can — it's the only
+source that supplies the structured evidence the hard-rule engine needs across every field, not just
+industry/company_type; **(2)** add an `OPENAI_API_KEY` — without it, qualification never does real
+discriminating work, it just rubber-stamps every candidate that already passed the hard-rule gate.
 
 ## Technology stack
 
-| Layer                 | Choice                                             |
-| ---------------------- | --------------------------------------------------- |
-| Frontend               | Next.js (App Router), TypeScript, MUI, React Query |
-| Backend                | Python, FastAPI, Pydantic, SQLAlchemy               |
-| Database               | PostgreSQL                                          |
-| Background processing  | Redis, Celery                                       |
-| Local development      | Docker / Docker Compose                             |
-| Testing                | pytest (backend)                                    |
+| Layer | Choice |
+|---|---|
+| Frontend | Next.js (App Router), TypeScript, MUI, React Query, Framer Motion |
+| Backend | Python, FastAPI, Pydantic, SQLAlchemy |
+| Database | PostgreSQL |
+| Background processing | Redis, Celery (scaffolded; no tasks registered yet) |
+| Local development | Docker / Docker Compose |
+| Testing | pytest (backend), Vitest (frontend) |
 
 ## Project structure
 
 ```text
-Leads Agent/
+LEADS AGENT/
 ├── frontend/         Next.js + TypeScript + MUI + React Query app
 ├── backend/          FastAPI application (app/, tests/)
 ├── docs/             Architecture and design documentation
-├── tests/            Cross-cutting / integration test notes (see tests/README.md)
-├── docker/           Reserved for shared Docker assets (currently empty)
+├── docker/           Docker-related assets
 ├── .gitignore
 ├── docker-compose.yml
 └── README.md
@@ -60,20 +107,21 @@ Leads Agent/
 - Node.js 20+ and npm
 - Python 3.11+
 - Docker Desktop (optional, for the containerized workflow)
+- PostgreSQL 15+ (if not using Docker for it)
 
 ### Backend
 
 ```bash
 cd backend
 python -m venv .venv
-./.venv/Scripts/activate        # Windows PowerShell: .venv\Scripts\Activate.ps1
+./.venv/Scripts/activate        # Windows PowerShell: .venv\Scripts\Activate.ps1 — macOS/Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
-cp .env.example .env
+cp .env.example .env            # then fill in whichever provider keys you have — see "Providers" above
 uvicorn app.main:app --reload
 ```
 
 Visit [http://localhost:8000/health](http://localhost:8000/health) — it should return
-`{"status": "ok", "service": "Leads Agent", "environment": "development"}`.
+`{"status": "ok", "service": "Lead Agent", "environment": "development"}`.
 
 Interactive API docs: [http://localhost:8000/docs](http://localhost:8000/docs).
 
@@ -86,8 +134,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000). The home page pings the backend `/health` endpoint
-and shows connectivity status.
+Visit [http://localhost:3000](http://localhost:3000).
 
 ### Infrastructure (PostgreSQL, Redis)
 
@@ -105,7 +152,8 @@ docker compose up --build
 
 ### Background worker (Celery)
 
-No tasks are registered yet, but the worker can be started once Redis is running:
+Scaffolded for future use — no tasks are registered yet. The entire pipeline currently runs synchronously
+within the request/response cycle. Can be started once Redis is running:
 
 ```bash
 cd backend
@@ -119,63 +167,47 @@ cd backend
 pytest
 ```
 
-Frontend has no business logic yet; `npm run build` is used as the compile/type-check smoke test.
+```bash
+cd frontend
+npm test        # Vitest — logic-level unit tests
+npx tsc --noEmit # typecheck
+npm run lint
+npm run build    # production build smoke test
+```
 
-## Current limitations
+## Safety defaults for a first run
 
-- No ICP builder, company/people discovery, enrichment, scoring, or LLM qualification — these are future
-  phases (see roadmap below).
-- No authentication, no production deployment configuration, no database schema beyond the SQLAlchemy
-  plumbing.
-- No paid data or LLM providers are connected. Everything runs locally with mocked/absent data sources
-  until explicitly instructed otherwise.
-- Docker Compose has been written to the Compose spec and validated for syntax, but has not been run
-  end-to-end on this machine (Docker was not installed in this environment during setup).
+- **`LIVE_TEST_MODE=true`** (the default) clamps every batch's discovery limit and target count down to
+  25, regardless of what you request, so a first run with real provider keys can never accidentally spend
+  more than intended. Set it to `false` in `backend/.env` once you understand your configured providers'
+  real cost/yield.
+- **`max_discovery_rounds_per_batch`** (default 5) is a hard, backend-enforced ceiling on how many
+  discovery rounds any single batch can ever run, across its entire lifetime — independent of
+  `LIVE_TEST_MODE` and never bypassable by resuming a batch repeatedly.
+- Every discovery-mode/provider choice is made per-batch at creation time and never changes retroactively.
 
-## Roadmap
+## Documentation
 
-Leads Agent will be built out phase-by-phase. See [docs/architecture.md](docs/architecture.md) for the
-full list and the architectural principles (standalone-first, provider-independent, quality-first, hard
-ICP rules, evidence/provenance, LLM-as-reasoner-not-source-of-truth, cost control) that govern every
-phase. High level:
+- [docs/architecture.md](docs/architecture.md) — end-to-end pipeline and current architecture.
+- [docs/quality-contract.md](docs/quality-contract.md) — ICP hard vs. soft rules, anti-fabrication rules,
+  quality KPIs.
+- [docs/lead-decision-policy.md](docs/lead-decision-policy.md) — lead states, transitions, and
+  accept/hold/reject/duplicate rules.
+- [docs/evidence-policy.md](docs/evidence-policy.md) — the provenance contract for every field a decision
+  is based on.
+- [docs/batch-contract.md](docs/batch-contract.md) — rules for batch/bulk generation runs.
 
-0. Project Foundation & Quality Contract *(this stage)*
-1. ICP Builder UI
-2. ICP Normalization
-3. Hard ICP Rule Engine
-4. Manager Feedback / Learning
-5. Data Provider Strategy
-6. Company Discovery
-7. Company Entity Resolution
-8. Company Enrichment
-9. Decision-Maker Discovery
-10. Person Identity Resolution
-11. Evidence Engine
-12. Hard ICP Validation
-13. Business Model Classification
-14. Commercial Signal Extraction
-15. Adaptive Lead Scoring
-16. LLM Qualification
-17. Adversarial Review
-18. Multi-Source Verification
-19. Deduplication
-20. Lead State Machine
-21. Batch Orchestrator
-22. Bulk Generation
-23. Human Review
-24. Versioned Database
-25. Feedback Learning
-26. Search Strategy Optimization
-27. Provider Reliability Router
-28. Anti-Hallucination Guardrails
-29. Confidence Model
-30. Observability
-31. Export / CRM
-32. API
-33. Security / Governance
-34. Production Hardening
-35. Evaluation Harness
-36. Shadow Mode
-37. Production MVP
-38. Advanced Autonomous Researcher
-39. Continuous Optimization
+## Contributing
+
+This project is open source. Issues and pull requests are welcome. A few things worth knowing before
+contributing:
+
+- The hard-rule engine (`backend/app/services/hard_rule_engine.py`) and evidence pipeline are the parts
+  of this codebase held to the strictest bar: no LLM calls, no randomness, no guessed values anywhere in
+  them — changes there should preserve that discipline exactly.
+- Every provider integration lives behind the `ProviderAdapter`/`ProviderCapability` abstraction in
+  `backend/app/providers/` — adding a new data source means writing one new adapter file and registering
+  it in `backend/app/providers/default_registry.py`, gated on its own API key, without touching any other
+  provider or the pipeline that consumes it.
+- Run the relevant test suite (`pytest` for backend changes, `npm test`/`tsc`/`lint`/`build` for frontend
+  changes) before opening a PR.

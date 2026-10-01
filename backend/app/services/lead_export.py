@@ -20,6 +20,10 @@ lead's tier as anything other than what Phase 22 assigned (HARD_FAILED),
 and no caller-facing "accepted" flag is derived from this module — the
 tier/hard_rule_result fields ARE the accepted/qualified signal, read
 directly from their authoritative source.
+
+CRM-shaped export (HUBSPOT_CSV/SALESFORCE_CSV): see the "CRM-shaped
+bulk-import CSVs" section below, near render_hubspot_csv/render_salesforce_csv,
+for the verified column mapping and its honest limits.
 """
 from __future__ import annotations
 
@@ -219,7 +223,183 @@ def render_csv(result: ExportResult) -> str:
     return buffer.getvalue()
 
 
+# --- CRM-shaped bulk-import CSVs ------------------------------------------
+#
+# Column names verified live against each CRM's own official import docs
+# (2026-09-30): HubSpot's Import & Export knowledge base
+# (knowledge.hubspot.com/import-and-export/set-up-your-import-file) and
+# Salesforce's Data Import Wizard docs (help.salesforce.com). These are
+# FILE FORMATS ONLY — the user still uploads the result through that CRM's
+# own import wizard; nothing here makes a network call to a CRM, stores an
+# OAuth token, or sends anything anywhere. See ExportFormat's own docstring.
+#
+# Only fields with a genuine, documented, CRM-native column are mapped to
+# that CRM's own standard header name. A field with no standard home in
+# either CRM (person_linkedin_id, qualification_summary, final_score, rank,
+# tier — confirmed against both CRMs' own docs, neither has a default
+# contact/company property for any of these) is exported under a clearly
+# custom-looking header (prefixed, e.g. "Lead Agent - Final Score") rather
+# than mapped to a lookalike standard field — silently mislabeling one of
+# these as if it were a native CRM field would risk the importer target
+# it at the wrong existing property, or a user assuming a mapping exists
+# that doesn't.
+
+_NAME_SPLIT_SUFFIXES = frozenset({"jr", "jr.", "sr", "sr.", "ii", "iii", "iv", "v"})
+
+
+def _split_person_name(full_name: str | None) -> tuple[str, str]:
+    """Best-effort First/Last Name split for CRMs whose Contact object has
+    no single "full name" field (confirmed for both HubSpot and
+    Salesforce — Last Name is Salesforce's only hard-required Contact
+    field, so this must never return an empty last name when any name text
+    exists at all).
+
+    HONEST LIMITATION, not silently glossed over: a full name is not
+    reliably splittable — multi-word surnames ("Maria Garcia Lopez"),
+    particles ("Van Der Berg"), and name-order conventions this codebase
+    has no locale signal to detect all defeat a purely mechanical split.
+    This uses the simplest defensible rule (last whitespace-separated
+    token is the last name, a trailing generational suffix is folded into
+    it rather than mistaken for a surname) and accepts it will sometimes
+    be wrong — exactly why render_hubspot_csv/render_salesforce_csv ALSO
+    always emit the untouched original full name in its own column (see
+    _CRM_FULL_NAME_HEADER), so nothing is ever silently lost even when the
+    split itself is imperfect. This mirrors this codebase's own "never let
+    a derived value hide the raw source it was derived from" discipline
+    (e.g. app/services/evidence_import.py's evidence_text provenance).
+
+    Returns ("", "") only when there is no name at all — matching this
+    module's existing "absent, never fabricated" convention elsewhere.
+    """
+    if not full_name or not full_name.strip():
+        return "", ""
+    parts = full_name.strip().split()
+    if len(parts) == 1:
+        return "", parts[0]
+    last_token = parts[-1]
+    if last_token.lower().rstrip(".") in _NAME_SPLIT_SUFFIXES and len(parts) >= 3:
+        return " ".join(parts[:-2]), f"{parts[-2]} {last_token}"
+    return " ".join(parts[:-1]), last_token
+
+
+_CRM_FULL_NAME_HEADER = "Lead Agent - Full Name (unsplit, authoritative)"
+
+
+def _crm_custom_field_rows(lead: ExportedLead) -> dict[str, str]:
+    """Fields neither CRM has a standard column for — see this section's
+    own header comment for why these get a clearly-custom label instead of
+    a lookalike standard one."""
+    return {
+        "Lead Agent - LinkedIn URL": _none_to_unknown(lead.identity.person_linkedin_id),
+        "Lead Agent - Qualification Summary": _none_to_unknown(lead.qualification_summary),
+        "Lead Agent - Final Score": _none_to_unknown(lead.scores.final_score),
+        "Lead Agent - Rank": _none_to_unknown(lead.rank),
+        "Lead Agent - Tier": _none_to_unknown(lead.tier),
+    }
+
+
+HUBSPOT_CSV_COLUMNS: tuple[str, ...] = (
+    "Email",
+    "First Name",
+    "Last Name",
+    _CRM_FULL_NAME_HEADER,
+    "Job Title",
+    "Company name",
+    "Company domain name",
+    "Lead Agent - LinkedIn URL",
+    "Lead Agent - Qualification Summary",
+    "Lead Agent - Final Score",
+    "Lead Agent - Rank",
+    "Lead Agent - Tier",
+)
+
+SALESFORCE_CSV_COLUMNS: tuple[str, ...] = (
+    "Email",
+    "First Name",
+    "Last Name",
+    _CRM_FULL_NAME_HEADER,
+    "Title",
+    "Account Name",
+    "Website",
+    "Lead Agent - LinkedIn URL",
+    "Lead Agent - Qualification Summary",
+    "Lead Agent - Final Score",
+    "Lead Agent - Rank",
+    "Lead Agent - Tier",
+)
+
+
+def _lead_email(lead: ExportedLead) -> str | None:
+    """Email has no dedicated ExportIdentity field (see that schema's own
+    docstring — it mirrors person_title's pattern of coming from evidence,
+    not a canonical-row column); it is read from the same SUPPORTED-only
+    evidence.verified_fields map every other evidence-backed value already
+    uses, under the "person.email" key app/api/export.py's own
+    _evidence_summary writes (see that function — the same "person." prefix
+    convention as "person.current_title")."""
+    return lead.evidence.verified_fields.get("person.email")
+
+
+def _lead_to_hubspot_row(lead: ExportedLead) -> dict[str, str]:
+    first_name, last_name = _split_person_name(lead.identity.person_name)
+    row = {
+        "Email": _none_to_unknown(_lead_email(lead)),
+        "First Name": first_name or _UNKNOWN,
+        "Last Name": last_name or _UNKNOWN,
+        _CRM_FULL_NAME_HEADER: _none_to_unknown(lead.identity.person_name),
+        "Job Title": _none_to_unknown(lead.identity.person_title),
+        "Company name": _none_to_unknown(lead.identity.company_name),
+        "Company domain name": _none_to_unknown(lead.identity.company_domain),
+    }
+    row.update(_crm_custom_field_rows(lead))
+    return row
+
+
+def _lead_to_salesforce_row(lead: ExportedLead) -> dict[str, str]:
+    first_name, last_name = _split_person_name(lead.identity.person_name)
+    row = {
+        "Email": _none_to_unknown(_lead_email(lead)),
+        "First Name": first_name or _UNKNOWN,
+        # Salesforce's own Contact object hard-requires Last Name (its only
+        # mandatory Contact field, confirmed against Salesforce's own Data
+        # Import Wizard docs) — never left as the generic _UNKNOWN sentinel
+        # when NO name is known at all would still literally satisfy that
+        # requirement, but this module makes no attempt to guess further;
+        # an operator reviewing "UNKNOWN" before import is the honest
+        # outcome, not a blocked export.
+        "Last Name": last_name or _UNKNOWN,
+        _CRM_FULL_NAME_HEADER: _none_to_unknown(lead.identity.person_name),
+        "Title": _none_to_unknown(lead.identity.person_title),
+        "Account Name": _none_to_unknown(lead.identity.company_name),
+        "Website": _none_to_unknown(lead.identity.company_domain),
+    }
+    row.update(_crm_custom_field_rows(lead))
+    return row
+
+
+def render_hubspot_csv(result: ExportResult) -> str:
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=list(HUBSPOT_CSV_COLUMNS), lineterminator="\n")
+    writer.writeheader()
+    for lead in result.leads:
+        writer.writerow(_lead_to_hubspot_row(lead))
+    return buffer.getvalue()
+
+
+def render_salesforce_csv(result: ExportResult) -> str:
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=list(SALESFORCE_CSV_COLUMNS), lineterminator="\n")
+    writer.writeheader()
+    for lead in result.leads:
+        writer.writerow(_lead_to_salesforce_row(lead))
+    return buffer.getvalue()
+
+
 def render_export(result: ExportResult, export_format: ExportFormat) -> str:
     if export_format == ExportFormat.CSV:
         return render_csv(result)
+    if export_format == ExportFormat.HUBSPOT_CSV:
+        return render_hubspot_csv(result)
+    if export_format == ExportFormat.SALESFORCE_CSV:
+        return render_salesforce_csv(result)
     return render_json(result)

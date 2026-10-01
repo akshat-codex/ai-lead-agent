@@ -690,6 +690,55 @@ def _free_text_industry_evidence_ids(field_summaries: dict[str, FieldEvidenceSum
     return tuple(dict.fromkeys(ids))
 
 
+def _free_text_company_type_bridge(field_summaries: dict[str, FieldEvidenceSummary], icp_company_types: tuple[str, ...]) -> str | None:
+    """The same free-text bridge as _free_text_industry_bridge, applied to
+    company_type instead of industry — company_type never had an
+    equivalent bridge at all (confirmed: Tavily/Serper's own execute()
+    never populates attributes["company_type_match_*"], so a web-search-
+    discovered candidate's company_type evidence is always structurally
+    absent, meaning app/services/hard_rule_engine.py's company_type rule
+    HOLDs on COMPANY_TYPE_UNKNOWN for every such candidate, never reaching
+    PASS even when the candidate's own description plainly states it).
+
+    Identical discipline to _free_text_industry_bridge: reads ONLY the
+    "description" evidence field's raw text (regardless of its own
+    EvidenceStatus — a lone web-search sighting is always INSUFFICIENT/
+    UNKNOWN, and that status is not the safety gate here; literal string
+    containment is), and returns a synthesized company_type value ONLY
+    when the free text contains, as an exact case-insensitive SUBSTRING,
+    EVERY ONE of the ICP's own already-stated company_type terms. Never
+    fuzzy/semantic matching, no synonym table. Deliberately never reads
+    the "company_type" field itself — see _free_text_industry_bridge's own
+    docstring for why conflating the two would let an untrusted single
+    sighting bypass its own trust gate.
+
+    Returns None (no bridge) when the ICP has no company_type terms, no
+    description evidence exists, or the combined free text is missing even
+    one required term. Returns the ICP's own first company_type term (a
+    value already in the allowed set, so evaluate_hard_rules' unmodified
+    exact-match check trivially passes) when every term is proven."""
+    if not icp_company_types:
+        return None
+
+    text_parts: list[str] = []
+    summary = field_summaries.get("description")
+    if summary is not None:
+        for record in summary.records:
+            if isinstance(record.value, str) and record.value:
+                text_parts.append(record.value)
+
+    if not text_parts:
+        return None
+
+    combined_text = clean_text(" ".join(text_parts)).lower()
+    for term in icp_company_types:
+        term_clean = clean_text(term).lower()
+        if not term_clean or term_clean not in combined_text:
+            return None
+
+    return icp_company_types[0]
+
+
 def validate_against_icp(
     icp: CanonicalICP,
     company_id: str,
@@ -784,6 +833,16 @@ def validate_against_icp(
     # rule's evidence.
     employee_range_bucket, employee_range_bucket_ev = _supported_value_and_evidence(company_fields, "employee_range")
     company_type, company_type_ev = _supported_value_and_evidence(company_fields, "company_type")
+    # Free-text company_type bridge (mirrors _free_text_industry_bridge
+    # immediately above) — only attempted when the structured path found
+    # nothing at all (company_type is None): a candidate with a real
+    # SUPPORTED/SUPPORTED_STRUCTURED company_type already has a stronger
+    # basis and must never have that outcome second-guessed by weaker
+    # free-text evidence.
+    if company_type is None:
+        free_text_company_type = _free_text_company_type_bridge(company_fields, icp.hard_rules.company_types)
+        if free_text_company_type is not None:
+            company_type, company_type_ev = free_text_company_type, _free_text_industry_evidence_ids(company_fields)
 
     title: str | None = None
     title_ev: tuple[str, ...] = ()

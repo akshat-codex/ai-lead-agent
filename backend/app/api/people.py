@@ -278,6 +278,22 @@ def enrich_person(
 
     query = PersonEnrichmentQuery(
         full_name=person_row.canonical_name,
+        # Populated from a PRIOR enrichment run's own evidence, when one
+        # exists — the same "read the pipeline's own already-known facts,
+        # never guess" discipline as company_domain/company_name above.
+        # This is what lets a real email-verification provider (see
+        # app/providers/abstract_email_verification.py) do anything at all
+        # on a person's SECOND /enrich call; for the very first call (no
+        # prior evidence), app/services/person_enrichment.py's own
+        # run_person_enrichment carries Apollo's newly-found email forward
+        # within the same pass instead.
+        email=_latest_evidence_value(db, person_id, "email"),
+        # Phone has no discovery source anywhere in this codebase (see
+        # PersonEnrichmentQuery.phone's own docstring) — this only ever
+        # finds a value when a human has separately recorded one as
+        # evidence (e.g. POST /api/v1/evidence with field="phone"), so
+        # AbstractPhoneVerificationProvider has something to verify.
+        phone=_latest_evidence_value(db, person_id, "phone"),
         linkedin_id=person_row.linkedin_id,
         company_domain=company_domain,
         company_name=company_name,

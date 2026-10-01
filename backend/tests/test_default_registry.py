@@ -37,6 +37,8 @@ def _settings(
     unipile_account_id: str | None = None,
     tavily_api_key: str | None = None,
     serper_api_key: str | None = None,
+    abstract_email_api_key: str | None = None,
+    abstract_phone_api_key: str | None = None,
 ) -> Settings:
     # Every credential field is explicitly passed (never left to Settings'
     # own env_file=".env" default) so these registry tests stay hermetic
@@ -52,6 +54,8 @@ def _settings(
         unipile_account_id=unipile_account_id,
         tavily_api_key=tavily_api_key,
         serper_api_key=serper_api_key,
+        abstract_email_api_key=abstract_email_api_key,
+        abstract_phone_api_key=abstract_phone_api_key,
         database_url="sqlite:///:memory:",
     )
 
@@ -291,3 +295,57 @@ def test_unipile_and_explorium_gate_independently_of_each_other():
     assert not any(
         isinstance(p, UnipileProvider) for p in explorium_only.find_by_capability(ProviderCapability.PEOPLE_DISCOVERY)
     )
+
+
+# --- Abstract API email verification (second PERSON_ENRICHMENT provider) ---
+
+
+def test_abstract_email_verification_is_absent_without_its_own_key():
+    registry = build_default_registry(_settings(apollo_api_key="a-key"))
+    provider_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.PERSON_ENRICHMENT)}
+    assert "abstract-email-verification-v1" not in provider_ids
+
+
+def test_abstract_email_verification_registers_alongside_apollo_never_replacing_it():
+    registry = build_default_registry(_settings(apollo_api_key="a-key", abstract_email_api_key="ab-key"))
+    provider_ids = [p.provider_id for p in registry.find_by_capability(ProviderCapability.PERSON_ENRICHMENT)]
+    assert "apollo-person-enrichment-v1" in provider_ids
+    assert "abstract-email-verification-v1" in provider_ids
+    # Registration order matters (see app/services/person_enrichment.py's
+    # own carry-forward docstring) — Abstract must come after Apollo so it
+    # can see an email Apollo just found in the same enrichment pass.
+    assert provider_ids.index("apollo-person-enrichment-v1") < provider_ids.index("abstract-email-verification-v1")
+
+
+def test_abstract_email_verification_works_without_apollo_too():
+    """No hard dependency on Apollo being configured — it simply verifies
+    whatever query.email it's given, which may come from a prior run's
+    already-persisted evidence instead (see app/api/people.py)."""
+    registry = build_default_registry(_settings(abstract_email_api_key="ab-key"))
+    provider_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.PERSON_ENRICHMENT)}
+    assert "abstract-email-verification-v1" in provider_ids
+
+
+# --- Abstract API phone verification (third PERSON_ENRICHMENT provider) ---
+
+
+def test_abstract_phone_verification_is_absent_without_its_own_key():
+    registry = build_default_registry(_settings(apollo_api_key="a-key"))
+    provider_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.PERSON_ENRICHMENT)}
+    assert "abstract-phone-verification-v1" not in provider_ids
+
+
+def test_abstract_phone_verification_registers_alongside_apollo_and_email_verification():
+    registry = build_default_registry(
+        _settings(apollo_api_key="a-key", abstract_email_api_key="ab-e-key", abstract_phone_api_key="ab-p-key")
+    )
+    provider_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.PERSON_ENRICHMENT)}
+    assert "apollo-person-enrichment-v1" in provider_ids
+    assert "abstract-email-verification-v1" in provider_ids
+    assert "abstract-phone-verification-v1" in provider_ids
+
+
+def test_abstract_phone_verification_works_standalone_too():
+    registry = build_default_registry(_settings(abstract_phone_api_key="ab-p-key"))
+    provider_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.PERSON_ENRICHMENT)}
+    assert "abstract-phone-verification-v1" in provider_ids

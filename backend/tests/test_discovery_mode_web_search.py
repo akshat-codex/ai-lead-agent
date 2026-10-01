@@ -849,6 +849,120 @@ def test_no_real_discovery_provider_configured_keeps_mock_enrichment_active():
     assert "mock-company-registry-v1" in enrichment_ids
 
 
+# --- free (no-API-key) SEC EDGAR / Wikidata COMPANY_ENRICHMENT providers ---
+
+
+def _settings_with_free_enrichment(enabled: bool) -> Settings:
+    return Settings(
+        apollo_api_key=None,
+        unipile_api_key=None,
+        unipile_dsn=None,
+        unipile_account_id=None,
+        enable_free_company_enrichment_providers=enabled,
+        database_url="sqlite:///:memory:",
+    )
+
+
+def test_free_enrichment_providers_are_off_by_default():
+    """Confirms zero behavior change for every existing environment/test
+    that doesn't explicitly opt in — see app/core/config.py::Settings.
+    enable_free_company_enrichment_providers's own docstring for why this
+    must default to False (tests must never make real network calls)."""
+    registry = build_default_registry(_settings_with_free_enrichment(enabled=False))
+    enrichment_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_ENRICHMENT)}
+    assert "sec-edgar-company-enrichment-v1" not in enrichment_ids
+    assert "wikidata-company-enrichment-v1" not in enrichment_ids
+    # The inverse of the fix below: disabled means the mocks are UNAFFECTED
+    # by this feature's existence, exactly like before it was added.
+    assert "mock-company-data-v1" in enrichment_ids
+    assert "mock-company-registry-v1" in enrichment_ids
+
+
+def test_enabling_free_enrichment_providers_registers_both_and_drops_the_mocks():
+    registry = build_default_registry(_settings_with_free_enrichment(enabled=True))
+    enrichment_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_ENRICHMENT)}
+    assert "sec-edgar-company-enrichment-v1" in enrichment_ids
+    assert "wikidata-company-enrichment-v1" in enrichment_ids
+    # Same CONFLICT-avoidance reasoning as the Tavily/Serper mock-drop
+    # fixes above: a real (even if narrow-coverage) COMPANY_ENRICHMENT
+    # source must never run alongside the mocks' fixed fake payload.
+    assert "mock-company-data-v1" not in enrichment_ids
+
+
+# --- Signal Check (Tavily-backed COMPANY_ENRICHMENT) provider gating ---
+
+
+def _settings_with_signal_check(*, tavily_api_key: str | None, enabled: bool) -> Settings:
+    return Settings(
+        apollo_api_key=None,
+        unipile_api_key=None,
+        unipile_dsn=None,
+        unipile_account_id=None,
+        tavily_api_key=tavily_api_key,
+        enable_signal_check_provider=enabled,
+        database_url="sqlite:///:memory:",
+    )
+
+
+def test_signal_check_provider_is_off_by_default_even_with_tavily_configured():
+    """Confirms zero behavior change for every existing environment/test
+    that doesn't explicitly opt in — see app/core/config.py::Settings.
+    enable_signal_check_provider's own docstring for why this must default
+    to False even when TAVILY_API_KEY is already set."""
+    registry = build_default_registry(_settings_with_signal_check(tavily_api_key="t-key", enabled=False))
+    enrichment_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_ENRICHMENT)}
+    assert "signal-check-v1" not in enrichment_ids
+
+
+def test_signal_check_provider_requires_tavily_key_even_if_flag_is_enabled():
+    """The opt-in flag alone is not enough — there is no separate credential
+    for this provider, so it must never be registered without Tavily's own
+    key configured (it would otherwise crash on every real call)."""
+    registry = build_default_registry(_settings_with_signal_check(tavily_api_key=None, enabled=True))
+    enrichment_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_ENRICHMENT)}
+    assert "signal-check-v1" not in enrichment_ids
+
+
+def test_enabling_signal_check_provider_with_tavily_key_registers_it_and_drops_the_mocks():
+    registry = build_default_registry(_settings_with_signal_check(tavily_api_key="t-key", enabled=True))
+    enrichment_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_ENRICHMENT)}
+    assert "signal-check-v1" in enrichment_ids
+    # Same CONFLICT-avoidance reasoning as every other real COMPANY_ENRICHMENT
+    # source in this file: must never run alongside the mocks' fixed fake payload.
+    assert "mock-company-data-v1" not in enrichment_ids
+    assert "mock-company-registry-v1" not in enrichment_ids
+
+
+# --- Tech Stack Detector (free, no-API-key) COMPANY_ENRICHMENT provider ---
+
+
+def _settings_with_tech_stack_detector(enabled: bool) -> Settings:
+    return Settings(
+        apollo_api_key=None,
+        unipile_api_key=None,
+        unipile_dsn=None,
+        unipile_account_id=None,
+        enable_tech_stack_detector=enabled,
+        database_url="sqlite:///:memory:",
+    )
+
+
+def test_tech_stack_detector_is_off_by_default():
+    registry = build_default_registry(_settings_with_tech_stack_detector(enabled=False))
+    enrichment_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_ENRICHMENT)}
+    assert "tech-stack-detector-v1" not in enrichment_ids
+    assert "mock-company-data-v1" in enrichment_ids
+    assert "mock-company-registry-v1" in enrichment_ids
+
+
+def test_enabling_tech_stack_detector_registers_it_and_drops_the_mocks():
+    registry = build_default_registry(_settings_with_tech_stack_detector(enabled=True))
+    enrichment_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_ENRICHMENT)}
+    assert "tech-stack-detector-v1" in enrichment_ids
+    assert "mock-company-data-v1" not in enrichment_ids
+    assert "mock-company-registry-v1" not in enrichment_ids
+
+
 def test_explorium_and_both_web_search_providers_can_coexist_for_hard_mode():
     registry = build_default_registry(_settings(explorium_api_key="e-key", tavily_api_key="t-key", serper_api_key="s-key"))
     provider_ids = {p.provider_id for p in registry.find_by_capability(ProviderCapability.COMPANY_DISCOVERY)}

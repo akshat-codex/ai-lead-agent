@@ -96,6 +96,20 @@ def run_person_enrichment(
     """Runs one enrichment pass for `person_id` across every registered
     real (non-mock) PERSON_ENRICHMENT provider.
 
+    Providers run in registration order, and each provider's own newly-
+    returned "email" fact (if any) is carried forward into the query used
+    for every LATER provider in this same pass — see
+    app/providers/abstract_email_verification.py's own module docstring for
+    why this matters: that provider verifies an already-known email, it
+    never discovers one, so without this carry-forward it could only ever
+    verify an email a PRIOR, separate /enrich call had already found (via
+    `query.email` populated by the caller from existing evidence — see
+    app/api/people.py's own _latest_evidence_value use) and would silently
+    do nothing useful the very first time a person is enriched, when Apollo
+    (registered before it — see app/providers/default_registry.py) finds
+    the email in this same pass. This never changes `query` for any
+    provider that ran BEFORE the fact was produced — only later ones.
+
     Returns the outcome plus the facts to persist — the caller (the API
     handler) owns the DB session and turns each fact into an EvidenceCreate
     row via the existing app/api/evidence.py persistence helpers, so
@@ -114,11 +128,12 @@ def run_person_enrichment(
     any_failure = False
     last_provider_id: str | None = None
     last_error = None
+    current_query = query
 
     for provider in providers:
         request = ProviderRequest(
             capability=ProviderCapability.PERSON_ENRICHMENT,
-            query=query.model_dump(),
+            query=current_query.model_dump(),
         )
         response = provider.run(request)
         last_provider_id = provider.provider_id
@@ -137,6 +152,8 @@ def run_person_enrichment(
                             retrieved_at=retrieved_at,
                         )
                     )
+                    if field == "email" and isinstance(value, str) and value and not current_query.email:
+                        current_query = current_query.model_copy(update={"email": value})
         else:
             any_failure = True
             last_error = response.error

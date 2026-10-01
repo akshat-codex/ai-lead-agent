@@ -37,6 +37,7 @@ from app.api import (
     companies,
     company_quality,
     discovery,
+    discovery_providers,
     evidence,
     export,
     feedback,
@@ -79,7 +80,7 @@ def create_app() -> FastAPI:
 
     app = FastAPI(
         title=settings.app_name,
-        description="AI-powered ICP Lead Research & Qualification Platform (foundation stage).",
+        description="AI-powered ICP Lead Research & Qualification Platform.",
         version="0.1.0",
         lifespan=lifespan,
     )
@@ -119,6 +120,7 @@ def create_app() -> FastAPI:
     app.include_router(optimization_application.router)
     app.include_router(provider_routing.router)
     app.include_router(provider_usage.router)
+    app.include_router(discovery_providers.router)
     app.include_router(lead_confidence.router)
     app.include_router(pipeline.router)
 

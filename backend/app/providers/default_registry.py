@@ -16,6 +16,15 @@ never be used for company discovery (see the approved provider architecture:
 Explorium = COMPANY_DISCOVERY, Unipile = LinkedIn/PEOPLE_DISCOVERY (not yet
 implemented), Apollo = PERSON_ENRICHMENT only).
 
+AbstractEmailVerificationProvider (see app/providers/abstract_email_verification.py)
+is a SECOND, independent PERSON_ENRICHMENT provider, registered only when
+ABSTRACT_EMAIL_API_KEY is configured, and always AFTER Apollo when both are
+present — it verifies an already-known email's live deliverability rather
+than discovering one, and app/services/person_enrichment.py's own
+run_person_enrichment carries a newly-found email forward within one pass
+so this provider can act on an email Apollo just found, not only one a
+prior run already persisted as evidence.
+
 Part B Phase 7A (Real Company Discovery, corrected): ExploriumCompanyDiscoveryProvider
 is registered only when EXPLORIUM_API_KEY is configured.
 
@@ -66,6 +75,8 @@ also configured) is the only COMPANY_ENRICHMENT provider left.
 from __future__ import annotations
 
 from app.core.config import Settings, get_settings
+from app.providers.abstract_email_verification import AbstractEmailVerificationProvider
+from app.providers.abstract_phone_verification import AbstractPhoneVerificationProvider
 from app.providers.apollo import ApolloPersonEnrichmentProvider
 from app.providers.contracts import ProviderCapability
 from app.providers.explorium import ExploriumCompanyDiscoveryProvider
@@ -76,9 +87,13 @@ from app.providers.mocks import (
     MockWebSearchProvider,
 )
 from app.providers.registry import ProviderRegistry
+from app.providers.sec_edgar import SecEdgarCompanyEnrichmentProvider
 from app.providers.serper import SerperCompanyDiscoveryProvider
+from app.providers.signal_check import SignalCheckProvider
 from app.providers.tavily import TavilyCompanyDiscoveryProvider
+from app.providers.tech_stack_detector import TechStackDetectorProvider
 from app.providers.unipile import UnipileProvider
+from app.providers.wikidata import WikidataCompanyEnrichmentProvider
 
 
 def build_default_registry(settings: Settings | None = None) -> ProviderRegistry:
@@ -154,6 +169,68 @@ def build_default_registry(settings: Settings | None = None) -> ProviderRegistry
             mock_company_registry_provider.capabilities - {ProviderCapability.COMPANY_ENRICHMENT}
         )
 
+    # SEC EDGAR + Wikidata are free, no-API-key COMPANY_ENRICHMENT sources
+    # (see their own module docstrings for the honest "narrow coverage"
+    # scope: public companies only / Wikidata-notable companies only) —
+    # gated on their own explicit opt-in flag
+    # (settings.enable_free_company_enrichment_providers), not "always on,"
+    # because unlike every other provider in this file they have no API
+    # key to be naturally absent in a test/default environment; making
+    # them unconditional would mean every test that builds the default
+    # registry silently makes real network calls (see that setting's own
+    # comment in app/core/config.py). Same root cause as the fix above once
+    # enabled: two disagreeing values for one field become an unresolved
+    # CONFLICT (see app/services/evidence_engine.py), silently turning a
+    # resolvable signal into a permanent HOLD — so the mock-drop for THESE
+    # two providers only runs when they are actually registered, never
+    # unconditionally, and is independent of (additional to) the
+    # Explorium/Tavily/Serper-triggered drop directly above.
+    if settings.enable_free_company_enrichment_providers:
+        registry.register(SecEdgarCompanyEnrichmentProvider())
+        registry.register(WikidataCompanyEnrichmentProvider())
+        mock_company_data_provider.capabilities = frozenset(
+            mock_company_data_provider.capabilities - {ProviderCapability.COMPANY_ENRICHMENT}
+        )
+        mock_company_registry_provider.capabilities = frozenset(
+            mock_company_registry_provider.capabilities - {ProviderCapability.COMPANY_ENRICHMENT}
+        )
+
+    # Signal Check (see app/providers/signal_check.py's own module
+    # docstring) — an additional, independent COMPANY_ENRICHMENT provider
+    # that reuses settings.tavily_api_key, so it is only ever registered
+    # when BOTH Tavily is configured AND the user has explicitly opted
+    # into its extra per-company search cost via
+    # settings.enable_signal_check_provider (see that setting's own
+    # comment in app/core/config.py for why this needs its own flag even
+    # though Tavily's key already gates every other Tavily-backed
+    # provider). Same mock-drop rule as every other real COMPANY_ENRICHMENT
+    # source in this file, for the identical reason (Phase 22 part 2):
+    # this provider's real search-derived evidence must never be merged
+    # with the mocks' fixed fake payload.
+    if settings.tavily_api_key and settings.enable_signal_check_provider:
+        registry.register(SignalCheckProvider(api_key=settings.tavily_api_key, base_url=settings.tavily_base_url))
+        mock_company_data_provider.capabilities = frozenset(
+            mock_company_data_provider.capabilities - {ProviderCapability.COMPANY_ENRICHMENT}
+        )
+        mock_company_registry_provider.capabilities = frozenset(
+            mock_company_registry_provider.capabilities - {ProviderCapability.COMPANY_ENRICHMENT}
+        )
+
+    # Tech Stack Detector (see app/providers/tech_stack_detector.py's own
+    # module docstring) — free, no API key, gated on its own explicit
+    # opt-in flag for the identical reason as
+    # enable_free_company_enrichment_providers above (no key to naturally
+    # gate on; tests must never make a real network call unconditionally).
+    # Same mock-drop rule as every other real COMPANY_ENRICHMENT source.
+    if settings.enable_tech_stack_detector:
+        registry.register(TechStackDetectorProvider())
+        mock_company_data_provider.capabilities = frozenset(
+            mock_company_data_provider.capabilities - {ProviderCapability.COMPANY_ENRICHMENT}
+        )
+        mock_company_registry_provider.capabilities = frozenset(
+            mock_company_registry_provider.capabilities - {ProviderCapability.COMPANY_ENRICHMENT}
+        )
+
     unipile_configured = bool(settings.unipile_api_key and settings.unipile_dsn and settings.unipile_account_id)
     if unipile_configured:
         registry.register(
@@ -171,6 +248,31 @@ def build_default_registry(settings: Settings | None = None) -> ProviderRegistry
             ApolloPersonEnrichmentProvider(
                 api_key=settings.apollo_api_key,
                 base_url=settings.apollo_base_url,
+            )
+        )
+
+    # Registered AFTER Apollo, deliberately — see app/services/
+    # person_enrichment.py::run_person_enrichment's own carry-forward
+    # docstring: providers run in registration order, and this provider
+    # verifies an email rather than discovering one, so it must run after
+    # whatever provider(s) might supply a fresh email in this same pass.
+    if settings.abstract_email_api_key:
+        registry.register(
+            AbstractEmailVerificationProvider(
+                api_key=settings.abstract_email_api_key,
+                base_url=settings.abstract_email_base_url,
+            )
+        )
+
+    # No carry-forward ordering constraint (unlike email above) — no
+    # provider in this codebase ever discovers a phone number in the same
+    # pass (see PersonEnrichmentQuery.phone's own docstring), so this only
+    # ever verifies a number a human already recorded as evidence.
+    if settings.abstract_phone_api_key:
+        registry.register(
+            AbstractPhoneVerificationProvider(
+                api_key=settings.abstract_phone_api_key,
+                base_url=settings.abstract_phone_base_url,
             )
         )
 

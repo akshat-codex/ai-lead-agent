@@ -43,11 +43,29 @@ This mirrors docs/quality-contract.md's "evidence completeness" KPI and
 docs/evidence-policy.md's minimum-evidence-bar concept, adapted to what
 this project's mock-based providers can actually supply today (almost
 always an UNKNOWN confidence) without pretending otherwise.
+
+Per-field freshness (market-standard "last verified" pattern, e.g. Clay/
+Clearbit's per-field staleness indicators): summarize_field/summarize_entity
+also attach a `freshness_score`/`is_stale` to each FieldEvidenceSummary (see
+_field_freshness_score below), reusing app/schemas/scoring.py's own
+FreshnessConfig decay curve — the same one app/services/lead_scoring.py's
+whole-lead freshness_score already applies, just scoped to one field's own
+newest record instead of an entire entity's newest evidence overall.
+Deliberately additive, never folded into the status derivation above: an
+old field's SUPPORTED/SUPPORTED_STRUCTURED/INSUFFICIENT status must never
+silently flip to something else purely because time passed with no new
+evidence, since app/services/hard_rule_engine.py reads that status to gate
+PASS/HOLD — decaying it directly would mean a lead could flip from PASS to
+HOLD with no new conflicting data at all, for a reason no reviewer could
+see in the evidence itself. A caller that wants staleness to actually
+affect a decision reads freshness_score/is_stale explicitly, the same
+opt-in way lead_scoring.py's own freshness_score already works.
 """
 from __future__ import annotations
 
 import json
 from collections import defaultdict
+from datetime import datetime, timezone
 from typing import Any
 
 from app.schemas.evidence import (
@@ -58,6 +76,7 @@ from app.schemas.evidence import (
     EvidenceStatus,
     FieldEvidenceSummary,
 )
+from app.schemas.scoring import DEFAULT_FRESHNESS_CONFIG, FreshnessConfig
 from app.services.icp_normalization import clean_text, resolve_geography_alias
 
 # The critical fields per entity type, per the Phase 11 task's own list —
@@ -210,11 +229,59 @@ def compute_field_status(field: str, records: list[EvidenceRecord]) -> EvidenceS
     return EvidenceStatus.INSUFFICIENT
 
 
-def summarize_field(field: str, records: list[EvidenceRecord]) -> FieldEvidenceSummary:
+def _as_naive_utc(value: datetime) -> datetime:
+    """Matches app/services/lead_scoring.py's own _as_naive_utc exactly —
+    evidence timestamps may come back timezone-naive after a SQLite
+    round-trip while `now` is typically aware; both are compared as naive
+    UTC so neither source needs to guess the other's tzinfo convention."""
+    return value.replace(tzinfo=None) if value.tzinfo is not None else value
+
+
+def _field_freshness_score(
+    records: list[EvidenceRecord],
+    now: datetime,
+    config: FreshnessConfig,
+) -> float | None:
+    """Per-field counterpart of app/services/lead_scoring.py's
+    _compute_freshness_score, reusing the exact same FreshnessConfig decay
+    curve — full credit within full_credit_within_days, linear decay to
+    zero by zero_credit_after_days — applied to THIS field's own newest
+    record instead of an entire entity's newest evidence across every
+    field. None (never a fabricated number) when the field has no records
+    at all, mirroring that function's own convention for "nothing to
+    date." This is purely additive observability: it never changes
+    compute_field_status's own SUPPORTED/CONFLICT/etc. derivation (see
+    that function's own docstring for why status must never flip from
+    elapsed time alone) — a caller that wants staleness to affect a
+    decision (e.g. a future verification trigger) reads this score
+    explicitly, the same opt-in way lead_scoring.py's whole-lead
+    freshness_score already works.
+    """
+    if not records:
+        return None
+    most_recent = max(_as_naive_utc(r.retrieved_at) for r in records)
+    age_days = max(0.0, (_as_naive_utc(now) - most_recent).total_seconds() / 86400.0)
+    if age_days <= config.full_credit_within_days:
+        return 100.0
+    if age_days >= config.zero_credit_after_days:
+        return 0.0
+    span = config.zero_credit_after_days - config.full_credit_within_days
+    return max(0.0, min(100.0, 100.0 * (1 - (age_days - config.full_credit_within_days) / span)))
+
+
+def summarize_field(
+    field: str,
+    records: list[EvidenceRecord],
+    now: datetime | None = None,
+    freshness_config: FreshnessConfig = DEFAULT_FRESHNESS_CONFIG,
+) -> FieldEvidenceSummary:
+    freshness_score = _field_freshness_score(records, now or datetime.now(timezone.utc), freshness_config)
     return FieldEvidenceSummary(
         field=field,
         status=compute_field_status(field, records),
         records=tuple(records),
+        freshness_score=freshness_score,
+        is_stale=freshness_score is not None and freshness_score <= 0.0,
     )
 
 
@@ -222,6 +289,8 @@ def summarize_entity(
     entity_type: EntityType,
     entity_id: str,
     records: list[EvidenceRecord],
+    now: datetime | None = None,
+    freshness_config: FreshnessConfig = DEFAULT_FRESHNESS_CONFIG,
 ) -> EntityEvidenceSummary:
     """Builds the complete evidence picture for one entity: every field
     that has at least one record, plus every critical field for this
@@ -230,7 +299,11 @@ def summarize_entity(
     critical_fields = critical_fields_for(entity_type)
     all_fields = sorted(set(grouped.keys()) | set(critical_fields))
 
-    field_summaries = tuple(summarize_field(field, grouped.get(field, [])) for field in all_fields)
+    resolved_now = now or datetime.now(timezone.utc)
+    field_summaries = tuple(
+        summarize_field(field, grouped.get(field, []), now=resolved_now, freshness_config=freshness_config)
+        for field in all_fields
+    )
 
     covered = sum(
         1

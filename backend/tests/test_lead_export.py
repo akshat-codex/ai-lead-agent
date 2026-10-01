@@ -318,3 +318,133 @@ def test_export_module_never_imports_mutating_pipeline_functions():
     assert not (forbidden & imported_names)
     assert not (forbidden & called_names)
     assert "db" not in inspect.signature(module.build_exported_lead).parameters
+
+
+# --- CRM-shaped bulk-import CSVs (HubSpot / Salesforce) --------------------
+
+from app.services.lead_export import (  # noqa: E402
+    HUBSPOT_CSV_COLUMNS,
+    SALESFORCE_CSV_COLUMNS,
+    _split_person_name,
+    render_hubspot_csv,
+    render_salesforce_csv,
+)
+
+
+def _result_with(lead) -> ExportResult:
+    return ExportResult(
+        metadata=ExportMetadata(schema_version=SCHEMA_VERSION, icp_id="icp-1", icp_version=1, batch_id=None, lead_count=1, generated_at=NOW),
+        leads=(lead,),
+    )
+
+
+def test_split_person_name_simple_two_word_name():
+    assert _split_person_name("Jane Doe") == ("Jane", "Doe")
+
+
+def test_split_person_name_single_word_goes_to_last_name_only():
+    assert _split_person_name("Cher") == ("", "Cher")
+
+
+def test_split_person_name_multi_word_first_name():
+    first, last = _split_person_name("Mary Jane Watson")
+    assert first == "Mary Jane"
+    assert last == "Watson"
+
+
+def test_split_person_name_generational_suffix_stays_with_surname():
+    first, last = _split_person_name("John Smith Jr.")
+    assert first == "John"
+    assert last == "Smith Jr."
+
+
+def test_split_person_name_none_or_empty_returns_empty_strings():
+    assert _split_person_name(None) == ("", "")
+    assert _split_person_name("") == ("", "")
+    assert _split_person_name("   ") == ("", "")
+
+
+def test_hubspot_csv_header_matches_documented_columns():
+    result = _result_with(_exported_lead())
+    csv_text = render_hubspot_csv(result)
+    header = next(csv.reader(io.StringIO(csv_text.splitlines()[0])))
+    assert header == list(HUBSPOT_CSV_COLUMNS)
+
+
+def test_salesforce_csv_header_matches_documented_columns():
+    result = _result_with(_exported_lead())
+    csv_text = render_salesforce_csv(result)
+    header = next(csv.reader(io.StringIO(csv_text.splitlines()[0])))
+    assert header == list(SALESFORCE_CSV_COLUMNS)
+
+
+def test_hubspot_csv_splits_name_and_keeps_the_full_original_too():
+    lead = _exported_lead(identity=_identity(person_name="Maria Garcia Lopez"))
+    result = _result_with(lead)
+    csv_text = render_hubspot_csv(result)
+    rows = list(csv.DictReader(io.StringIO(csv_text)))
+    row = rows[0]
+    assert row["First Name"] == "Maria Garcia"
+    assert row["Last Name"] == "Lopez"
+    # The split above is a best-effort guess (a real Spanish double
+    # surname would ideally keep both words as the last name) — the
+    # unsplit original is always preserved alongside it precisely so no
+    # information is silently lost to an imperfect split.
+    assert row["Lead Agent - Full Name (unsplit, authoritative)"] == "Maria Garcia Lopez"
+
+
+def test_hubspot_csv_maps_company_and_evidence_backed_email():
+    lead = _exported_lead(
+        identity=_identity(company_name="Acme Inc", company_domain="acme.invalid", person_title="Head of Growth"),
+        evidence=_evidence(verified_fields={"person.email": "jane@acme.invalid"}),
+    )
+    result = _result_with(lead)
+    rows = list(csv.DictReader(io.StringIO(render_hubspot_csv(result))))
+    row = rows[0]
+    assert row["Email"] == "jane@acme.invalid"
+    assert row["Company name"] == "Acme Inc"
+    assert row["Company domain name"] == "acme.invalid"
+    assert row["Job Title"] == "Head of Growth"
+
+
+def test_salesforce_csv_maps_company_name_to_account_name_and_domain_to_website():
+    lead = _exported_lead(identity=_identity(company_name="Acme Inc", company_domain="acme.invalid"))
+    result = _result_with(lead)
+    rows = list(csv.DictReader(io.StringIO(render_salesforce_csv(result))))
+    row = rows[0]
+    assert row["Account Name"] == "Acme Inc"
+    assert row["Website"] == "acme.invalid"
+
+
+def test_salesforce_csv_last_name_is_never_blank_when_a_name_exists():
+    """Salesforce's own Data Import Wizard hard-requires Last Name on
+    Contact — a single-word name must still populate it, never leave it
+    empty even though there's no clear first/last split."""
+    lead = _exported_lead(identity=_identity(person_name="Cher"))
+    result = _result_with(lead)
+    rows = list(csv.DictReader(io.StringIO(render_salesforce_csv(result))))
+    assert rows[0]["Last Name"] == "Cher"
+    assert rows[0]["First Name"] == "UNKNOWN"
+
+
+def test_custom_fields_use_a_clearly_non_native_header_never_a_lookalike_standard_field():
+    """final_score/rank/tier/linkedin/summary have no standard column in
+    either CRM (verified against each CRM's own docs) — they must never be
+    silently mapped to a header that looks like a native CRM property."""
+    assert "Lead Agent - Final Score" in HUBSPOT_CSV_COLUMNS
+    assert "Lead Agent - Final Score" in SALESFORCE_CSV_COLUMNS
+    assert not any(col in ("Score", "Rating", "Lead Score") for col in HUBSPOT_CSV_COLUMNS)
+
+
+def test_render_export_dispatches_to_hubspot_and_salesforce_formats():
+    from app.services.lead_export import render_export
+
+    result = _result_with(_exported_lead())
+    assert render_export(result, ExportFormat.HUBSPOT_CSV) == render_hubspot_csv(result)
+    assert render_export(result, ExportFormat.SALESFORCE_CSV) == render_salesforce_csv(result)
+
+
+def test_hubspot_and_salesforce_csv_rendering_is_deterministic():
+    result = _result_with(_exported_lead())
+    assert render_hubspot_csv(result) == render_hubspot_csv(result)
+    assert render_salesforce_csv(result) == render_salesforce_csv(result)

@@ -162,6 +162,6 @@ def get_pipeline_run_export(
     result = _build_export_result(db, run.icp_id, run.batch_id)
     body = render_export(result, format)
 
-    if format == ExportFormat.CSV:
+    if format in (ExportFormat.CSV, ExportFormat.HUBSPOT_CSV, ExportFormat.SALESFORCE_CSV):
         return Response(content=body, media_type="text/csv")
     return Response(content=body, media_type="application/json")

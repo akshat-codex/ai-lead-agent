@@ -100,6 +100,61 @@ def test_resolve_unknown_discovery_run_returns_404(client):
     assert response.status_code == 404
 
 
+# --- domain-collision regression (live-test bug, 2026-10-01) --------------
+
+
+def test_two_different_companies_independently_matching_the_same_domain_never_crashes(client):
+    """Live-test regression: two DiscoveryCandidateModel rows that each
+    MATCH a DIFFERENT existing (domain-less) company via provider_identity,
+    but both carry the SAME real domain, must never both be allowed to
+    claim that domain — this used to raise an unhandled IntegrityError
+    (canonical_companies_canonical_domain_key UniqueViolation) that crashed
+    the entire /companies/resolve call with a 500, confirmed live against
+    two real Tavily/Serper sightings of the same company ("leadiq.com")
+    that had independently resolved into two different company rows.
+    Domain-less discovery (run 1) creates two separate companies; a SECOND
+    run re-surfacing the same two provider external_ids, now both with the
+    identical domain attached, must resolve as two MATCHes, record a
+    domain_conflict on whichever one loses the race, and never crash."""
+    icp = _create_icp(client, "D2C Skincare Domain Collision")
+
+    run_1 = _run_discovery_with(
+        client,
+        icp["id"],
+        [_record("ext-a", "LeadIQ Directory Listing"), _record("ext-b", "LeadIQ Job Posting")],
+        provider_id="fixed-provider",
+    )
+    resolve_1 = client.post("/api/v1/companies/resolve", json={"discovery_run_id": run_1["id"]}).json()
+    assert {r["status"] for r in resolve_1} == {"NEW"}
+    company_ids = {r["canonical_company_id"] for r in resolve_1}
+    assert len(company_ids) == 2
+
+    run_2 = _run_discovery_with(
+        client,
+        icp["id"],
+        [
+            _record("ext-a", "LeadIQ Directory Listing", domain="leadiq.com"),
+            _record("ext-b", "LeadIQ Job Posting", domain="leadiq.com"),
+        ],
+        provider_id="fixed-provider",
+    )
+    response = client.post("/api/v1/companies/resolve", json={"discovery_run_id": run_2["id"]})
+
+    assert response.status_code == 200  # must never be a 500
+    body = response.json()
+    assert {r["status"] for r in body} == {"MATCH"}
+    assert {r["canonical_company_id"] for r in body} == company_ids
+
+    domains = [client.get(f"/api/v1/companies/{cid}").json()["canonical_domain"] for cid in company_ids]
+    # Exactly one of the two companies won the domain; the other is left
+    # None (a real, honest conflict) rather than crashing or silently
+    # letting two different companies share one domain.
+    assert sorted(domains, key=lambda d: d is None) == ["leadiq.com", None]
+
+    conflict_codes = [r["conflicting_signals"] for r in body]
+    assert any("domain_conflict" in codes for codes in conflict_codes)
+
+
 # --- repeated discovery resolves to existing company -----------------------
 
 

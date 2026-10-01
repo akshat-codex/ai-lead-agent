@@ -26,10 +26,13 @@ thin-evidence candidate (must HOLD, never guess), and a duplicate domain
 (must dedupe, never double-count).
 
 This is the SMALLEST SAFE first-live-test shape this repo can run:
-target_count=5, discovery_limit=5 — deliberately at
-settings.live_test_max_target_count/live_test_max_discovery_limit's own
-default values (see app/core/config.py), so this script's own numbers are
-a preview of exactly what a real first live call would be bounded to.
+target_count=5, discovery_limit=5 — deliberately small, and comfortably
+within settings.live_test_max_target_count/live_test_max_discovery_limit's
+own default ceiling (see app/core/config.py; raised from 5 to 25 once
+items 1-2's real COMPANY_ENRICHMENT/signal providers landed, so a real
+first run can see a representative sample — this script still uses 5
+regardless, since its hand-authored fixture below only has 5 candidates
+to offer in the first place).
 
 WHAT THIS SCRIPT DOES NOT PROVE: whether a REAL provider (Explorium,
 Hermes, OpenAI/Gemini) returns candidates this well-shaped. The fixture
@@ -255,7 +258,7 @@ def run_benchmark() -> dict:
         print(json.dumps(ICP_PAYLOAD["hard_rules"], indent=2))
         print(f"-> icp_id={icp.get('id')}")
 
-        _print_header("2. RUN BATCH (target_count=5, discovery_limit=5 — the live-test-mode defaults)")
+        _print_header("2. RUN BATCH (target_count=5, discovery_limit=5 — this fixture's own candidate count, well under the live-test-mode ceiling)")
         started = datetime.now(timezone.utc)
         batch_response = client.post(
             "/api/v1/batches", json={"icp_id": icp["id"], "target_count": 5, "discovery_limit": 5}
