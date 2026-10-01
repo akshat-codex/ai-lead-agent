@@ -1,32 +1,32 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import Box from "@mui/material/Box";
 import NavBar from "@/components/NavBar";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import Providers from "./providers";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-// A display serif for headlines only (landing hero, section titles) —
-// Fraunces has a genuine, expressive italic optical style close to the
-// black/red editorial reference; body copy, buttons, and forms stay on
-// Inter for readability. Loaded via next/font/google — no new dependency,
-// self-hosted/optimized by Next.js like Inter already is.
-const fraunces = Fraunces({
+// A single, cohesive typeface across the whole product — Space Grotesk's
+// geometric, slightly technical character is the "futuristic B2B SaaS"
+// identity for Lead Agent as a standalone product: headlines AND body/UI
+// text both use it (previously a serif display + Inter body split), so
+// the entire app reads as one distinct brand rather than a generic
+// system-sans product. Loaded via next/font/google — no new dependency,
+// self-hosted/optimized by Next.js.
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-space-grotesk",
   display: "swap",
-  style: ["normal", "italic"],
-  axes: ["opsz", "SOFT", "WONK"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Leads Agent",
+  title: "Lead Agent",
   description: "AI-powered ICP Lead Research & Qualification Platform.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`} suppressHydrationWarning>
+    <html lang="en" className={spaceGrotesk.variable} suppressHydrationWarning>
       <body>
         <Providers>
           <AnimatedBackground />

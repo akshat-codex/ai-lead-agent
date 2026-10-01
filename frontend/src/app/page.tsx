@@ -99,7 +99,7 @@ export default function Home() {
               }}
             >
               Find your next{" "}
-              <Box component="em" sx={{ fontStyle: "italic" }}>
+              <Box component="span" sx={{ color: "primary.main", WebkitTextFillColor: "initial" }}>
                 best
               </Box>{" "}
               customers

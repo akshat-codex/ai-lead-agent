@@ -104,22 +104,22 @@ export function buildTheme(mode: PaletteMode) {
       borderRadius: RADIUS.md,
     },
     typography: {
-      fontFamily: 'var(--font-inter), "Roboto", "Helvetica", "Arial", sans-serif',
-      // The display serif (Fraunces) is reserved for the biggest headline
-      // sizes only — h1/h2/h3 — matching the reference's "large serif
-      // headline over sans body copy" editorial pairing. h4 and smaller
-      // stay on Inter: those sizes are used for section/card/page titles
-      // throughout the app's functional screens, where a serif at small
-      // sizes reads as a mistake, not a design choice.
-      h1: { fontFamily: 'var(--font-fraunces), Georgia, serif', fontWeight: 500, letterSpacing: "-0.01em" },
-      h2: { fontFamily: 'var(--font-fraunces), Georgia, serif', fontWeight: 500, letterSpacing: "-0.01em" },
-      h3: { fontFamily: 'var(--font-fraunces), Georgia, serif', fontWeight: 500, letterSpacing: "-0.005em" },
-      h4: { fontWeight: 700, letterSpacing: "-0.01em" },
-      h5: { fontWeight: 700, letterSpacing: "-0.01em" },
-      h6: { fontWeight: 700 },
+      // One typeface for the whole product — Space Grotesk's geometric,
+      // technical character IS the brand identity here, not just the
+      // headline treatment. Weight/spacing still escalate with size
+      // (tighter tracking + heavier weight on the biggest headlines) so
+      // there's still a clear hierarchy, just expressed within one family
+      // instead of a serif/sans split.
+      fontFamily: 'var(--font-space-grotesk), "Roboto", "Helvetica", "Arial", sans-serif',
+      h1: { fontWeight: 700, letterSpacing: "-0.03em" },
+      h2: { fontWeight: 700, letterSpacing: "-0.03em" },
+      h3: { fontWeight: 700, letterSpacing: "-0.025em" },
+      h4: { fontWeight: 700, letterSpacing: "-0.02em" },
+      h5: { fontWeight: 700, letterSpacing: "-0.015em" },
+      h6: { fontWeight: 700, letterSpacing: "-0.01em" },
       subtitle1: { fontWeight: 600 },
-      overline: { fontWeight: 700, letterSpacing: "0.06em", fontSize: "0.6875rem" },
-      button: { fontWeight: 600, textTransform: "none" },
+      overline: { fontWeight: 700, letterSpacing: "0.08em", fontSize: "0.6875rem" },
+      button: { fontWeight: 600, textTransform: "none", letterSpacing: "0.01em" },
     },
     shadows: [
       "none",
